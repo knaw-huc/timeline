@@ -1,0 +1,31 @@
+@import 'constants.styl'
+@import 'colors.styl'
+@import 'functions.styl'
+
+body
+	font-family 'Roboto', sans-serif
+	height 100%
+	margin 0
+	overflow hidden
+	padding 0
+	width 100%
+
+	&.user-select-none
+		user-select none
+		-moz-user-select none
+		-webkit-user-select none
+
+	&.move
+		cursor move
+
+	&.west-resize
+		cursor w-resize
+
+	&.east-resize
+		cursor e-resize
+
+#container
+	height 100%
+
+@import 'icons.styl'
+@import '../components/**/*'

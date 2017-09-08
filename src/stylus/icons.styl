@@ -1,0 +1,36 @@
+icons = {
+	aerial-battle: '✈',
+	battle: '⚔',
+	birth: '★',
+	country: '⚑',
+	death: '✝',
+	naval-battle: '⚓',
+	sex-man: '♂',
+	sex-other: '⚦',
+	sex-woman: '♀',
+	expedition: '☼',
+}
+
+for className, char in icons
+	li.point-in-time.{className} .point
+	li.interval-of-time > a.{className}
+	h2.{className}
+	.move-handle .title.{className}
+		&:before
+			content char + ' '
+
+	li.interval-of-time.flip > a.{className}
+		&:before
+			content ''
+
+		&:after
+			content char
+
+
+	li.point-in-time.{className}:not(.uncertain) .point
+			position absolute
+			left -6px
+
+	li.point-in-time.flip.{className} .point
+			left initial
+			right -6px

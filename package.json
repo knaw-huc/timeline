@@ -1,0 +1,22 @@
+{
+  "name": "timeline",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.5",
+    "typescript": "^2.5.2"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "lodash.debounce": "^4.0.8",
+    "react": "^15.6.1",
+    "styled-components": "^2.1.2"
+  },
+  "typings": "build/index"
+}

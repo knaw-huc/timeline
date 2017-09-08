@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "outDir": "./build",
+    "removeComments": true,
+    "target": "es6"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "./src/index.tsx"
+  ]
+}
