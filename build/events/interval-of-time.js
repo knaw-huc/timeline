@@ -9,18 +9,18 @@ const percentageOfDateInEvent = (date, event) => {
     return (date.getTime() - event.from.getTime()) / (event.to.getTime() - event.from.getTime());
 };
 const IntervalOfTimeLink = styled_components_1.default.a `
-	color: #DDD;
-	cursor: pointer;
-	text-decoration: none;
 	background: rgba(0, 0, 0, 0.4);
 	border-radius: 2px;
 	box-sizing: border-box;
+	color: #DDD;
+	cursor: pointer;
 	max-width: ${(props) => props.event.width > constants_1.EVENT_MIN_SPACE ? 'calc(100% - 8px)' : constants_1.EVENT_MIN_SPACE};
 	overflow: hidden;
-	right: ${(props) => props.event.flip ? '4px' : 'initial'};
-	text-overflow: ellipsis;
 	padding: 0 4px;
 	position: absolute;
+	right: ${(props) => props.event.flip ? '4px' : 'initial'};
+	text-decoration: none;
+	text-overflow: ellipsis;
 `;
 class IntervalOfTimeComp extends React.Component {
     constructor() {

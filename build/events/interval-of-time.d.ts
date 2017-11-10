@@ -1,8 +1,8 @@
 import { StyledComponentClass } from "styled-components";
-import { IEvent } from "../models/event";
+import Event from "../models/event";
 export interface IProps {
     className?: string;
-    event: IEvent;
+    event: Event;
     key?: number;
     isNewEvent?: boolean;
     onEventClick?: (IEvent, MouseClickEvent) => void;

@@ -2,8 +2,7 @@ import * as React from 'react';
 import IntervalOfTime from './interval-of-time';
 import PointInTime from './point-in-time/index';
 import styled from "styled-components";
-import {IEvent} from "../models/event";
-import {IRootEvent} from "../models/root-event";
+import Event from "../models/event";
 import {DATE_BAR_HEIGHT} from "../constants";
 
 const Events = styled.ul`
@@ -21,8 +20,7 @@ const Events = styled.ul`
 `;
 
 export interface IProps {
-	events: IEvent[];
-	root: IRootEvent;
+	events: Event[]
 }
 
 class EventsComp extends React.Component<IProps, null> {

@@ -1,5 +1,5 @@
 import events from './events';
-import {combineReducers} from "redux";
+import {combineReducers, AnyAction} from "redux";
 
 
 export interface IKeyValues {

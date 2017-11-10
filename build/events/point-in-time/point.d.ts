@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import { StyledComponentClass } from "styled-components";
-import { IEvent } from "../../models/event";
+import Event from "../../models/event";
 declare const Point: StyledComponentClass<React.HTMLProps<HTMLDivElement> & {
-    event: IEvent;
+    event: Event;
 }, any, React.HTMLProps<HTMLDivElement> & {
-    event: IEvent;
+    event: Event;
 }>;
 export default Point;

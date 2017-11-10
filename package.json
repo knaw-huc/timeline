@@ -16,6 +16,7 @@
     "classnames": "^2.2.5",
     "lodash.debounce": "^4.0.8",
     "react": "^15.6.1",
+    "redux": "^3.7.2",
     "styled-components": "^2.1.2"
   },
   "typings": "build/index"

@@ -11,7 +11,7 @@ exports.PointInTimeContainer = li.attrs({
         left: props.event.flip ? 'initial' : `${props.event.left}px`,
         paddingLeft: props.event.isUncertain() ? 'initial' : '12px',
         paddingRight: props.event.flip ? '12px' : 'intitial',
-        right: props.event.flip ? `${props.event.root.width - props.event.left}px` : 'initial',
+        right: props.event.flip ? `${props.event.visibleDomain.width - props.event.left}px` : 'initial',
         width: props.event.width === 0 ?
             'initial' :
             props.event.width > 0 && props.event.width < 12 ?

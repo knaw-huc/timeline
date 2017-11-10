@@ -1,10 +1,10 @@
-import Event, {IEvent} from '../models/event';
+import Event from '../models/event';
 import RootEvent, {IRootEvent} from '../models/root-event';
 import {addTop, parseEvent} from '../utils/event';
 
-interface IDefaultState {
-	events: IEvent[];
-	newEvent: IEvent;
+export interface IDefaultState {
+	events: Event[];
+	newEvent: Event;
 	newEventData: any;
 	root: IRootEvent;
 	serverEvents: any[];
@@ -25,49 +25,49 @@ export default (state = defaultState, action) => {
 
 	switch (action.type) {
 		case 'RECEIVE_EVENTS': {
-			const root = new RootEvent(parseEvent(action.root));
-			let events = action.events.map((e) => new Event(parseEvent(e), root));
-			events = addTop(events);
+			// const root = new RootEvent(parseEvent(action.root), 0);
+			// let events = action.events.map((e) => new Event(parseEvent(e), root));
+			// events = addTop(events);
 
-			nextState = Object.assign({}, state, {
-				events,
-				newEvent: new Event({}, root),
-				root,
-				serverEvents: action.events,
-				serverRoot: action.root,
-			});
+			// nextState = Object.assign({}, state, {
+			// 	events,
+			// 	newEvent: new Event({}, root),
+			// 	root,
+			// 	serverEvents: action.events,
+			// 	serverRoot: action.root,
+			// });
 			break;
 		}
 
 		case 'SET_EVENT_KEY_VALUES': {
 			const newEventData = Object.assign({}, state.newEventData, action.keyValues);
-			const newEvent = new Event(newEventData, state.root);
+			// const newEvent = new Event(newEventData, state.root);
 
 			nextState = Object.assign({}, state, {
-				newEvent,
+				// newEvent,
 				newEventData,
 			});
 			break;
 		}
 
 		case 'RESET_EVENT': {
-			nextState = Object.assign({}, state, { newEvent: new Event({}, state.root) });
+			// nextState = Object.assign({}, state, { newEvent: new Event({}, state.root) });
 			break;
 		}
 
 		case 'SAVE_EVENT': {
 			nextState = Object.assign({}, state, {
 				events: state.events.concat(state.newEvent),
-				newEvent: new Event({}, state.root),
+				// newEvent: new Event({}, state.root),
 			});
 			break;
 		}
 
 		case 'RESIZE': {
-			const root = new RootEvent(parseEvent(state.serverRoot));
-			let events = state.serverEvents.map((e) => new Event(parseEvent(e), root));
-			events = addTop(events);
-			nextState = Object.assign({}, state, { root, events });
+			const root = new RootEvent(parseEvent(state.serverRoot), 0);
+			// let events = state.serverEvents.map((e) => new Event(parseEvent(e), root));
+			// events = addTop(events);
+			// nextState = Object.assign({}, state, { root, events });
 			break;
 		}
 

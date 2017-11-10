@@ -1,10 +1,8 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { IEvent } from "../models/event";
-import { IRootEvent } from "../models/root-event";
+import Event from "../models/event";
 export interface IProps {
-    events: IEvent[];
-    root: IRootEvent;
+    events: Event[];
 }
 declare class EventsComp extends React.Component<IProps, null> {
     render(): JSX.Element;

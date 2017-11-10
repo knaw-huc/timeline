@@ -1,16 +1,10 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { IEvent } from "./models/event";
-import { IRootEvent } from "./models/root-event";
-import { Granularity } from "./constants";
+import Event from "./models/event";
+import Domain from './models/domain';
 export interface IRawEvent {
     date: Date;
-}
-export interface IRawRootEvent {
-    dateRange: {
-        from: Date;
-        to: Date;
-    };
+    title: string;
 }
 export interface IAggregate {
     count: number;
@@ -20,26 +14,36 @@ export interface ITimelineProps {
     aggregate?: IAggregate[];
     children?: React.ReactNode;
     events: IRawEvent[];
-    root: IRawRootEvent;
-    visibleDomain: number;
+    from: Date;
+    to: Date;
+    domainCenter?: number;
+    domainRatio?: number;
 }
 export interface ITimelineState {
-    events: IEvent[];
-    granularity: Granularity;
-    root: IRootEvent;
+    domain: Domain;
+    domainCenter: number;
+    events: Event[];
+    visibleDomain: Domain;
     width: number;
 }
 declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
+    static defaultProps: {
+        domainCenter: number;
+        domainRatio: number;
+    };
     state: {
+        domain: any;
+        domainCenter: number;
+        domainRatio: number;
         events: any[];
-        granularity: Granularity;
-        root: any;
+        visibleDomain: any;
         width: number;
     };
     componentDidMount(): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
-    private resize;
+    private init;
+    private getVisibleDomain(domain);
     private debouncedHandleResize;
 }
 export default Timeline;

@@ -5,7 +5,7 @@ export const EVENT_MIN_SPACE = 240;
 // The height (in px) of a row of events.
 export const EVENT_ROW_HEIGHT = 32;
 
-export const DATE_BAR_HEIGHT = 46;
+export const DATE_BAR_HEIGHT = 60;
 
 export const timelineBlue = '#0091EA';
 export const timelineLightBlue = '#00B0FF';

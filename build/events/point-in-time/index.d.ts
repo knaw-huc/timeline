@@ -1,16 +1,16 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { StyledComponentClass } from "styled-components";
-import { IEvent } from "../../models/event";
+import Event from "../../models/event";
 export interface IPointInTime {
     className?: string;
-    event: IEvent;
+    event: Event;
     isNewEvent?: boolean;
     onHandleMouseDown?: (string, number) => void;
     style?: any;
 }
 export interface IPointInTimeContainer {
-    event: IEvent;
+    event: Event;
 }
 export declare const PointInTimeContainer: StyledComponentClass<IPointInTimeContainer & React.HTMLProps<HTMLOListElement | HTMLUListElement> & {
     style: {

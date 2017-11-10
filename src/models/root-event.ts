@@ -9,13 +9,13 @@ export interface IRootEvent extends IBaseEvent {
 }
 
 class RootEvent extends BaseEvent implements IRootEvent {
-	private pixelsPerDay = null;
-	public width = 0;
+	private pixelsPerDay = null
+	public width = 0
 
 	constructor(data, width: number) {
-		super(data);
-		this.width = width;
-		this.pixelsPerDay = this.width / this.countDays();
+		super(data)
+		this.width = width
+		this.pixelsPerDay = this.width / this.countDays()
 	}
 
 	public leftPositionAtDate(date: Date): number {

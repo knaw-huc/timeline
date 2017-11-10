@@ -1,20 +1,20 @@
-import * as React from 'react';
-import styled, {StyledFunction, StyledComponentClass} from "styled-components";
-import {eventCSS} from "../event";
-import {IEvent} from "../../models/event";
-import Point from "./point";
-import Title from "./title";
+import * as React from 'react'
+import styled, {StyledFunction, StyledComponentClass} from "styled-components"
+import {eventCSS} from "../event"
+import Event from "../../models/event"
+import Point from "./point"
+import Title from "./title"
 
 export interface IPointInTime {
-	className?: string;
-	event: IEvent;
-	isNewEvent?: boolean;
-	onHandleMouseDown?: (string, number) => void;
-	style?: any;
+	className?: string
+	event: Event
+	isNewEvent?: boolean
+	onHandleMouseDown?: (string, number) => void
+	style?: any
 }
 
 export interface IPointInTimeContainer {
-	event: IEvent;
+	event: Event
 }
 const li: StyledFunction<IPointInTimeContainer & React.HTMLProps<HTMLUListElement | HTMLOListElement>> = styled.li;
 export const PointInTimeContainer = li.attrs({
@@ -23,7 +23,7 @@ export const PointInTimeContainer = li.attrs({
 		left: props.event.flip ? 'initial' : `${props.event.left}px`,
 		paddingLeft: props.event.isUncertain() ? 'initial' : '12px',
 		paddingRight: props.event.flip ? '12px' : 'intitial',
-		right: props.event.flip ? `${props.event.root.width - props.event.left}px` : 'initial',
+		right: props.event.flip ? `${props.event.visibleDomain.width - props.event.left}px` : 'initial',
 		width: props.event.width === 0 ?
 			'initial' :
 			props.event.width > 0 && props.event.width < 12 ?

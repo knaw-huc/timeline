@@ -3,16 +3,16 @@ import * as cx from 'classnames';
 import {EVENT_MIN_SPACE, timelineBlue, timelineLightestBlue} from '../constants';
 import styled, { StyledComponentClass} from "styled-components"; // https://github.com/styled-components/styled-components/issues/1063
 import {eventCSS, intervalOfTimeCSS} from './event';
-import {IEvent} from "../models/event";
+import Event from "../models/event";
 
-const percentageOfDateInEvent = (date: Date, event: IEvent): number => {
+const percentageOfDateInEvent = (date: Date, event: Event): number => {
 	return (date.getTime() - event.from.getTime()) / (event.to.getTime() - event.from.getTime());
 };
 
 
 export interface IProps {
 	className?: string;
-	event: IEvent;
+	event: Event;
 	key?: number;
 	isNewEvent?: boolean;
 	onEventClick?: (IEvent, MouseClickEvent) => void;
@@ -20,22 +20,22 @@ export interface IProps {
 }
 
 const IntervalOfTimeLink = styled.a`
-	color: #DDD;
-	cursor: pointer;
-	text-decoration: none;
 	background: rgba(0, 0, 0, 0.4);
 	border-radius: 2px;
 	box-sizing: border-box;
-	max-width: ${(props: {event: IEvent}) =>
+	color: #DDD;
+	cursor: pointer;
+	max-width: ${(props: {event: Event}) =>
 		props.event.width > EVENT_MIN_SPACE ? 'calc(100% - 8px)' : EVENT_MIN_SPACE
 	};
 	overflow: hidden;
-	right: ${(props: {event: IEvent}) =>
-		props.event.flip ? '4px' : 'initial'
-	};
-	text-overflow: ellipsis;
 	padding: 0 4px;
 	position: absolute;
+	right: ${(props: {event: Event}) =>
+		props.event.flip ? '4px' : 'initial'
+	};
+	text-decoration: none;
+	text-overflow: ellipsis;
 `;
 
 // &.fill

@@ -1,10 +1,10 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { IRootEvent } from "../models/root-event";
-import { Granularity } from "../constants";
+import Domain from '../models/domain';
 export interface IProps {
-    granularity: Granularity;
-    root: IRootEvent;
+    domain: Domain;
+    domainRatio: number;
+    visibleDomain: Domain;
 }
 export interface IState {
     relative: boolean;
@@ -14,5 +14,6 @@ declare class RulersComp extends React.Component<IProps, IState> {
         relative: boolean;
     };
     render(): JSX.Element;
+    private toggleRelative;
 }
 export default RulersComp;

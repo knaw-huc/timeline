@@ -1,32 +1,21 @@
 import BaseEvent, {IBaseEvent} from './base-event';
 import * as Constants from '../constants';
-import {IRootEvent} from "./root-event";
+import Domain from './domain';
 
-export interface IEvent extends IBaseEvent {
-	flip: boolean;
-	left: number;
-	root: IRootEvent;
-	top: number;
-	width: number;
-	space(): [number, number];
-}
+class Event extends BaseEvent {
+	public flip: boolean
+	public left: number
+	public top: number
+	public width: number
 
-class Event extends BaseEvent implements IEvent {
-	public flip = null;
-	public left = null;
-	public top = null;
-	public width = null;
-	public root = null;
+	constructor(data, public visibleDomain: Domain) {
+		super(data)
 
-	constructor(data, root: IRootEvent) {
-		super(data);
+		this.left = visibleDomain.leftPositionAtDate(this.from)
+		this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
 
-		this.root = root; // TODO remove this.root? Root is only used in the constructor
-		this.left = this.root.leftPositionAtDate(this.from);
-		this.flip = (this.left + Constants.EVENT_MIN_SPACE > this.root.width) ? true : false;
-
-		const width = this.countDays() * this.root.pixelsPerDay;
-		this.width = (width > 0 && width < 12) ? 12 : width;
+		const width = this.countDays() * visibleDomain.pixelsPerDay
+		this.width = (width > 0 && width < 12) ? 12 : width
 	}
 
 	/**

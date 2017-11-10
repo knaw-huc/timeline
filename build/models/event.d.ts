@@ -1,20 +1,12 @@
-import BaseEvent, { IBaseEvent } from './base-event';
-import { IRootEvent } from "./root-event";
-export interface IEvent extends IBaseEvent {
+import BaseEvent from './base-event';
+import Domain from './domain';
+declare class Event extends BaseEvent {
+    visibleDomain: Domain;
     flip: boolean;
     left: number;
-    root: IRootEvent;
     top: number;
     width: number;
-    space(): [number, number];
-}
-declare class Event extends BaseEvent implements IEvent {
-    flip: any;
-    left: any;
-    top: any;
-    width: any;
-    root: any;
-    constructor(data: any, root: IRootEvent);
+    constructor(data: any, visibleDomain: Domain);
     space(): [number, number];
 }
 export default Event;

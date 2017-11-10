@@ -1,8 +1,8 @@
 import * as Constants from '../constants';
-import {IEvent} from "../models/event";
+import Event from "../models/event";
 import {IDateRange} from "../models/base-event";
 
-const hasOverlap = (a: IEvent, b: IEvent): boolean => {
+const hasOverlap = (a: Event, b: Event): boolean => {
 	const [aLeft, aWidth] = a.space();
 	const [bLeft, bWidth] = b.space();
 
@@ -13,7 +13,7 @@ const hasOverlap = (a: IEvent, b: IEvent): boolean => {
 	return overlap;
 };
 
-export const addTop = (events: IEvent[]) => {
+export const addTop = (events: Event[]) => {
 	if (!events.length) return events;
 	const firstEvent = events[0];
 	const rows = [[firstEvent]];
