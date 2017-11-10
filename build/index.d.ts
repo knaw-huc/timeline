@@ -5,14 +5,12 @@ import { IRootEvent } from "./models/root-event";
 import { Granularity } from "./constants";
 export interface IRawEvent {
     date: Date;
-    title: string;
 }
 export interface IRawRootEvent {
     dateRange: {
         from: Date;
         to: Date;
     };
-    title: string;
 }
 export interface IAggregate {
     count: number;
@@ -23,6 +21,7 @@ export interface ITimelineProps {
     children?: React.ReactNode;
     events: IRawEvent[];
     root: IRawRootEvent;
+    visibleDomain: number;
 }
 export interface ITimelineState {
     events: IEvent[];

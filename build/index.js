@@ -8,6 +8,7 @@ const styled_components_1 = require("styled-components");
 const root_event_1 = require("./models/root-event");
 const event_1 = require("./models/event");
 const event_2 = require("./utils/event");
+const dev_1 = require("./dev");
 const sparkline_1 = require("./sparkline");
 const Container = styled_components_1.default.div `
 	background-color: white;
@@ -56,6 +57,7 @@ class Timeline extends React.Component {
                 React.createElement(index_2.default, { granularity: granularity, root: root }),
                 React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, width: this.state.width }),
                 React.createElement(index_1.default, { events: events, root: root }),
+                React.createElement(dev_1.default, { root: root, width: width }),
                 children)));
     }
 }

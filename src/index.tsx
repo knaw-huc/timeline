@@ -20,21 +20,19 @@ const Container = styled.div`
 `;
 
 export interface IRawEvent {
-	date: Date;
-	title: string;
+	date: Date
 }
 
 export interface IRawRootEvent {
 	dateRange: {
-		from: Date;
-		to: Date;
-	};
-	title: string;
+		from: Date,
+		to: Date,
+	}
 }
 
 export interface IAggregate {
-	count: number,	
-	year: number,
+	count: number
+	year: number
 }
 
 export interface ITimelineProps {
@@ -42,13 +40,14 @@ export interface ITimelineProps {
 	children?: React.ReactNode
 	events: IRawEvent[]
 	root: IRawRootEvent
+	visibleDomain: number
 }
 
 export interface ITimelineState {
-	events: IEvent[];
-	granularity: Granularity;
-	root: IRootEvent;
-	width: number;
+	events: IEvent[]
+	granularity: Granularity
+	root: IRootEvent
+	width: number
 }
 
 class Timeline extends React.Component<ITimelineProps, ITimelineState> {
@@ -60,26 +59,26 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 	};
 
 	public componentDidMount() {
-		const containerRect = document.getElementById('timeline-container').getBoundingClientRect();
-		const root = new RootEvent(this.props.root, containerRect.width);
-		const events = this.props.events.map(e => new Event(e, root));
-		const eventsWithTop = addTop(events);
+		const containerRect = document.getElementById('timeline-container').getBoundingClientRect()
+		const root = new RootEvent(this.props.root, containerRect.width)
+		const events = this.props.events.map(e => new Event(e, root))
+		const eventsWithTop = addTop(events)
 		this.setState({
 			events: eventsWithTop,
 			root,
 			width: containerRect.width
-		});
+		})
 
-		window.addEventListener('resize', this.debouncedHandleResize);
+		window.addEventListener('resize', this.debouncedHandleResize)
 	}
 
 	public componentWillUnmount(): void {
-		window.removeEventListener('resize', this.debouncedHandleResize);
+		window.removeEventListener('resize', this.debouncedHandleResize)
 	}
 
 	public render() {
-		const { children } = this.props;
-		const { events, granularity, root, width } = this.state;
+		const { children } = this.props
+		const { events, granularity, root, width } = this.state
 
 		return (
 			<Container
@@ -100,22 +99,22 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 							events={events}
 							root={root}
 						/>
-						{/*<Dev root={root} width={width} />*/}
+						{<Dev root={root} width={width} />}
 						{children}
 					</div>
 				}
 			</Container>
-		);
+		)
 	}
 
 	private resize = () => {
-		const width = document.getElementById('timeline-container').getBoundingClientRect().width;
-		const root = new RootEvent(this.props.root, width);
-		const events = addTop(this.props.events.map(e => new Event(e, root)));
-		this.setState({ events, root });
-	};
+		const width = document.getElementById('timeline-container').getBoundingClientRect().width
+		const root = new RootEvent(this.props.root, width)
+		const events = addTop(this.props.events.map(e => new Event(e, root)))
+		this.setState({ events, root })
+	}
 
-	private debouncedHandleResize = debounce(this.resize, 200);
+	private debouncedHandleResize = debounce(this.resize, 200)
 }
 
-export default Timeline;
+export default Timeline
