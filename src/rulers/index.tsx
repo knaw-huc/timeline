@@ -55,9 +55,9 @@ class RulersComp extends React.Component<IProps, IState> {
 
 		return (
 			<Rulers>
-				<FromToLabel style={{left: '-1px'}}>
+				{/* <FromToLabel style={{left: '-1px'}}>
 					{relative ?  0 : fromYear}
-				</FromToLabel>
+				</FromToLabel> */}
 				{
 					rulers.map((year: number, index: number) =>
 						<Ruler
@@ -72,9 +72,9 @@ class RulersComp extends React.Component<IProps, IState> {
 						/>
 					)
 				}
-				<FromToLabel style={{right: '-1px'}}>
+				{/* <FromToLabel style={{right: '-1px'}}>
 					{relative ? toYear - fromYear : toYear}
-				</FromToLabel>
+				</FromToLabel> */}
 			</Rulers>
 		);
 	}

@@ -5,12 +5,12 @@ const styled_components_1 = require("styled-components");
 const constants_1 = require("../constants");
 const Label = styled_components_1.default.span `
 	align-items: flex-end;
-	background: white;
 	bottom: 10px;
 	display: flex;
 	height: calc(${constants_1.DATE_BAR_HEIGHT} - 10px);
-	color: #AAA;
+	color: #444;
 	position: absolute;
+	z-index: 1;
 `;
 const Ruler = styled_components_1.default.li `
 	border-left: 1px solid #EEE;

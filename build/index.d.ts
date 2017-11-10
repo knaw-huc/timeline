@@ -14,7 +14,12 @@ export interface IRawRootEvent {
     };
     title: string;
 }
+export interface IAggregate {
+    count: number;
+    year: number;
+}
 export interface ITimelineProps {
+    aggregate?: IAggregate[];
     children?: React.ReactNode;
     events: IRawEvent[];
     root: IRawRootEvent;

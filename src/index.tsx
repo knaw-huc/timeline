@@ -1,16 +1,18 @@
-import * as React from 'react';
-import * as debounce from 'lodash.debounce';
-import Events from './events/index';
-import Rulers from './rulers/index';
-import styled, { StyledComponentClass } from "styled-components";
-import {IEvent} from "./models/event";
-import {IRootEvent, default as RootEvent} from "./models/root-event";
-import Event from "./models/event";
-import {addTop} from "./utils/event";
-import Dev from "./dev";
-import {Granularity} from "./constants";
+import * as React from 'react'
+import * as debounce from 'lodash.debounce'
+import Events from './events/index'
+import Rulers from './rulers/index'
+import styled, { StyledComponentClass } from "styled-components"
+import {IEvent} from "./models/event"
+import {IRootEvent, default as RootEvent} from "./models/root-event"
+import Event from "./models/event"
+import {addTop} from "./utils/event"
+import Dev from "./dev"
+import {Granularity} from "./constants"
+import Sparkline from './sparkline'
 
 const Container = styled.div`
+	background-color: white;
 	height: 100%;
 	overflow: hidden;
 	position: relative;
@@ -30,10 +32,16 @@ export interface IRawRootEvent {
 	title: string;
 }
 
+export interface IAggregate {
+	count: number,	
+	year: number,
+}
+
 export interface ITimelineProps {
-	children?: React.ReactNode;
-	events: IRawEvent[];
-	root: IRawRootEvent;
+	aggregate?: IAggregate[]
+	children?: React.ReactNode
+	events: IRawEvent[]
+	root: IRawRootEvent
 }
 
 export interface ITimelineState {
@@ -83,6 +91,10 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 						<Rulers
 							granularity={granularity}
 							root={root}
+						/>
+						<Sparkline
+							aggregate={this.props.aggregate}
+							width={this.state.width}
 						/>
 						<Events
 							events={events}

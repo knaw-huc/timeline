@@ -8,7 +8,9 @@ const styled_components_1 = require("styled-components");
 const root_event_1 = require("./models/root-event");
 const event_1 = require("./models/event");
 const event_2 = require("./utils/event");
+const sparkline_1 = require("./sparkline");
 const Container = styled_components_1.default.div `
+	background-color: white;
 	height: 100%;
 	overflow: hidden;
 	position: relative;
@@ -52,6 +54,7 @@ class Timeline extends React.Component {
         return (React.createElement(Container, { id: "timeline-container" }, root != null &&
             React.createElement("div", { style: { width: '100%', height: '100%' } },
                 React.createElement(index_2.default, { granularity: granularity, root: root }),
+                React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, width: this.state.width }),
                 React.createElement(index_1.default, { events: events, root: root }),
                 children)));
     }

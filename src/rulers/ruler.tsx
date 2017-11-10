@@ -4,12 +4,12 @@ import {DATE_BAR_HEIGHT} from "../constants";
 
 const Label = styled.span`
 	align-items: flex-end;
-	background: white;
 	bottom: 10px;
 	display: flex;
 	height: calc(${DATE_BAR_HEIGHT} - 10px);
-	color: #AAA;
+	color: #444;
 	position: absolute;
+	z-index: 1;
 `;
 
 export interface IProps {

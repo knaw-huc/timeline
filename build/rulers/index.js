@@ -43,12 +43,9 @@ class RulersComp extends React.Component {
             else if ((granularity === 1) && (i % 100 === 0))
                 rulers.push(i);
         }
-        return (React.createElement(Rulers, null,
-            React.createElement(FromToLabel, { style: { left: '-1px' } }, relative ? 0 : fromYear),
-            rulers.map((year, index) => React.createElement(ruler_1.default, { toggleRelative: () => this.setState({ relative: !relative }), key: index, left: this.state.relative ?
-                    root.leftPositionAtDate(new Date((fromYear + year).toString())) :
-                    root.leftPositionAtDate(new Date(year.toString())), label: year.toString() })),
-            React.createElement(FromToLabel, { style: { right: '-1px' } }, relative ? toYear - fromYear : toYear)));
+        return (React.createElement(Rulers, null, rulers.map((year, index) => React.createElement(ruler_1.default, { toggleRelative: () => this.setState({ relative: !relative }), key: index, left: this.state.relative ?
+                root.leftPositionAtDate(new Date((fromYear + year).toString())) :
+                root.leftPositionAtDate(new Date(year.toString())), label: year.toString() }))));
     }
 }
 exports.default = RulersComp;
