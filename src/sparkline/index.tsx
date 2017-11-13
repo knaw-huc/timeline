@@ -1,16 +1,17 @@
 import * as React from 'react'
 import { IAggregate } from '../index';
 import { DATE_BAR_HEIGHT } from '../constants';
+import Domain from '../models/domain'
 
 export interface IProps {
 	aggregate: IAggregate[]
-	width: number
+	domain: Domain
 }
 const Sparkline: React.SFC<IProps> = (props) => {
 	// #TODO
 	// Fix sparkline if width is smaller than aggregate length,
 	// this means there are more aggregation elements than pixels
-	if (props.aggregate.length > props.width) return null
+	if (props.aggregate.length > props.domain.width) return null
 
 	// Find the highest count (in math: the range), other counts will
 	// be relative to the highest count. 
@@ -19,7 +20,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// Generate a path from the aggregation points
 	const path = props.aggregate.reduce((prev, curr, index) => {
 		const curveType = index === 0 ? 'M' : 'L'
-		const x = (props.width / (props.aggregate.length - 1)) * index
+		const x = (props.domain.width / (props.aggregate.length - 1)) * index
 		const y = DATE_BAR_HEIGHT - ((curr.count / countMax) * DATE_BAR_HEIGHT)
 		return `${prev} ${curveType} ${x} ${y}`
 	}, '')
@@ -28,7 +29,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// position, but it should go to the lower right corner and then to the lower
 	// left corner, just (1px) out of the viewport. So a two lines are added on the
 	// right and on the bottom to close the path manually.
-	const pathCloser = ` L ${props.width + 1} ${DATE_BAR_HEIGHT + 1} L -1 ${DATE_BAR_HEIGHT + 1}`
+	const pathCloser = ` L ${props.domain.width + 1} ${DATE_BAR_HEIGHT + 1} L -1 ${DATE_BAR_HEIGHT + 1}`
 
 	return (
 		<svg
@@ -36,7 +37,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 				position: 'absolute',
 				bottom: 0,
 			}}
-			viewBox={`0 0 ${props.width} ${DATE_BAR_HEIGHT}`}
+			viewBox={`0 0 ${props.domain.width} ${DATE_BAR_HEIGHT}`}
 		>
 			<path
 				d={path + pathCloser}

@@ -1,9 +1,10 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { IAggregate } from '../index';
+import Domain from '../models/domain';
 export interface IProps {
     aggregate: IAggregate[];
-    width: number;
+    domain: Domain;
 }
 declare const Sparkline: React.SFC<IProps>;
 export default Sparkline;
