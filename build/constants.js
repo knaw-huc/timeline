@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EVENT_MIN_SPACE = 240;
-exports.EVENT_ROW_HEIGHT = 32;
+exports.EVENT_MIN_SPACE = 14;
+exports.EVENT_ROW_HEIGHT = 14;
 exports.DATE_BAR_HEIGHT = 60;
 exports.timelineBlue = '#0091EA';
 exports.timelineLightBlue = '#00B0FF';
