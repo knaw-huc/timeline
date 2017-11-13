@@ -2,19 +2,18 @@
 import * as React from 'react';
 export interface IProps {
     left: number;
+    onClick: (x: number) => void;
     onMove: (left: number) => void;
     width: number;
 }
 export interface IState {
     dragOffset: number;
-    cursorXPosition: number;
     left: number;
     width: number;
 }
 declare class Indicator extends React.Component<IProps, IState> {
     private el;
     state: {
-        cursorXPosition: any;
         dragOffset: any;
         left: number;
         width: number;
@@ -22,6 +21,10 @@ declare class Indicator extends React.Component<IProps, IState> {
     componentDidMount(): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
+    private cursorX;
+    private onClick;
+    private onMouseDown;
+    private onMouseMove;
     private onMouseUp;
 }
 export default Indicator;

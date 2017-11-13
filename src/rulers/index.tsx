@@ -4,32 +4,25 @@ import {Granularity} from "../constants"
 import Rulers from './rulers'
 import Domain from '../models/domain'
 
-const Wrapper = (props) => <div style={{ fontSize: '0.8em' }}>{props.children}</div>
+const Wrapper = (props) =>
+	<div style={{ fontSize: '0.8em' }}>{props.children}</div>
 
 export interface IProps {
 	domain: Domain
 	domainRatio: number
 	visibleDomain: Domain
 }
-export interface IState {
-	relative: boolean;
-}
-class RulersComp extends React.Component<IProps, IState> {
-	public state = {
-		relative: false,
-	};
+class RulersComp extends React.Component<IProps, null> {
 
 	public render() {
 		return (
 			<Wrapper>
 				<Rulers
-					toggleRelative={this.toggleRelative}
 					type="visibledomain"
 					{...this.props}
 					{...this.state}
 				/>
 				<Rulers
-					toggleRelative={this.toggleRelative}
 					type="sparkline"
 					{...this.props}
 					{...this.state}
@@ -37,8 +30,6 @@ class RulersComp extends React.Component<IProps, IState> {
 			</Wrapper>
 		);
 	}
-
-	private toggleRelative = () => this.setState({ relative: !this.state.relative })
 }
 
 export default RulersComp;

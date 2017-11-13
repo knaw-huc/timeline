@@ -1,10 +1,8 @@
 /// <reference types="react" />
 import * as React from 'react';
 export interface IProps {
-    className?: string;
     left: number;
-    toggleRelative: () => void;
-    label: string;
+    label: JSX.Element;
 }
-declare const RulerComp: React.StatelessComponent<IProps>;
+declare const RulerComp: React.SFC<IProps>;
 export default RulerComp;

@@ -4,8 +4,6 @@ import Domain from '../models/domain';
 export interface IProps {
     domain: Domain;
     domainRatio: number;
-    relative: boolean;
-    toggleRelative: () => void;
     type: 'sparkline' | 'visibledomain';
     visibleDomain: Domain;
 }

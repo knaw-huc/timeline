@@ -3,6 +3,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const constants_1 = require("../constants");
 const ruler_1 = require("./ruler");
+const date_range_1 = require("./date-range");
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const getWeekNumber = (date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+};
+const labelFormatter = (granularity) => {
+    if (granularity >= 4) {
+        return (d) => React.createElement("span", null, d.getFullYear().toString());
+    }
+    else if (granularity === 3) {
+        return (d) => React.createElement("span", null,
+            (d.getMonth() === 0) &&
+                React.createElement("span", null,
+                    d.getFullYear().toString(),
+                    React.createElement("br", null)),
+            months[d.getMonth()]);
+    }
+    else if (granularity === 2) {
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        return (d) => React.createElement("span", null,
+            months[d.getMonth()],
+            ", week ",
+            getWeekNumber(d));
+    }
+    else if (granularity === 1) {
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        return (d) => React.createElement("span", null, days[d.getDate()]);
+    }
+    else if (granularity === 0) {
+        return (d) => React.createElement("span", null, "NOT IMPLEMENTED");
+    }
+};
 const Ul = (props) => React.createElement("ul", { style: {
         bottom: props.type === 'visibledomain' ? `${constants_1.DATE_BAR_HEIGHT}px` : 0,
         height: props.type === 'visibledomain' ?
@@ -13,27 +49,13 @@ const Ul = (props) => React.createElement("ul", { style: {
         left: 0,
         position: 'absolute',
         right: 0,
-        top: props.type === 'visibledomain' ? 0 : 'initial'
+        top: props.type === 'visibledomain' ? 0 : 'initial',
+        whiteSpace: 'nowrap',
     } }, props.children);
 const Rulers = (props) => {
-    const rulers = [];
     const domain = props.type === 'visibledomain' ? props.visibleDomain : props.domain;
-    const fromYear = domain.from.getFullYear();
-    const toYear = domain.to.getFullYear();
-    let i = props.relative ? 0 : fromYear;
-    let j = props.relative ? toYear - fromYear : toYear;
-    for (i; i <= j; i++) {
-        if (domain.granularity === 3)
-            rulers.push(i);
-        else if ((domain.granularity === 2) && (i % 10 === 0))
-            rulers.push(i);
-        else if ((domain.granularity === 1) && (i % 100 === 0))
-            rulers.push(i);
-    }
-    return (React.createElement(Ul, Object.assign({}, props), rulers.map((year, index) => {
-        const absoluteYear = props.relative ? fromYear + year : year;
-        const left = domain.leftPositionAtDate(new Date(absoluteYear.toString()));
-        return (React.createElement(ruler_1.default, { toggleRelative: props.toggleRelative, key: index, left: left, label: year.toString() }));
-    })));
+    const dates = date_range_1.default(domain.from, domain.to, domain.granularity);
+    const formatLabel = labelFormatter(domain.granularity);
+    return (React.createElement(Ul, Object.assign({}, props), dates.map((date, index) => React.createElement(ruler_1.default, { key: index, label: formatLabel(date), left: domain.positionAtDate(date) }))));
 };
 exports.default = Rulers;

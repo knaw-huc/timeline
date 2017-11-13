@@ -6,14 +6,7 @@ export interface IProps {
     domainRatio: number;
     visibleDomain: Domain;
 }
-export interface IState {
-    relative: boolean;
-}
-declare class RulersComp extends React.Component<IProps, IState> {
-    state: {
-        relative: boolean;
-    };
+declare class RulersComp extends React.Component<IProps, null> {
     render(): JSX.Element;
-    private toggleRelative;
 }
 export default RulersComp;

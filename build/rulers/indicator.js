@@ -6,45 +6,49 @@ class Indicator extends React.Component {
     constructor() {
         super(...arguments);
         this.state = {
-            cursorXPosition: null,
             dragOffset: null,
             left: this.props.left,
             width: this.props.width,
         };
+        this.cursorX = (ev) => ev.clientX - this.el.getBoundingClientRect().left;
+        this.onClick = (ev) => this.props.onClick(this.cursorX(ev));
+        this.onMouseDown = (ev) => {
+            document.addEventListener('mousemove', this.onMouseMove);
+            document.addEventListener('mouseup', this.onMouseUp);
+            this.setState({
+                dragOffset: this.cursorX(ev) - this.state.left,
+            });
+        };
+        this.onMouseMove = (ev) => {
+            if (this.state.dragOffset) {
+                const left = this.cursorX(ev) - this.state.dragOffset;
+                console.log('left', left);
+                this.setState({ left });
+            }
+        };
         this.onMouseUp = () => {
+            document.removeEventListener('mousemove', this.onMouseMove);
+            document.removeEventListener('mouseup', this.onMouseUp);
             this.props.onMove(this.state.left);
             this.setState({
                 dragOffset: null,
-                cursorXPosition: null,
             });
+            console.log('removing');
         };
     }
     componentDidMount() {
-        document.addEventListener('mouseup', this.onMouseUp);
     }
     componentWillUnmount() {
-        document.addEventListener('mouseup', this.onMouseUp);
     }
     render() {
-        return (React.createElement("div", { ref: (el) => { this.el = el; }, style: {
+        return (React.createElement("div", { onClick: this.onClick, ref: (el) => { this.el = el; }, style: {
                 position: 'absolute',
                 bottom: 0,
                 left: 0,
                 right: 0,
                 height: `${constants_1.DATE_BAR_HEIGHT}px`,
             } },
-            React.createElement("div", { onMouseDown: (ev) => {
-                    const cursorXPosition = ev.clientX - this.el.getBoundingClientRect().left;
-                    this.setState({
-                        dragOffset: cursorXPosition - this.state.left,
-                    });
-                }, onMouseMove: (ev) => {
-                    if (this.state.dragOffset) {
-                        const cursorXPosition = ev.clientX - this.el.getBoundingClientRect().left;
-                        const left = cursorXPosition - this.state.dragOffset;
-                        this.setState({ left });
-                    }
-                }, style: {
+            React.createElement("div", { onMouseDown: this.onMouseDown, style: {
                     position: 'absolute',
                     bottom: 0,
                     cursor: '-webkit-grab',
