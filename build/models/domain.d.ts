@@ -6,7 +6,8 @@ declare class Domain {
     pixelsPerDay: number;
     granularity: Granularity;
     constructor(from: Date, to: Date, width: number);
-    leftPositionAtDate(date: Date): number;
+    positionAtDate(date: Date): number;
+    dateAtPosition(x: number): Date;
     countDays(): number;
     dateAtProportion(proportion: number): Date;
     proportionAtPosition(position: number): number;

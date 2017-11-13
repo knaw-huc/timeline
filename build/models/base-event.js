@@ -14,7 +14,7 @@ class BaseEvent {
         this.slug = '';
         this.title = '';
         this.types = [];
-        this.dateGranularity = 5;
+        this.dateGranularity = 1;
         this.dateRangeGranularity = null;
         this.formatDate = (dateToFormat) => {
             let date = this.date;

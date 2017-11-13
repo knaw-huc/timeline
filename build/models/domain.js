@@ -9,8 +9,11 @@ class Domain {
         this.pixelsPerDay = this.width / this.countDays();
         this.granularity = this.getGranularity();
     }
-    leftPositionAtDate(date) {
+    positionAtDate(date) {
         return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+    }
+    dateAtPosition(x) {
+        return this.dateAtProportion(this.proportionAtPosition(x));
     }
     countDays() {
         return DateUtils.countDays(this.from, this.to);
@@ -29,16 +32,18 @@ class Domain {
     getGranularity() {
         const days = this.countDays();
         if (days < 1)
-            return 6;
+            return 0;
         if (days < 15)
-            return 5;
-        if (days < 365)
-            return 4;
-        if (days < 15 * 365)
-            return 3;
-        if (days < 150 * 365)
+            return 1;
+        if (days < 45)
             return 2;
-        return 1;
+        if (days < 1.5 * 365)
+            return 3;
+        if (days < 15 * 365)
+            return 4;
+        if (days < 150 * 365)
+            return 5;
+        return 6;
     }
 }
 exports.default = Domain;

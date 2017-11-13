@@ -6,7 +6,7 @@ class Event extends base_event_1.default {
     constructor(data, visibleDomain) {
         super(data);
         this.visibleDomain = visibleDomain;
-        this.left = visibleDomain.leftPositionAtDate(this.from);
+        this.left = visibleDomain.positionAtDate(this.from);
         this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width;
         const width = this.countDays() * visibleDomain.pixelsPerDay;
         this.width = (width > 0 && width < 12) ? 12 : width;

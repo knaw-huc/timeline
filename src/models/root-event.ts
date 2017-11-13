@@ -4,7 +4,7 @@ import BaseEvent, {IBaseEvent} from './base-event';
 export interface IRootEvent extends IBaseEvent {
 	dateAtLeftPosition(position: number): Date;
 	dateAtProportion(proportion: number): Date;
-	leftPositionAtDate(date: Date): number;
+	positionAtDate(date: Date): number;
 	width: number;
 }
 
@@ -18,7 +18,7 @@ class RootEvent extends BaseEvent implements IRootEvent {
 		this.pixelsPerDay = this.width / this.countDays()
 	}
 
-	public leftPositionAtDate(date: Date): number {
+	public positionAtDate(date: Date): number {
 		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
 	}
 

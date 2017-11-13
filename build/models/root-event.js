@@ -10,7 +10,7 @@ class RootEvent extends base_event_1.default {
         this.width = width;
         this.pixelsPerDay = this.width / this.countDays();
     }
-    leftPositionAtDate(date) {
+    positionAtDate(date) {
         return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
     }
     dateAtLeftPosition(position) {

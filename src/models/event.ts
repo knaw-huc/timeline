@@ -11,7 +11,7 @@ class Event extends BaseEvent {
 	constructor(data, public visibleDomain: Domain) {
 		super(data)
 
-		this.left = visibleDomain.leftPositionAtDate(this.from)
+		this.left = visibleDomain.positionAtDate(this.from)
 		this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
 
 		const width = this.countDays() * visibleDomain.pixelsPerDay

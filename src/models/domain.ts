@@ -10,8 +10,12 @@ class Domain {
 		this.granularity = this.getGranularity()
 	}
 
-	public leftPositionAtDate(date: Date): number {
+	public positionAtDate(date: Date): number {
 		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+	}
+
+	public dateAtPosition(x: number): Date {
+		return this.dateAtProportion(this.proportionAtPosition(x))
 	}
 
 	public countDays(): number {
@@ -37,7 +41,8 @@ class Domain {
 		const days = this.countDays()
 		if (days < 1) return Granularity.HOUR
 		if (days < 15) return Granularity.DAY
-		if (days < 365) return Granularity.MONTH
+		if (days < 45) return Granularity.WEEK
+		if (days < 1.5 * 365) return Granularity.MONTH
 		if (days < 15 * 365) return Granularity.YEAR
 		if (days < 150 * 365) return Granularity.DECADE
 		return Granularity.CENTURY
