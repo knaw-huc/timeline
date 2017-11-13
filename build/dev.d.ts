@@ -4,7 +4,14 @@ import Domain from './models/domain';
 export interface IProps {
     domain: Domain;
     visibleDomain: Domain;
-    width: number;
 }
-declare const Dev: React.SFC<IProps>;
+export interface IState {
+    active: boolean;
+}
+declare class Dev extends React.Component<IProps, IState> {
+    state: {
+        active: boolean;
+    };
+    render(): JSX.Element;
+}
 export default Dev;
