@@ -31,8 +31,8 @@ exports.addTop = (events) => {
             }
         }
         if (event.top == null) {
-            const newLength = rows.push([event]);
-            event.top = (newLength - 1) * Constants.EVENT_ROW_HEIGHT;
+            const newRow = rows.push([event]);
+            event.top = (newRow - 1) * Constants.EVENT_ROW_HEIGHT;
         }
         return event;
     };

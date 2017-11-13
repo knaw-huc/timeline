@@ -1,5 +1,6 @@
-export declare const EVENT_MIN_SPACE = 14;
-export declare const EVENT_ROW_HEIGHT = 14;
+export declare const EVENT_MIN_SPACE = 320;
+export declare const EVENT_HEIGHT = 14;
+export declare const EVENT_ROW_HEIGHT = 16;
 export declare const DATE_BAR_HEIGHT = 60;
 export declare const timelineBlue = "#0091EA";
 export declare const timelineLightBlue = "#00B0FF";

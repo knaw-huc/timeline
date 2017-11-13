@@ -1,9 +1,8 @@
 import * as React from 'react'
-import styled, {StyledFunction, StyledComponentClass} from "styled-components"
-import {eventCSS} from "../event"
 import Event from "../../models/event"
 import Point from "./point"
 import Title from "./title"
+import { EVENT_MIN_SPACE } from '../../constants';
 
 export interface IPointInTime {
 	className?: string
@@ -20,12 +19,17 @@ export interface IPointInTimeContainer {
 const PointInTimeContainer: React.SFC<IPointInTimeContainer> = (props) =>
 	<li
 		style={{
-			left: `${props.event.left}px`,
-			top: `${props.event.top}px`,
-			width: `${props.event.width}px`,
+			// backgroundColor: 'rgba(0, 0, 255, 0.1)',
 			boxSizing: 'border-box',
+			fontSize: '0.8em',
+			left: `${props.event.left}px`,
 			position: 'absolute',
+			top: `${props.event.top}px`,
+			whiteSpace: 'nowrap',
+			// width: `${props.event.width}px`,
+			maxWidth: `${EVENT_MIN_SPACE}px`,
 		}}
+		title={props.event.date}
 	>
 		{props.children}
 	</li>
@@ -56,19 +60,12 @@ const PointInTimeContainer: React.SFC<IPointInTimeContainer> = (props) =>
 
 const PointInTime: React.StatelessComponent<IPointInTime> = (props) =>
 	<PointInTimeContainer event={props.event}>
-		{
-			!props.event.flip &&
-			<Point event={props.event} />
-		}
+		<Point event={props.event} />
 		{
 			props.event.title != null &&
-			<Title event={props.event}>
+			<Title>
 				{props.event.title}
 			</Title>
-		}
-		{
-			props.event.flip &&
-			<Point event={props.event} />
 		}
 	</PointInTimeContainer>
 

@@ -5,10 +5,11 @@ const interval_of_time_1 = require("./interval-of-time");
 const index_1 = require("./point-in-time/index");
 const constants_1 = require("../constants");
 const Events = (props) => React.createElement("ul", { style: {
-        height: `calc(100% - ${constants_1.DATE_BAR_HEIGHT}px)`,
+        height: `calc(100% - ${constants_1.DATE_BAR_HEIGHT * 2}px)`,
         listStyle: 'none',
         margin: '0 auto',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
         padding: 0,
         position: 'absolute',
         top: 0,

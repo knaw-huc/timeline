@@ -1,17 +1,17 @@
-import * as Constants from '../constants';
-import Event from "../models/event";
-import {IDateRange} from "../models/base-event";
+import * as Constants from '../constants'
+import Event from "../models/event"
+import {IDateRange} from "../models/base-event"
 
 const hasOverlap = (a: Event, b: Event): boolean => {
-	const [aLeft, aWidth] = a.space();
-	const [bLeft, bWidth] = b.space();
+	const [aLeft, aWidth] = a.space()
+	const [bLeft, bWidth] = b.space()
 
-	let overlap = true;
-	if (aLeft + aWidth < bLeft) overlap = false;
-	if (bLeft + bWidth < aLeft) overlap = false;
+	let overlap = true
+	if (aLeft + aWidth < bLeft) overlap = false
+	if (bLeft + bWidth < aLeft) overlap = false
 
-	return overlap;
-};
+	return overlap
+}
 
 export const addTop = (events: Event[]) => {
 	if (!events.length) return events;
@@ -32,13 +32,13 @@ export const addTop = (events: Event[]) => {
 			}
 		}
 		if (event.top == null) {
-			const newLength = rows.push([event]);
-			event.top = (newLength - 1) * Constants.EVENT_ROW_HEIGHT;
+			const newRow = rows.push([event]);
+			event.top = (newRow - 1) * Constants.EVENT_ROW_HEIGHT;
 		}
 		return event;
 	};
 	return events.map(calc);
-};
+}
 
 const parseDate = (date: string): Date => {
 	// TODO remove split('+') code. It is used to let the dates work under FF. Use different solution.

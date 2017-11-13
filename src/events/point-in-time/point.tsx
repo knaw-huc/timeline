@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Event from "../../models/event";
 import setIcons from "../set-icons";
+import { EVENT_HEIGHT } from '../../constants';
 
 // const point = styled.div`
 // 	background: ${(props: {event: event}) =>
@@ -32,9 +33,10 @@ const Point = (props) =>
 	<div
 		style={{
 			backgroundColor: 'black',
-			borderRadius: '6px',
-			width: '12px',
-			height: '12px',
+			borderRadius: `${EVENT_HEIGHT/2}px`,
+			display: 'inline-block',
+			width: `${EVENT_HEIGHT}px`,
+			height: `${EVENT_HEIGHT}px`,
 		}}
 	/>
 

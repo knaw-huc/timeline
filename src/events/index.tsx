@@ -8,10 +8,11 @@ import {DATE_BAR_HEIGHT} from "../constants";
 const Events = (props) =>
 	<ul
 		style={{
-			height: `calc(100% - ${DATE_BAR_HEIGHT}px)`,
+			height: `calc(100% - ${DATE_BAR_HEIGHT * 2}px)`,
 			listStyle: 'none',
 			margin: '0 auto',
-			overflow: 'hidden',
+			overflowX: 'hidden',
+			overflowY: 'auto',
 			padding: 0,
 			position: 'absolute',
 			top: 0,

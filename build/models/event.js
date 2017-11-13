@@ -14,7 +14,7 @@ class Event extends base_event_1.default {
     space() {
         const minWidth = (w) => (w === 0 || w < Constants.EVENT_MIN_SPACE) ? Constants.EVENT_MIN_SPACE : w;
         const width = minWidth(this.width);
-        const left = (this.flip) ? this.left - width : this.left;
+        const left = this.left;
         return [left, width];
     }
 }
