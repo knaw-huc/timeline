@@ -10,17 +10,17 @@ exports.format = (date, granularity) => {
     if (date == null)
         return '∞';
     let displayDate = date.getFullYear().toString();
-    if (granularity >= 4) {
+    if (granularity >= 3) {
         const months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
         ];
         displayDate = `${months[date.getMonth()]} ${displayDate}`;
     }
-    if (granularity >= 5) {
+    if (granularity >= 1) {
         displayDate = `${date.getDate()} ${displayDate}`;
     }
-    if (granularity === 6) {
+    if (granularity === 0) {
         displayDate = `${date.getHours()}:${date.getMinutes()} ${displayDate}`;
     }
     return displayDate;

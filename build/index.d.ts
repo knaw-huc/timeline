@@ -12,9 +12,11 @@ export interface IAggregate {
 }
 export interface ITimelineProps {
     aggregate?: IAggregate[];
+    async?: boolean;
     children?: React.ReactNode;
     events: IRawEvent[];
     from: Date;
+    load: (from: Date, to: Date) => void;
     to: Date;
     domainCenter?: number;
     domainRatio?: number;
@@ -24,26 +26,22 @@ export interface ITimelineState {
     domainCenter: number;
     events: Event[];
     visibleDomain: Domain;
-    width: number;
 }
 declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
-    static defaultProps: {
-        domainCenter: number;
-        domainRatio: number;
-    };
+    static defaultProps: Partial<ITimelineProps>;
     state: {
         domain: any;
         domainCenter: number;
         domainRatio: number;
         events: any[];
         visibleDomain: any;
-        width: number;
     };
     componentDidMount(): void;
+    componentWillReceiveProps(nextProps: any): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
     private init;
-    private getVisibleDomain(domain);
+    private getVisibleDomain(domain, domainCenter, domainRatio);
     private debouncedHandleResize;
 }
 export default Timeline;
