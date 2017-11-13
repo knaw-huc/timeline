@@ -5,19 +5,23 @@ import styled from "styled-components";
 import Event from "../models/event";
 import {DATE_BAR_HEIGHT} from "../constants";
 
-const Events = styled.ul`
-	border-left: 1px solid #AAA;
-	height: calc(100% - ${DATE_BAR_HEIGHT}px);
-	list-style: none;
-	margin: 0 auto;
-	overflow-y: auto;
-	padding: 0;
-	position: absolute;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
-`;
+const Events = (props) =>
+	<ul
+		style={{
+			height: `calc(100% - ${DATE_BAR_HEIGHT}px)`,
+			listStyle: 'none',
+			margin: '0 auto',
+			overflow: 'hidden',
+			padding: 0,
+			position: 'absolute',
+			top: 0,
+			right: 0,
+			left: 0,
+			bottom: 0,
+		}}
+	>
+		{props.children}
+	</ul>
 
 export interface IProps {
 	events: Event[]
