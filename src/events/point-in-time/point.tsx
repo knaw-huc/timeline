@@ -1,6 +1,4 @@
 import * as React from 'react'
-import Event from "../../models/event";
-import setIcons from "../set-icons";
 import { EVENT_HEIGHT } from '../../constants';
 
 // const point = styled.div`

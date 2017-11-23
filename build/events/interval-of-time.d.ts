@@ -1,4 +1,5 @@
-import { StyledComponentClass } from "styled-components";
+/// <reference types="react" />
+import * as React from 'react';
 import Event from "../models/event";
 export interface IProps {
     className?: string;
@@ -8,5 +9,7 @@ export interface IProps {
     onEventClick?: (IEvent, MouseClickEvent) => void;
     onHandleMouseDown?: (string, number) => void;
 }
-declare const IntervalOfTime: StyledComponentClass<IProps, any, IProps>;
-export default IntervalOfTime;
+declare class IntervalOfTimeComp extends React.Component<IProps, null> {
+    render(): JSX.Element;
+}
+export default IntervalOfTimeComp;

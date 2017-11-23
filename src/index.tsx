@@ -1,24 +1,28 @@
 import * as React from 'react'
 import * as debounce from 'lodash.debounce'
 import Events from './events/index'
-import Rulers from './rulers/index'
-import styled, { StyledComponentClass } from "styled-components"
 import Event from "./models/event"
-import {IRootEvent, default as RootEvent} from "./models/root-event"
 import {addTop} from "./utils/event"
-import Dev from "./dev"
-import {Granularity} from "./constants"
 import Sparkline from './sparkline'
-import Domain from './models/domain';
-import Indicator from './indicator'
+import Domain from './models/domain'
+// import Dev from "./dev"
+// import Rulers from './rulers/index'
+// import Indicator from './indicator'
 
-const Container = styled.div`
-	background-color: white;
-	height: 100%;
-	overflow: hidden;
-	position: relative;
-	width: 100%;
-`;
+
+const Container = (props) =>
+	<div
+		ref={props.setRef}
+		style={{
+			backgroundColor: 'white',
+			height: '100%',
+			overflow: 'hidden',
+			position: 'relative',
+			width: '100%',
+		}}
+	>
+		{props.children}	
+	</div>
 
 export interface IRawEvent {
 	date: Date,
@@ -30,16 +34,25 @@ export interface IAggregate {
 	year: number
 }
 
+export enum DomainType { Event, Navigator, Sparkline }
+export interface IDomainDef {
+	domainLabels?: boolean
+	ratio?: number
+	rulers?: boolean
+	type?: DomainType
+}
+
 export interface ITimelineProps {
 	aggregate?: IAggregate[]
 	async?: boolean
 	children?: React.ReactNode
-	events: IRawEvent[]
-	from: Date,
-	load: (from: Date, to: Date) => void
-	to: Date,
 	domainCenter?: number // Between 0 and 1. 0 = left, .5 = centered, 1 = right
 	domainRatio?: number // Between 0 and 1. 0 = no visible domain, 1 = whole domain visible
+	domains: IDomainDef[]
+	events?: IRawEvent[]
+	from: Date,
+	load?: (from: Date, to: Date) => void
+	to: Date,
 }
 export interface ITimelineState {
 	domain: Domain
@@ -53,6 +66,8 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		domainCenter: .5,
 		domainRatio: 1,
 	}
+
+	private el: Element
 
 	public state = {
 		domain: null,
@@ -68,8 +83,10 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 	}
 
 	public componentWillReceiveProps(nextProps) {
-		const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
-		this.setState({ events })
+		if (nextProps.hasOwnProperty('events')) {
+			const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
+			this.setState({ events })
+		}
 	}
 
 	public componentWillUnmount() {
@@ -79,43 +96,15 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 	public render() {
 		return (
 			<Container
-				id="timeline-container"
+				setRef={(el) => { this.el = el }}
 			>
 				{
 					this.state.domain != null &&
 					<div style={{ width: '100%', height: '100%' }}>
-						<Rulers
-							domain={this.state.domain}
-							domainRatio={this.state.domainRatio}
-							visibleDomain={this.state.visibleDomain}
-						/>
-						<Sparkline
-							aggregate={this.props.aggregate}
-							domain={this.state.domain}
-						/>
-						<Indicator
-							left={this.state.domain.positionAtDate(this.state.visibleDomain.from)}
-							onClick={(x) => {
-								const domainCenter = this.state.domain.proportionAtPosition(x)
-								const visibleDomain = this.getVisibleDomain(this.state.domain, domainCenter, this.state.domainRatio)
-								this.setState({ visibleDomain, domainCenter })
-								this.props.load(visibleDomain.from, visibleDomain.to)
-							}}
-							onMove={(left) => {
-								const domainCenter = this.state.domain.proportionAtPosition(left) + (this.state.domainRatio/2)
-								const visibleDomain = this.getVisibleDomain(this.state.domain, domainCenter, this.state.domainRatio)
-								this.setState({ visibleDomain, domainCenter })
-								this.props.load(visibleDomain.from, visibleDomain.to)
-							}}
-							width={this.state.domain.positionAtDate(this.state.visibleDomain.to) - this.state.domain.positionAtDate(this.state.visibleDomain.from)}
-						/>
-						<Events
-							events={this.state.events}
-						/>
-						<Dev
-							domain={this.state.domain}
-							visibleDomain={this.state.visibleDomain}
-						/>
+						{
+							this.props.domains
+								.map(d => this.domainComponents(d))
+						}
 						{this.props.children}
 					</div>
 				}
@@ -123,13 +112,50 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		)
 	}
 
+	private domainComponents(domainDef: IDomainDef) {
+		// Extend domain definition with default values
+		domainDef = {
+			domainLabels: false,
+			ratio: 1,
+			rulers: true,
+			type: DomainType.Event,
+			...domainDef,
+		}
+
+		switch (domainDef.type) {
+			case DomainType.Sparkline: {
+				return (
+					<Sparkline
+						aggregate={this.props.aggregate}
+						domain={this.state.domain}
+						domainDef={domainDef}
+					/>
+				)
+			}
+
+			case DomainType.Event: {
+				return (
+					<Events
+						events={this.state.events}
+					/>
+				)
+			}
+		}
+	}
+
 	private init = () => {
-		const width = document.getElementById('timeline-container').getBoundingClientRect().width
+		const width = this.el.getBoundingClientRect().width
 		const domain = new Domain(this.props.from, this.props.to, width)
 		const visibleDomain = this.getVisibleDomain(domain, this.state.domainCenter, this.state.domainRatio)
-		const events = addTop(this.props.events.map(e => new Event(e, visibleDomain)))
+		const events = this.props.events != null ?
+			addTop(this.props.events.map(e => new Event(e, visibleDomain))) :
+			null
+
 		this.setState({ events, domain, visibleDomain })
-		this.props.load(visibleDomain.from, visibleDomain.to)
+
+		if (this.props.load != null) {
+			this.props.load(visibleDomain.from, visibleDomain.to)
+		}
 	}
 
 	private getVisibleDomain(domain: Domain, domainCenter: number, domainRatio: number): Domain {
@@ -149,3 +175,29 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 }
 
 export default Timeline
+
+						// <Rulers
+						// 	domain={this.state.domain}
+						// 	domainRatio={this.state.domainRatio}
+						// 	visibleDomain={this.state.visibleDomain}
+						// />
+						// <Indicator
+						// 	left={this.state.domain.positionAtDate(this.state.visibleDomain.from)}
+						// 	onClick={(x) => {
+						// 		const domainCenter = this.state.domain.proportionAtPosition(x)
+						// 		const visibleDomain = this.getVisibleDomain(this.state.domain, domainCenter, this.state.domainRatio)
+						// 		this.setState({ visibleDomain, domainCenter })
+						// 		this.props.load(visibleDomain.from, visibleDomain.to)
+						// 	}}
+						// 	onMove={(left) => {
+						// 		const domainCenter = this.state.domain.proportionAtPosition(left) + (this.state.domainRatio/2)
+						// 		const visibleDomain = this.getVisibleDomain(this.state.domain, domainCenter, this.state.domainRatio)
+						// 		this.setState({ visibleDomain, domainCenter })
+						// 		this.props.load(visibleDomain.from, visibleDomain.to)
+						// 	}}
+						// 	width={this.state.domain.positionAtDate(this.state.visibleDomain.to) - this.state.domain.positionAtDate(this.state.visibleDomain.from)}
+						// />
+						// <Dev
+						// 	domain={this.state.domain}
+						// 	visibleDomain={this.state.visibleDomain}
+						// />

@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { DATE_BAR_HEIGHT, Granularity } from "../constants"
+import { Granularity } from "../constants"
 import Ruler from './ruler'
-import {IRootEvent} from "../models/root-event"
 import Domain from '../models/domain'
 import dateRange from './date-range'
 
@@ -29,7 +28,7 @@ const labelFormatter = (granularity: Granularity): LabelFormatter => {
 				{months[d.getMonth()]}
 			</span>
 	} else if (granularity === Granularity.WEEK) {
-		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+		// const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 		return (d: Date) => <span>{months[d.getMonth()]}, week {getWeekNumber(d)}</span>
 	} else if (granularity === Granularity.DAY) {
 		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -42,17 +41,22 @@ const labelFormatter = (granularity: Granularity): LabelFormatter => {
 const Ul: React.SFC<IProps> = (props) =>
 	<ul
 		style={{
-			bottom: props.type === 'visibledomain' ? `${DATE_BAR_HEIGHT}px` : 0,
-			height: props.type === 'visibledomain' ?
-				'initial' :
-				props.domainRatio < 1 ?
-					`${DATE_BAR_HEIGHT}px` :
-					'100%',
+			// bottom: props.type === 'visibledomain' ? `${DATE_BAR_HEIGHT}px` : 0,
+			// height: props.type === 'visibledomain' ?
+			// 	'initial' :
+			// 	props.domainRatio < 1 ?
+			// 		`${DATE_BAR_HEIGHT}px` :
+			// 		'100%',
+			// top: props.type === 'visibledomain' ? 0 : 'initial',
+			bottom: 0,
+			heigth: '100%',
 			left: 0,
 			listStyle: 'none',
+			margin: 0,
+			padding: 0,
 			position: 'absolute',
 			right: 0,
-			top: props.type === 'visibledomain' ? 0 : 'initial',
+			top: 0,
 			whiteSpace: 'nowrap',
 		}}
 	>
@@ -61,14 +65,10 @@ const Ul: React.SFC<IProps> = (props) =>
 
 export interface IProps {
 	domain: Domain
-	domainRatio: number
-	type: 'sparkline' | 'visibledomain'
-	visibleDomain: Domain
 }
 const Rulers: React.SFC<IProps> = (props) => {
-	const domain = props.type === 'visibledomain' ? props.visibleDomain : props.domain
-	const dates = dateRange(domain.from, domain.to, domain.granularity)
-	const formatLabel = labelFormatter(domain.granularity)
+	const dates = dateRange(props.domain.from, props.domain.to, props.domain.granularity)
+	const formatLabel = labelFormatter(props.domain.granularity)
 
 	return (
 		<Ul {...props}>
@@ -77,7 +77,7 @@ const Rulers: React.SFC<IProps> = (props) => {
 					<Ruler
 						key={index}
 						label={formatLabel(date)}
-						left={domain.positionAtDate(date)}
+						left={props.domain.positionAtDate(date)}
 					/>
 				)
 			}

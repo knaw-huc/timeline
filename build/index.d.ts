@@ -10,16 +10,28 @@ export interface IAggregate {
     count: number;
     year: number;
 }
+export declare enum DomainType {
+    Event = 0,
+    Navigator = 1,
+    Sparkline = 2,
+}
+export interface IDomainDef {
+    domainLabels?: boolean;
+    ratio?: number;
+    rulers?: boolean;
+    type?: DomainType;
+}
 export interface ITimelineProps {
     aggregate?: IAggregate[];
     async?: boolean;
     children?: React.ReactNode;
-    events: IRawEvent[];
-    from: Date;
-    load: (from: Date, to: Date) => void;
-    to: Date;
     domainCenter?: number;
     domainRatio?: number;
+    domains: IDomainDef[];
+    events?: IRawEvent[];
+    from: Date;
+    load?: (from: Date, to: Date) => void;
+    to: Date;
 }
 export interface ITimelineState {
     domain: Domain;
@@ -29,6 +41,7 @@ export interface ITimelineState {
 }
 declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
     static defaultProps: Partial<ITimelineProps>;
+    private el;
     state: {
         domain: any;
         domainCenter: number;
@@ -40,6 +53,7 @@ declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
     componentWillReceiveProps(nextProps: any): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
+    private domainComponents(domainDef);
     private init;
     private getVisibleDomain(domain, domainCenter, domainRatio);
     private debouncedHandleResize;

@@ -9,10 +9,10 @@ const Label = (props) => React.createElement("span", { style: {
         height: `calc(${constants_1.DATE_BAR_HEIGHT} - 10px)`,
         color: '#444',
         position: 'absolute',
-        zIndex: 1,
+        zIndex: 2,
     } }, props.children);
 const Ruler = (props) => React.createElement("li", { style: {
-        borderLeft: '1px solid #EEE',
+        borderLeft: '1px solid #ccc',
         boxSizing: 'border-box',
         height: '100%',
         left: `${props.left}px`,

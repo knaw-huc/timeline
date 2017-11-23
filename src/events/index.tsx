@@ -1,7 +1,6 @@
 import * as React from 'react';
 import IntervalOfTime from './interval-of-time';
 import PointInTime from './point-in-time/index';
-import styled from "styled-components";
 import Event from "../models/event";
 import {DATE_BAR_HEIGHT} from "../constants";
 

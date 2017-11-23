@@ -1,6 +1,5 @@
 import * as React from 'react';
-import styled, { StyledComponentClass } from 'styled-components';
-import {DATE_BAR_HEIGHT, Granularity} from "../constants";
+import { DATE_BAR_HEIGHT } from "../constants";
 
 const Label: React.SFC = (props) =>
 	<span
@@ -11,7 +10,7 @@ const Label: React.SFC = (props) =>
 			height: `calc(${DATE_BAR_HEIGHT} - 10px)`,
 			color: '#444',
 			position: 'absolute',
-			zIndex: 1,
+			zIndex: 2,
 		}}
 	>
 		{props.children}
@@ -24,7 +23,7 @@ interface IRuler {
 const Ruler: React.SFC<IRuler> = (props) =>
 	<li
 		style={{
-			borderLeft: '1px solid #EEE',
+			borderLeft: '1px solid #ccc',
 			boxSizing: 'border-box',
 			height: '100%',
 			left: `${props.left}px`,

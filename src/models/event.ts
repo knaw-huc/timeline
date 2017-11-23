@@ -1,4 +1,4 @@
-import BaseEvent, {IBaseEvent} from './base-event';
+import BaseEvent from './base-event';
 import * as Constants from '../constants';
 import Domain from './domain';
 

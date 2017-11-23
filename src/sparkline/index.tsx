@@ -1,13 +1,17 @@
 import * as React from 'react'
-import { IAggregate } from '../index';
-import { DATE_BAR_HEIGHT } from '../constants';
+import { IAggregate, IDomainDef } from '../index'
+import { DATE_BAR_HEIGHT } from '../constants'
 import Domain from '../models/domain'
+import Rulers from '../rulers/rulers'
+import DomainLabels from './domain-labels'
 
 export interface IProps {
 	aggregate: IAggregate[]
 	domain: Domain
+	domainDef: IDomainDef
 }
 const Sparkline: React.SFC<IProps> = (props) => {
+	if (props.aggregate == null) return null
 	// #TODO
 	// Fix sparkline if width is smaller than aggregate length,
 	// this means there are more aggregation elements than pixels
@@ -32,21 +36,33 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	const pathCloser = ` L ${props.domain.width + 1} ${DATE_BAR_HEIGHT + 1} L -1 ${DATE_BAR_HEIGHT + 1}`
 
 	return (
-		<svg
-			style={{
-				position: 'absolute',
-				bottom: 0,
-			}}
-			viewBox={`0 0 ${props.domain.width} ${DATE_BAR_HEIGHT}`}
-		>
-			<path
-				d={path + pathCloser}
+		<div>
+			{
+				props.domainDef.rulers &&
+				<Rulers
+					domain={props.domain}
+				/>
+			}
+			{
+				props.domainDef.domainLabels &&
+				<DomainLabels />
+			}
+			<svg
+				viewBox={`0 0 ${props.domain.width} ${DATE_BAR_HEIGHT}`}
 				style={{
-					fill: 'rgb(245, 245, 255)',
-					stroke: 'rgb(180, 180, 255)',
+					position: 'relative',
+					zIndex: 1,
 				}}
-			/>
-		</svg>
+			>
+				<path
+					d={path + pathCloser}
+					style={{
+						fill: 'rgba(245, 245, 255, .7)',
+						stroke: 'rgb(180, 180, 255)',
+					}}
+				/>
+			</svg>
+		</div>
 	)
 }
 
