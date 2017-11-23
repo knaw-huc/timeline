@@ -49,6 +49,7 @@ const Ul: React.SFC<IProps> = (props) =>
 					`${DATE_BAR_HEIGHT}px` :
 					'100%',
 			left: 0,
+			listStyle: 'none',
 			position: 'absolute',
 			right: 0,
 			top: props.type === 'visibledomain' ? 0 : 'initial',
