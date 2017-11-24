@@ -17,9 +17,9 @@ const Sparkline = (props) => {
     }, '');
     const pathCloser = ` L ${props.domain.width + 1} ${props.domain.height + 1} L -1 ${props.domain.height + 1}`;
     return (React.createElement("div", null,
-        props.domainDef.rulers &&
+        props.domain.rulers &&
             React.createElement(rulers_1.default, { domain: props.domain }),
-        props.domainDef.domainLabels &&
+        props.domain.domainLabels &&
             React.createElement(domain_labels_1.default, { domain: props.domain }),
         React.createElement("svg", { viewBox: `0 0 ${props.domain.width} ${props.domain.height}`, style: {
                 position: 'relative',

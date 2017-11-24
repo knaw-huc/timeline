@@ -2,12 +2,13 @@ import * as React from 'react'
 import * as debounce from 'lodash.debounce'
 import Events from './events/index'
 import Event from "./models/event"
-import {addTop} from "./utils/event"
+// import {addTop} from "./utils/event"
 import Sparkline from './sparkline'
-import Domain from './models/domain'
+import Domain, { DomainType, IDomainDef } from './models/domain'
 // import Dev from "./dev"
 // import Rulers from './rulers/index'
 // import Indicator from './indicator'
+
 
 
 const Container = (props) =>
@@ -36,14 +37,6 @@ export interface IAggregate {
 	year: number
 }
 
-export enum DomainType { Event, Navigator, Sparkline }
-export interface IDomainDef {
-	domainLabels?: boolean
-	ratio?: number
-	rulers?: boolean
-	type?: DomainType
-}
-
 export interface ITimelineProps {
 	aggregate?: IAggregate[]
 	async?: boolean
@@ -59,7 +52,9 @@ export interface ITimelineProps {
 }
 export interface ITimelineState {
 	domain: Domain
+	domains: Domain[]
 	domainCenter: number
+	domainRatio: number
 	events: Event[]
 	visibleDomain: Domain
 }
@@ -72,7 +67,8 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 
 	private el: Element
 
-	public state = {
+	public state: ITimelineState = {
+		domains: [],
 		domain: null,
 		domainCenter: this.props.domainCenter,
 		domainRatio: this.props.domainRatio,
@@ -81,15 +77,21 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 	};
 
 	public componentDidMount() {
-		this.init()
+		this.init2(this.props)
 		window.addEventListener('resize', this.debouncedHandleResize)
 	}
 
 	public componentWillReceiveProps(nextProps) {
-		if (nextProps.hasOwnProperty('events')) {
-			const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
-			this.setState({ events })
+		if (
+			this.props.from !== nextProps.from ||
+			this.props.to !== nextProps.to
+		) {
+			this.init2(nextProps)
 		}
+		// if (nextProps.hasOwnProperty('events')) {
+		// 	const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
+		// 	this.setState({ events })
+		// }
 	}
 
 	public componentWillUnmount() {
@@ -103,36 +105,27 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 				style={this.props.style}
 			>
 				{
-					this.state.domain != null &&
+					this.state.domains.length &&
 					<div style={{ width: '100%', height: '100%' }}>
 						{
-							this.props.domains
+							this.state.domains
 								.map(d => this.domainComponents(d))
 						}
-						{this.props.children}
 					</div>
 				}
 			</Container>
 		)
 	}
 
-	private domainComponents(domainDef: IDomainDef) {
+	public domainComponents(domain: Domain) {
 		// Extend domain definition with default values
-		domainDef = {
-			domainLabels: false,
-			ratio: 1,
-			rulers: true,
-			type: DomainType.Event,
-			...domainDef,
-		}
 
-		switch (domainDef.type) {
+		switch (domain.type) {
 			case DomainType.Sparkline: {
 				return (
 					<Sparkline
 						aggregate={this.props.aggregate}
-						domain={this.state.domain}
-						domainDef={domainDef}
+						domain={domain}
 						key="sparkline"
 					/>
 				)
@@ -149,39 +142,51 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		}
 	}
 
-	private init = () => {
+	private init2 = (props) => {
 		const width = this.el.getBoundingClientRect().width
 		const height = this.el.getBoundingClientRect().height
-		const domain = new Domain(this.props.from, this.props.to, width, height)
-		const visibleDomain = this.getVisibleDomain(domain, this.state.domainCenter, this.state.domainRatio)
-		const events = this.props.events != null ?
-			addTop(this.props.events.map(e => new Event(e, visibleDomain))) :
-			null
 
-		this.setState({ events, domain, visibleDomain })
-
-		if (this.props.load != null) {
-			this.props.load(visibleDomain.from, visibleDomain.to)
-		}
+		this.setState({
+			domains: props.domains.map(d =>
+				new Domain(props.from, props.to, width, height, d)
+			)
+		})
 	}
 
-	private getVisibleDomain(domain: Domain, domainCenter: number, domainRatio: number): Domain {
-		// ----- leftRatio --- visibleDomainCenter --- rightRatio -----
-		// The area between leftRatio and rightRatio === this.props.visibleDomainRatio
-		// Center point between leftRatio and rightRatio === this.props.visibleDomainCenter
+	// private init = () => {
+	// 	const width = this.el.getBoundingClientRect().width
+	// 	const height = this.el.getBoundingClientRect().height
+	// 	const domain = new Domain(this.props.from, this.props.to, width, height)
+	// 	const visibleDomain = this.getVisibleDomain(domain, this.state.domainCenter, this.state.domainRatio)
+	// 	const events = this.props.events != null ?
+	// 		addTop(this.props.events.map(e => new Event(e, visibleDomain))) :
+	// 		null
 
-		const leftRatio = domainCenter - (domainRatio/2) 
-		const rightRatio = domainCenter + (domainRatio/2) 
-		const from = domain.dateAtProportion(leftRatio)
-		const to = domain.dateAtProportion(rightRatio)
+	// 	this.setState({ events, domain, visibleDomain })
 
-		return new Domain(from, to, domain.width, domain.height)
-	}
+	// 	if (this.props.load != null) {
+	// 		this.props.load(visibleDomain.from, visibleDomain.to)
+	// 	}
+	// }
 
-	private debouncedHandleResize = debounce(this.init, 200)
+	// private getVisibleDomain(domain: Domain, domainCenter: number, domainRatio: number): Domain {
+	// 	// ----- leftRatio --- visibleDomainCenter --- rightRatio -----
+	// 	// The area between leftRatio and rightRatio === this.props.visibleDomainRatio
+	// 	// Center point between leftRatio and rightRatio === this.props.visibleDomainCenter
+
+	// 	const leftRatio = domainCenter - (domainRatio/2) 
+	// 	const rightRatio = domainCenter + (domainRatio/2) 
+	// 	const from = domain.dateAtProportion(leftRatio)
+	// 	const to = domain.dateAtProportion(rightRatio)
+
+	// 	return new Domain(from, to, domain.width, domain.height)
+	// }
+
+	private debouncedHandleResize = debounce(this.init2, 200)
 }
 
 export default Timeline
+export { DomainType } from './models/domain'
 
 						// <Rulers
 						// 	domain={this.state.domain}

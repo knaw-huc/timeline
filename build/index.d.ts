@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as React from 'react';
 import Event from "./models/event";
-import Domain from './models/domain';
+import Domain, { IDomainDef } from './models/domain';
 export interface IRawEvent {
     date: Date;
     title: string;
@@ -9,17 +9,6 @@ export interface IRawEvent {
 export interface IAggregate {
     count: number;
     year: number;
-}
-export declare enum DomainType {
-    Event = 0,
-    Navigator = 1,
-    Sparkline = 2,
-}
-export interface IDomainDef {
-    domainLabels?: boolean;
-    ratio?: number;
-    rulers?: boolean;
-    type?: DomainType;
 }
 export interface ITimelineProps {
     aggregate?: IAggregate[];
@@ -36,27 +25,23 @@ export interface ITimelineProps {
 }
 export interface ITimelineState {
     domain: Domain;
+    domains: Domain[];
     domainCenter: number;
+    domainRatio: number;
     events: Event[];
     visibleDomain: Domain;
 }
 declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
     static defaultProps: Partial<ITimelineProps>;
     private el;
-    state: {
-        domain: any;
-        domainCenter: number;
-        domainRatio: number;
-        events: any[];
-        visibleDomain: any;
-    };
+    state: ITimelineState;
     componentDidMount(): void;
     componentWillReceiveProps(nextProps: any): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
-    private domainComponents(domainDef);
-    private init;
-    private getVisibleDomain(domain, domainCenter, domainRatio);
+    domainComponents(domain: Domain): JSX.Element;
+    private init2;
     private debouncedHandleResize;
 }
 export default Timeline;
+export { DomainType } from './models/domain';

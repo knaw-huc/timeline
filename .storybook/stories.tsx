@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { storiesOf } from '@storybook/react'
-import Timeline, { DomainType, IAggregate } from '../src'
+import Timeline, { DomainType } from '../src'
 
-const yearAggregate: IAggregate[] = [
+const yearAggregate = [
 	{ year: 1964, count: 12 },
 	{ year: 1965, count: 52 },
 	{ year: 1966, count: 22 },
@@ -21,35 +21,39 @@ const yearAggregate: IAggregate[] = [
 ]
 
 storiesOf('Timeline', module)
-	.add('sparkline', () =>
-		<Timeline
-			aggregate={yearAggregate}
-			domains={[
-				{ type: DomainType.Sparkline }
-			]}
-			from={new Date(1964, 0, 1)}
-			to={new Date(1978, 0, 1)}
-		/>
+	.add('sparkline, with rulers, no domain labels', () =>
+		<div style={{ height: '60px'}}>
+			<Timeline
+				aggregate={yearAggregate}
+				domains={[
+					{ type: DomainType.Sparkline }
+				]}
+				from={new Date(1964, 0, 1)}
+				to={new Date(1978, 0, 1)}
+			/>
+		</div>
 	)
-	.add('sparkline, no rulers', () =>
+	.add('sparkline, no rulers, with domain labels', () =>
+		<div style={{ height: '40px'}}>
+			<Timeline
+				aggregate={yearAggregate}
+				domains={[
+					{
+						domainLabels: true,
+						rulers: false,
+						type: DomainType.Sparkline,
+					}
+				]}
+				from={new Date(1964, 0, 1)}
+				to={new Date(1978, 0, 1)}
+			/>
+		</div>
+	)
+	.add('sparkline, no rulers, no domain labels', () =>
 		<Timeline
 			aggregate={yearAggregate}
 			domains={[
 				{
-					rulers: false,
-					type: DomainType.Sparkline,
-				}
-			]}
-			from={new Date(1964, 0, 1)}
-			to={new Date(1978, 0, 1)}
-		/>
-	)
-	.add('sparkline, with domain labels', () =>
-		<Timeline
-			aggregate={yearAggregate}
-			domains={[
-				{
-					domainLabels: true,
 					rulers: false,
 					type: DomainType.Sparkline,
 				}

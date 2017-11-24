@@ -1,12 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const DateUtils = require("../utils/dates");
+var DomainType;
+(function (DomainType) {
+    DomainType[DomainType["Event"] = 0] = "Event";
+    DomainType[DomainType["Navigator"] = 1] = "Navigator";
+    DomainType[DomainType["Sparkline"] = 2] = "Sparkline";
+})(DomainType = exports.DomainType || (exports.DomainType = {}));
 class Domain {
-    constructor(from, to, width, height) {
+    constructor(from, to, width, height, domainDef) {
         this.from = from;
         this.to = to;
         this.width = width;
         this.height = height;
+        this.ratio = 1;
+        this.type = DomainType.Event;
+        this.domainLabels = false;
+        this.rulers = true;
+        Object.keys(domainDef).map(k => {
+            if (domainDef[k] !== this[k])
+                this[k] = domainDef[k];
+        });
         this.pixelsPerDay = this.width / this.countDays();
         this.granularity = this.getGranularity();
     }

@@ -1,16 +1,34 @@
 import * as DateUtils from '../utils/dates'
 import { Granularity } from '../constants';
 
-class Domain {
+export enum DomainType { Event, Navigator, Sparkline }
+export interface IDomainDef {
+	domainLabels?: boolean
+	ratio?: number
+	rulers?: boolean
+	type?: DomainType
+}
+
+interface Domain extends IDomainDef {}
+class Domain implements IDomainDef {
 	public pixelsPerDay: number
 	public granularity: Granularity
+	public ratio = 1
+	public type = DomainType.Event
+	public domainLabels = false
+	public rulers = true
 
 	constructor(
 		public from: Date,
 		public to: Date,
 		public width: number,
-		public height: number
+		public height: number,
+		domainDef: IDomainDef,
 	) {
+		Object.keys(domainDef).map(k => {
+			if (domainDef[k] !== this[k]) this[k] = domainDef[k]
+		})
+
 		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()
 	}

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IAggregate, IDomainDef } from '../index'
+import { IAggregate } from '../index'
 import Domain from '../models/domain'
 import Rulers from '../rulers/rulers'
 import DomainLabels from './domain-labels'
@@ -7,7 +7,6 @@ import DomainLabels from './domain-labels'
 export interface IProps {
 	aggregate: IAggregate[]
 	domain: Domain
-	domainDef: IDomainDef
 }
 const Sparkline: React.SFC<IProps> = (props) => {
 	if (props.aggregate == null) return null
@@ -37,13 +36,13 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	return (
 		<div>
 			{
-				props.domainDef.rulers &&
+				props.domain.rulers &&
 				<Rulers
 					domain={props.domain}
 				/>
 			}
 			{
-				props.domainDef.domainLabels &&
+				props.domain.domainLabels &&
 				<DomainLabels
 					domain={props.domain}
 				/>
