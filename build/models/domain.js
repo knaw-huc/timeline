@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const DateUtils = require("../utils/dates");
 class Domain {
-    constructor(from, to, width) {
+    constructor(from, to, width, height) {
         this.from = from;
         this.to = to;
         this.width = width;
+        this.height = height;
         this.pixelsPerDay = this.width / this.countDays();
         this.granularity = this.getGranularity();
     }

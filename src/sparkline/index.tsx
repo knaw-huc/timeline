@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { IAggregate, IDomainDef } from '../index'
-import { DATE_BAR_HEIGHT } from '../constants'
 import Domain from '../models/domain'
 import Rulers from '../rulers/rulers'
 import DomainLabels from './domain-labels'
@@ -25,7 +24,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	const path = props.aggregate.reduce((prev, curr, index) => {
 		const curveType = index === 0 ? 'M' : 'L'
 		const x = (props.domain.width / (props.aggregate.length - 1)) * index
-		const y = DATE_BAR_HEIGHT - ((curr.count / countMax) * DATE_BAR_HEIGHT)
+		const y = props.domain.height - ((curr.count / countMax) * props.domain.height)
 		return `${prev} ${curveType} ${x} ${y}`
 	}, '')
 
@@ -33,7 +32,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// position, but it should go to the lower right corner and then to the lower
 	// left corner, just (1px) out of the viewport. So a two lines are added on the
 	// right and on the bottom to close the path manually.
-	const pathCloser = ` L ${props.domain.width + 1} ${DATE_BAR_HEIGHT + 1} L -1 ${DATE_BAR_HEIGHT + 1}`
+	const pathCloser = ` L ${props.domain.width + 1} ${props.domain.height + 1} L -1 ${props.domain.height + 1}`
 
 	return (
 		<div>
@@ -45,10 +44,12 @@ const Sparkline: React.SFC<IProps> = (props) => {
 			}
 			{
 				props.domainDef.domainLabels &&
-				<DomainLabels />
+				<DomainLabels
+					domain={props.domain}
+				/>
 			}
 			<svg
-				viewBox={`0 0 ${props.domain.width} ${DATE_BAR_HEIGHT}`}
+				viewBox={`0 0 ${props.domain.width} ${props.domain.height}`}
 				style={{
 					position: 'relative',
 					zIndex: 1,

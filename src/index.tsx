@@ -15,10 +15,12 @@ const Container = (props) =>
 		ref={props.setRef}
 		style={{
 			backgroundColor: 'white',
+			boxSizing: 'border-box',
 			height: '100%',
 			overflow: 'hidden',
 			position: 'relative',
 			width: '100%',
+			...props.style
 		}}
 	>
 		{props.children}	
@@ -52,6 +54,7 @@ export interface ITimelineProps {
 	events?: IRawEvent[]
 	from: Date,
 	load?: (from: Date, to: Date) => void
+	style?: React.CSSProperties
 	to: Date,
 }
 export interface ITimelineState {
@@ -97,6 +100,7 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		return (
 			<Container
 				setRef={(el) => { this.el = el }}
+				style={this.props.style}
 			>
 				{
 					this.state.domain != null &&
@@ -129,6 +133,7 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 						aggregate={this.props.aggregate}
 						domain={this.state.domain}
 						domainDef={domainDef}
+						key="sparkline"
 					/>
 				)
 			}
@@ -137,6 +142,7 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 				return (
 					<Events
 						events={this.state.events}
+						key="events"
 					/>
 				)
 			}
@@ -145,7 +151,8 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 
 	private init = () => {
 		const width = this.el.getBoundingClientRect().width
-		const domain = new Domain(this.props.from, this.props.to, width)
+		const height = this.el.getBoundingClientRect().height
+		const domain = new Domain(this.props.from, this.props.to, width, height)
 		const visibleDomain = this.getVisibleDomain(domain, this.state.domainCenter, this.state.domainRatio)
 		const events = this.props.events != null ?
 			addTop(this.props.events.map(e => new Event(e, visibleDomain))) :
@@ -168,7 +175,7 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		const from = domain.dateAtProportion(leftRatio)
 		const to = domain.dateAtProportion(rightRatio)
 
-		return new Domain(from, to, domain.width)
+		return new Domain(from, to, domain.width, domain.height)
 	}
 
 	private debouncedHandleResize = debounce(this.init, 200)

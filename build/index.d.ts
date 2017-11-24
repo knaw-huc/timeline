@@ -31,6 +31,7 @@ export interface ITimelineProps {
     events?: IRawEvent[];
     from: Date;
     load?: (from: Date, to: Date) => void;
+    style?: React.CSSProperties;
     to: Date;
 }
 export interface ITimelineState {

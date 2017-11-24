@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Domain from '../models/domain';
 
 const Span = (props) =>
 	<span
@@ -9,7 +10,10 @@ const Span = (props) =>
 		{props.children}
 	</span>
 
-const DomainLabels: React.SFC = (props) =>
+export interface IProps {
+	domain: Domain
+}
+const DomainLabels: React.SFC<IProps> = (props) =>
 	<div
 		style={{
 			alignItems: 'center',
@@ -17,17 +21,18 @@ const DomainLabels: React.SFC = (props) =>
 			color: '#666',
 			display: 'grid',
 			height: '100%',
-			fontSize: '1.5em',
 			gridTemplateColumns: '50% 50%',
-			padding: '0 .5em',
+			padding: '0 .25em',
 			position: 'absolute',
 			width: '100%',
 			zIndex: 2,
 		}}
 	>
-		<div><Span>1924</Span></div>
+		<div>
+			<Span>{props.domain.from.getFullYear()}</Span>
+		</div>
 		<div style={{textAlign: 'right'}}>
-			<Span>1948</Span>
+			<Span>{props.domain.to.getFullYear()}</Span>
 		</div>
 	</div>
 

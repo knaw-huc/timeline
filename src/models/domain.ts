@@ -5,7 +5,12 @@ class Domain {
 	public pixelsPerDay: number
 	public granularity: Granularity
 
-	constructor(public from: Date, public to: Date, public width: number) {
+	constructor(
+		public from: Date,
+		public to: Date,
+		public width: number,
+		public height: number
+	) {
 		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()
 	}

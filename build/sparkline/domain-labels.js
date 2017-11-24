@@ -10,15 +10,14 @@ const DomainLabels = (props) => React.createElement("div", { style: {
         color: '#666',
         display: 'grid',
         height: '100%',
-        fontSize: '1.5em',
         gridTemplateColumns: '50% 50%',
-        padding: '0 .5em',
+        padding: '0 .25em',
         position: 'absolute',
         width: '100%',
         zIndex: 2,
     } },
     React.createElement("div", null,
-        React.createElement(Span, null, "1924")),
+        React.createElement(Span, null, props.domain.from.getFullYear())),
     React.createElement("div", { style: { textAlign: 'right' } },
-        React.createElement(Span, null, "1948")));
+        React.createElement(Span, null, props.domain.to.getFullYear())));
 exports.default = DomainLabels;
