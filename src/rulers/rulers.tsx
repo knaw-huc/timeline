@@ -28,7 +28,6 @@ const labelFormatter = (granularity: Granularity): LabelFormatter => {
 				{months[d.getMonth()]}
 			</span>
 	} else if (granularity === Granularity.WEEK) {
-		// const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 		return (d: Date) => <span>{months[d.getMonth()]}, week {getWeekNumber(d)}</span>
 	} else if (granularity === Granularity.DAY) {
 		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -41,13 +40,6 @@ const labelFormatter = (granularity: Granularity): LabelFormatter => {
 const Ul: React.SFC<IProps> = (props) =>
 	<ul
 		style={{
-			// bottom: props.type === 'visibledomain' ? `${DATE_BAR_HEIGHT}px` : 0,
-			// height: props.type === 'visibledomain' ?
-			// 	'initial' :
-			// 	props.domainRatio < 1 ?
-			// 		`${DATE_BAR_HEIGHT}px` :
-			// 		'100%',
-			// top: props.type === 'visibledomain' ? 0 : 'initial',
 			bottom: 0,
 			heigth: '100%',
 			left: 0,

@@ -7,7 +7,6 @@ const event_1 = require("./models/event");
 const event_2 = require("./utils/event");
 const sparkline_1 = require("./sparkline");
 const domain_1 = require("./models/domain");
-const dev_1 = require("./dev");
 const Container = (props) => React.createElement("div", { ref: props.setRef, style: Object.assign({ backgroundColor: 'white', boxSizing: 'border-box', height: '100%', overflow: 'hidden', position: 'relative', width: '100%' }, props.style) }, props.children);
 class Timeline extends React.PureComponent {
     constructor() {
@@ -35,10 +34,8 @@ class Timeline extends React.PureComponent {
         window.removeEventListener('resize', this.debouncedHandleResize);
     }
     render() {
-        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style },
-            this.state.domains.length &&
-                React.createElement("div", { style: { width: '100%', height: '100%' } }, this.state.domains.map(d => this.domainComponents(d))),
-            React.createElement(dev_1.default, { domains: this.state.domains })));
+        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style }, this.state.domains.length &&
+            React.createElement("div", { style: { width: '100%', height: '100%' } }, this.state.domains.map(d => this.domainComponents(d)))));
     }
     domainComponents(domain) {
         switch (domain.type) {

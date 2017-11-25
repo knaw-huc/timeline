@@ -2,7 +2,7 @@
 // than the width of the event, to accommodate the label.
 export const EVENT_MIN_SPACE = 320 
 
-export const EVENT_HEIGHT = 14
+export const EVENT_HEIGHT = 12
 
 // The height (in px) of a row of events.
 export const EVENT_ROW_HEIGHT = 16

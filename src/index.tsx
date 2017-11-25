@@ -5,8 +5,7 @@ import Event from "./models/event"
 import {addTop} from "./utils/event"
 import Sparkline from './sparkline'
 import Domain, { DomainType, IDomainDef } from './models/domain'
-import Dev from "./dev"
-// import Rulers from './rulers/index'
+// import Dev from "./dev"
 // import Indicator from './indicator'
 
 
@@ -116,9 +115,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 						}
 					</div>
 				}
-				<Dev
-					domains={this.state.domains}
-				/>
+				{/* <Dev domains={this.state.domains} /> */}
 			</Container>
 		)
 	}

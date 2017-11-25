@@ -4,13 +4,12 @@ import {EVENT_MIN_SPACE, EVENT_HEIGHT} from "../../constants";
 const Title: React.SFC = (props) =>
 	<div
 		style={{
+			backgroundColor: 'rgba(255, 255, 255, 0.75)',
 			display: 'inline-block',
 			lineHeight: `${EVENT_HEIGHT}px`,
-			// marginLeft: ${(props: {event: Event}) =>
-			// 	(props.event.width > 0) ? `${(props.event.width / -2)}px` : 'initial'
-			// },
 			maxWidth: `calc(${EVENT_MIN_SPACE}px - ${EVENT_HEIGHT}px)`,
 			overflow: 'hidden',
+			padding: '.25em',
 			textOverflow: 'ellipsis',
 		}}
 	>
@@ -18,7 +17,3 @@ const Title: React.SFC = (props) =>
 	</div>
 
 export default Title;
-
-			// paddingLeft: ${(props: {event: Event}) =>
-			// 	props.event.isUncertain() ? '12px' : 'initial'
-			// };

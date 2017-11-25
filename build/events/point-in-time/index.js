@@ -7,7 +7,7 @@ const constants_1 = require("../../constants");
 const PointInTimeContainer = (props) => React.createElement("li", { style: {
         boxSizing: 'border-box',
         fontSize: '0.8em',
-        left: `${props.event.left}px`,
+        left: `${props.event.left - 5}px`,
         position: 'absolute',
         top: `${props.event.top}px`,
         whiteSpace: 'nowrap',
