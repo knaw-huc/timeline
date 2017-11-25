@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { IAggregate } from '../index'
 import Domain from '../models/domain'
-import Rulers from '../rulers/rulers'
-import DomainLabels from './domain-labels'
+import DomainWrapper from '../domain-wrapper'
 
 export interface IProps {
 	aggregate: IAggregate[]
 	domain: Domain
+	style: React.CSSProperties
 }
 const Sparkline: React.SFC<IProps> = (props) => {
 	if (props.aggregate == null) return null
@@ -34,19 +34,10 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	const pathCloser = ` L ${props.domain.width + 1} ${props.domain.height + 1} L -1 ${props.domain.height + 1}`
 
 	return (
-		<div>
-			{
-				props.domain.rulers &&
-				<Rulers
-					domain={props.domain}
-				/>
-			}
-			{
-				props.domain.domainLabels &&
-				<DomainLabels
-					domain={props.domain}
-				/>
-			}
+		<DomainWrapper
+			domain={props.domain}
+			style={props.style}
+		>
 			<svg
 				viewBox={`0 0 ${props.domain.width} ${props.domain.height}`}
 				style={{
@@ -62,7 +53,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 					}}
 				/>
 			</svg>
-		</div>
+		</DomainWrapper>
 	)
 }
 

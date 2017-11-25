@@ -3,8 +3,7 @@ import IntervalOfTime from './interval-of-time';
 import PointInTime from './point-in-time/index'
 import Event from "../models/event"
 import Domain from '../models/domain'
-import Rulers from '../rulers/rulers'
-import DomainLabels from '../sparkline/domain-labels'
+import DomainWrapper from '../domain-wrapper'
 
 const Ul = (props) =>
 	<ul
@@ -24,23 +23,15 @@ const Ul = (props) =>
 export interface IProps {
 	domain: Domain
 	events: Event[]
+	style: React.CSSProperties
 }
 class Events extends React.PureComponent<IProps, null> {
 	public render() {
 		return (
-			<div>
-				{
-					this.props.domain.rulers &&
-					<Rulers
-						domain={this.props.domain}
-					/>
-				}
-				{
-					this.props.domain.domainLabels &&
-					<DomainLabels
-						domain={this.props.domain}
-					/>
-				}
+			<DomainWrapper
+				domain={this.props.domain}
+				style={this.props.style}
+			>
 				<Ul>
 					{
 						this.props.events.map((event, index) =>
@@ -56,7 +47,7 @@ class Events extends React.PureComponent<IProps, null> {
 						)
 					}
 				</Ul>
-			</div>
+			</DomainWrapper>
 		)
 	}
 }
