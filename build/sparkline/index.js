@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const rulers_1 = require("../rulers/rulers");
-const domain_labels_1 = require("./domain-labels");
+const domain_wrapper_1 = require("../domain-wrapper");
 const Sparkline = (props) => {
     if (props.aggregate == null)
         return null;
@@ -16,11 +15,7 @@ const Sparkline = (props) => {
         return `${prev} ${curveType} ${x} ${y}`;
     }, '');
     const pathCloser = ` L ${props.domain.width + 1} ${props.domain.height + 1} L -1 ${props.domain.height + 1}`;
-    return (React.createElement("div", null,
-        props.domain.rulers &&
-            React.createElement(rulers_1.default, { domain: props.domain }),
-        props.domain.domainLabels &&
-            React.createElement(domain_labels_1.default, { domain: props.domain }),
+    return (React.createElement(domain_wrapper_1.default, { domain: props.domain, style: props.style },
         React.createElement("svg", { viewBox: `0 0 ${props.domain.width} ${props.domain.height}`, style: {
                 position: 'relative',
                 zIndex: 1,

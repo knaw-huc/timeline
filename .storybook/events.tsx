@@ -52,7 +52,7 @@ storiesOf('Timeline', module)
 			<Timeline
 				domains={[
 					{
-						ratio: .5,
+						visibleRatio: .5,
 						type: DomainType.Event,
 					}
 				]}
@@ -67,7 +67,7 @@ storiesOf('Timeline', module)
 			<Timeline
 				domains={[
 					{
-						ratio: .1,
+						visibleRatio: .1,
 						type: DomainType.Event,
 					}
 				]}
@@ -82,7 +82,7 @@ storiesOf('Timeline', module)
 			<Timeline
 				domains={[
 					{
-						ratio: .01,
+						visibleRatio: .01,
 						type: DomainType.Event,
 					}
 				]}
@@ -97,7 +97,7 @@ storiesOf('Timeline', module)
 			<Timeline
 				domains={[
 					{
-						ratio: .001,
+						visibleRatio: .001,
 						type: DomainType.Event,
 					}
 				]}

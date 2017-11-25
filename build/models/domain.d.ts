@@ -6,22 +6,28 @@ export declare enum DomainType {
 }
 export interface IDomainDef {
     domainLabels?: boolean;
-    ratio?: number;
+    heightRatio?: number;
+    visibleRatio?: number;
+    rulerLabels?: boolean;
     rulers?: boolean;
+    topOffsetRatio?: number;
     type?: DomainType;
 }
-declare class Domain {
-    width: number;
-    height: number;
-    from: Date;
-    to: Date;
-    pixelsPerDay: number;
-    granularity: Granularity;
-    ratio: number;
-    type: DomainType;
+declare class Domain implements IDomainDef {
     domainLabels: boolean;
+    from: Date;
+    height: number;
+    heightRatio: number;
+    granularity: Granularity;
+    pixelsPerDay: number;
+    visibleRatio: number;
+    rulerLabels: boolean;
     rulers: boolean;
-    constructor(from: Date, to: Date, width: number, height: number, domainCenter: number, domainDef: IDomainDef);
+    to: Date;
+    topOffsetRatio: number;
+    type: DomainType;
+    width: number;
+    constructor(from: Date, to: Date, viewPortWidth: number, viewPortHeight: number, domainCenter: number, domainDef: IDomainDef);
     positionAtDate(date: Date): number;
     dateAtPosition(x: number): Date;
     countDays(): number;

@@ -4,26 +4,66 @@ import { Granularity } from '../constants';
 export enum DomainType { Event, Navigator, Sparkline }
 export interface IDomainDef {
 	domainLabels?: boolean
-	ratio?: number
+	heightRatio?: number
+	visibleRatio?: number
+	rulerLabels?: boolean
 	rulers?: boolean
+	topOffsetRatio?: number
 	type?: DomainType
 }
 
-class Domain {
-	public from: Date
-	public to: Date
-	public pixelsPerDay: number
-	public granularity: Granularity
-	public ratio: number = 1
-	public type: DomainType = DomainType.Event
+class Domain implements IDomainDef {
+	// Show from & to labels? Labels are shown left and right respectively
+	// of timeline. Use if rulers are to noisy
 	public domainLabels: boolean = false
+
+	// The from date
+	public from: Date
+
+	// Height of the domain in pixels
+	public height: number
+
+	// Part of the horizontal space available to this domain.
+	// If the ratio is .1 only 10% of the heigth is used for this domain.
+	public heightRatio: number = 1
+
+	// Level of detail (ie century, year, month, week, day, etc)
+	public granularity: Granularity
+
+	// The amount of pixels taken by one day. Metric used for calculating 
+	// the x-position of an event or ruler on the timeline.
+	public pixelsPerDay: number
+
+	// Number between 0 and 1 representing the visible ratio of the domain
+	// in relation to the total. If the total is 1 year, a ratio of .75
+	// would show 9 months and hide 3 months.
+	public visibleRatio: number = 1
+
+	// Show ruler labels?
+	public rulerLabels: boolean = true
+
+	// Show rulers?
 	public rulers: boolean = true
+
+	// The to date
+	public to: Date
+
+	// Number between 0 and 1 representing the offset from the top
+	// at which the domain should start. A ratio of .3 would make the
+	// domain start at 30% from the top.
+	public topOffsetRatio: number = 0
+
+	// Type of domain (ie sparkline, event, navigator)
+	public type: DomainType = DomainType.Event
+
+	// Width of the domain in pixels
+	public width: number
 
 	constructor(
 		from: Date,
 		to: Date,
-		public width: number,
-		public height: number,
+		viewPortWidth: number,
+		viewPortHeight: number,
 		domainCenter: number,
 		domainDef: IDomainDef,
 	) {
@@ -33,17 +73,20 @@ class Domain {
 
 		this.from = from
 		this.to = to
-		if (this.ratio < 1) {
-			const leftRatio = domainCenter - (this.ratio/2) 
-			const rightRatio = domainCenter + (this.ratio/2) 
+		if (this.visibleRatio < 1) {
+			const leftRatio = domainCenter - (this.visibleRatio/2) 
+			const rightRatio = domainCenter + (this.visibleRatio/2) 
 
-			// Do not assign computed from to this.from,
-			// otherwise this.dateAtProportion would wrongly compute this.to
+			// Do not change! `from` and `to` have to be calculated before
+			// assigning to `this.from` and `this.to`
 			const from = this.dateAtProportion(leftRatio)
 			const to = this.dateAtProportion(rightRatio)
 			this.from = from
 			this.to = to
 		}
+
+		this.width = viewPortWidth
+		this.height = viewPortHeight * this.heightRatio
 
 		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()

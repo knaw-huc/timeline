@@ -46,9 +46,12 @@ export interface IProps {
 }
 const RulerComp: React.SFC<IProps> = (props) =>
 	<Ruler left={props.left}>
-		<Label title={props.date.toString()}>
-			{props.label}
-		</Label>
+		{
+			props.label != null &&
+			<Label title={props.date.toString()}>
+				{props.label}
+			</Label>
+		}
 	</Ruler>;
 
 

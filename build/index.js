@@ -16,6 +16,16 @@ class Timeline extends React.PureComponent {
             domainCenter: this.props.domainCenter,
             events: [],
         };
+        this.domainComponents = (domain, index) => {
+            switch (domain.type) {
+                case domain_1.DomainType.Sparkline: {
+                    return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: "sparkline", style: { zIndex: index } }));
+                }
+                case domain_1.DomainType.Event: {
+                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, key: "events", style: { zIndex: index } }));
+                }
+            }
+        };
         this.debouncedHandleResize = debounce(() => this.setState({ domains: this.getDomains(this.props) }), 200);
     }
     componentDidMount() {
@@ -34,18 +44,7 @@ class Timeline extends React.PureComponent {
         window.removeEventListener('resize', this.debouncedHandleResize);
     }
     render() {
-        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style }, this.state.domains.length &&
-            React.createElement("div", { style: { width: '100%', height: '100%' } }, this.state.domains.map(d => this.domainComponents(d)))));
-    }
-    domainComponents(domain) {
-        switch (domain.type) {
-            case domain_1.DomainType.Sparkline: {
-                return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: "sparkline" }));
-            }
-            case domain_1.DomainType.Event: {
-                return (React.createElement(index_1.default, { domain: domain, events: this.state.events, key: "events" }));
-            }
-        }
+        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style }, this.state.domains.map(this.domainComponents)));
     }
     getDomains(props) {
         const rect = this.el.getBoundingClientRect();

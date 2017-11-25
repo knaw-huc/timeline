@@ -39,9 +39,7 @@ export interface IAggregate {
 export interface ITimelineProps {
 	aggregate?: IAggregate[]
 	async?: boolean
-	// children?: React.ReactNode
 	domainCenter?: number // Between 0 and 1. 0 = left, .5 = centered, 1 = right
-	// domainRatio?: number // Between 0 and 1. 0 = no visible domain, 1 = whole domain visible
 	domains: IDomainDef[]
 	events?: IServerEvent[]
 	from: Date,
@@ -50,12 +48,9 @@ export interface ITimelineProps {
 	to: Date,
 }
 export interface ITimelineState {
-	// domain: Domain
 	domains: Domain[]
 	domainCenter: number
-	// domainRatio: number
 	events: Event[]
-	// visibleDomain: Domain
 }
 class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 	static defaultProps: Partial<ITimelineProps> = {
@@ -63,18 +58,14 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 		async: false,
 		domainCenter: .5,
 		events: [],
-		// domainRatio: 1,
 	}
 
 	private el: Element
 
 	public state: ITimelineState = {
 		domains: [],
-		// domain: null,
 		domainCenter: this.props.domainCenter,
-		// domainRatio: this.props.domainRatio,
 		events: [],
-		// visibleDomain: null,
 	};
 
 	public componentDidMount() {
@@ -107,20 +98,13 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 				setRef={(el) => { this.el = el }}
 				style={this.props.style}
 			>
-				{
-					this.state.domains.length &&
-					<div style={{ width: '100%', height: '100%' }}>
-						{
-							this.state.domains.map(d => this.domainComponents(d))
-						}
-					</div>
-				}
+				{ this.state.domains.map(this.domainComponents) }
 				{/* <Dev domains={this.state.domains} /> */}
 			</Container>
 		)
 	}
 
-	public domainComponents(domain: Domain) {
+	public domainComponents = (domain: Domain, index: number) => {
 		switch (domain.type) {
 			case DomainType.Sparkline: {
 				return (
@@ -128,6 +112,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 						aggregate={this.props.aggregate}
 						domain={domain}
 						key="sparkline"
+						style={{ zIndex: index }}
 					/>
 				)
 			}
@@ -137,6 +122,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 						domain={domain}
 						events={this.state.events}
 						key="events"
+						style={{ zIndex: index }}
 					/>
 				)
 			}

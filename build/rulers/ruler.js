@@ -20,6 +20,6 @@ const Ruler = (props) => React.createElement("li", { style: {
         position: 'absolute',
         transition: 'all 1s cubic-bezier(.25,.8,.25,1)',
     } }, props.children);
-const RulerComp = (props) => React.createElement(Ruler, { left: props.left },
+const RulerComp = (props) => React.createElement(Ruler, { left: props.left }, props.label != null &&
     React.createElement(Label, { title: props.date.toString() }, props.label));
 exports.default = RulerComp;

@@ -8,27 +8,30 @@ var DomainType;
     DomainType[DomainType["Sparkline"] = 2] = "Sparkline";
 })(DomainType = exports.DomainType || (exports.DomainType = {}));
 class Domain {
-    constructor(from, to, width, height, domainCenter, domainDef) {
-        this.width = width;
-        this.height = height;
-        this.ratio = 1;
-        this.type = DomainType.Event;
+    constructor(from, to, viewPortWidth, viewPortHeight, domainCenter, domainDef) {
         this.domainLabels = false;
+        this.heightRatio = 1;
+        this.visibleRatio = 1;
+        this.rulerLabels = true;
         this.rulers = true;
+        this.topOffsetRatio = 0;
+        this.type = DomainType.Event;
         Object.keys(domainDef).map(k => {
             if (domainDef[k] !== this[k])
                 this[k] = domainDef[k];
         });
         this.from = from;
         this.to = to;
-        if (this.ratio < 1) {
-            const leftRatio = domainCenter - (this.ratio / 2);
-            const rightRatio = domainCenter + (this.ratio / 2);
+        if (this.visibleRatio < 1) {
+            const leftRatio = domainCenter - (this.visibleRatio / 2);
+            const rightRatio = domainCenter + (this.visibleRatio / 2);
             const from = this.dateAtProportion(leftRatio);
             const to = this.dateAtProportion(rightRatio);
             this.from = from;
             this.to = to;
         }
+        this.width = viewPortWidth;
+        this.height = viewPortHeight * this.heightRatio;
         this.pixelsPerDay = this.width / this.countDays();
         this.granularity = this.getGranularity();
     }
