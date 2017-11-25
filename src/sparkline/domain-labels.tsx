@@ -1,3 +1,4 @@
+// ToDo move out of sparkline because it is used on every domain
 import * as React from 'react'
 import Domain from '../models/domain';
 

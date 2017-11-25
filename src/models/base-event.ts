@@ -8,35 +8,35 @@ export interface IDateRange {
 	to: Date;
 }
 
-export interface IBaseEvent {
-	date: Date;
-	dateRange: IDateRange;
-	dateRangeUncertain: IDateRange;
-	dateUncertain: IDateRange;
-	from: Date;
-	slug: string;
-	title: string;
-	to: Date;
-	types: string[];
-	countDays(): number;
-	formatFromDate(): string;
-	formatToDate(): string;
-	isInterval(): boolean;
-	isUncertain(): boolean;
-}
+// export interface IBaseEvent {
+// 	date: Date;
+// 	dateRange: IDateRange;
+// 	dateRangeUncertain: IDateRange;
+// 	dateUncertain: IDateRange;
+// 	from: Date;
+// 	slug: string;
+// 	title: string;
+// 	to: Date;
+// 	types: string[];
+// 	countDays(): number;
+// 	formatFromDate(): string;
+// 	formatToDate(): string;
+// 	isInterval(): boolean;
+// 	isUncertain(): boolean;
+// }
 
-class BaseEvent implements IBaseEvent {
-	public body = '';
-	public coordinates = [];
-	public date = null;
-	public dateRange = null;
-	public dateRangeUncertain = null;
-	public dateUncertain = null;
-	public from = null;
-	public to = null;
-	public slug = '';
-	public title = '';
-	public types = [];
+class BaseEvent {
+	public body: string = ''
+	public coordinates = []
+	public date: Date
+	public dateRange: IDateRange
+	public dateRangeUncertain: IDateRange
+	public dateUncertain: IDateRange
+	public from: Date
+	public to: Date
+	public slug: string
+	public title: string
+	public types: string[] = []
 
 	private dateGranularity = Granularity.DAY;
 	private dateRangeGranularity = null;
@@ -47,15 +47,15 @@ class BaseEvent implements IBaseEvent {
 		this.setFrom();
 	}
 
-	public countDays() {
+	public countDays(): number {
 		return DateUtils.countDays(this.from, this.to);
 	}
 
-	public formatFromDate() {
+	public formatFromDate(): string {
 		return this.formatDate('from');
 	}
 
-	public formatToDate() {
+	public formatToDate(): string {
 		return this.formatDate('to');
 	}
 

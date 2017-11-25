@@ -13,6 +13,7 @@ const hasOverlap = (a: Event, b: Event): boolean => {
 	return overlap
 }
 
+// ToDo turn into reduce
 export const addTop = (events: Event[]) => {
 	if (!events.length) return events;
 	const firstEvent = events[0];

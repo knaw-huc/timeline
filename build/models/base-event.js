@@ -5,14 +5,6 @@ class BaseEvent {
     constructor(data) {
         this.body = '';
         this.coordinates = [];
-        this.date = null;
-        this.dateRange = null;
-        this.dateRangeUncertain = null;
-        this.dateUncertain = null;
-        this.from = null;
-        this.to = null;
-        this.slug = '';
-        this.title = '';
         this.types = [];
         this.dateGranularity = 1;
         this.dateRangeGranularity = null;

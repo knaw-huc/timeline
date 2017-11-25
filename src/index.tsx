@@ -2,10 +2,10 @@ import * as React from 'react'
 import * as debounce from 'lodash.debounce'
 import Events from './events/index'
 import Event from "./models/event"
-// import {addTop} from "./utils/event"
+import {addTop} from "./utils/event"
 import Sparkline from './sparkline'
 import Domain, { DomainType, IDomainDef } from './models/domain'
-// import Dev from "./dev"
+import Dev from "./dev"
 // import Rulers from './rulers/index'
 // import Indicator from './indicator'
 
@@ -27,7 +27,7 @@ const Container = (props) =>
 		{props.children}	
 	</div>
 
-export interface IRawEvent {
+export interface IServerEvent {
 	date: Date,
 	title: string
 }
@@ -40,53 +40,57 @@ export interface IAggregate {
 export interface ITimelineProps {
 	aggregate?: IAggregate[]
 	async?: boolean
-	children?: React.ReactNode
+	// children?: React.ReactNode
 	domainCenter?: number // Between 0 and 1. 0 = left, .5 = centered, 1 = right
-	domainRatio?: number // Between 0 and 1. 0 = no visible domain, 1 = whole domain visible
+	// domainRatio?: number // Between 0 and 1. 0 = no visible domain, 1 = whole domain visible
 	domains: IDomainDef[]
-	events?: IRawEvent[]
+	events?: IServerEvent[]
 	from: Date,
 	load?: (from: Date, to: Date) => void
 	style?: React.CSSProperties
 	to: Date,
 }
 export interface ITimelineState {
-	domain: Domain
+	// domain: Domain
 	domains: Domain[]
 	domainCenter: number
-	domainRatio: number
+	// domainRatio: number
 	events: Event[]
-	visibleDomain: Domain
+	// visibleDomain: Domain
 }
-class Timeline extends React.Component<ITimelineProps, ITimelineState> {
+class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 	static defaultProps: Partial<ITimelineProps> = {
+		aggregate: [],
 		async: false,
 		domainCenter: .5,
-		domainRatio: 1,
+		events: [],
+		// domainRatio: 1,
 	}
 
 	private el: Element
 
 	public state: ITimelineState = {
 		domains: [],
-		domain: null,
+		// domain: null,
 		domainCenter: this.props.domainCenter,
-		domainRatio: this.props.domainRatio,
+		// domainRatio: this.props.domainRatio,
 		events: [],
-		visibleDomain: null,
+		// visibleDomain: null,
 	};
 
 	public componentDidMount() {
-		this.init2(this.props)
+		const domains = this.getDomains(this.props)
+		const events = this.getEvents(this.props.events, domains.find(d => d.type === DomainType.Event))
+		this.setState({ domains, events })
 		window.addEventListener('resize', this.debouncedHandleResize)
 	}
 
-	public componentWillReceiveProps(nextProps) {
+	public componentWillReceiveProps(nextProps: ITimelineProps) {
 		if (
 			this.props.from !== nextProps.from ||
 			this.props.to !== nextProps.to
 		) {
-			this.init2(nextProps)
+			this.setState({ domains: this.getDomains(nextProps) })
 		}
 		// if (nextProps.hasOwnProperty('events')) {
 		// 	const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
@@ -108,18 +112,18 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 					this.state.domains.length &&
 					<div style={{ width: '100%', height: '100%' }}>
 						{
-							this.state.domains
-								.map(d => this.domainComponents(d))
+							this.state.domains.map(d => this.domainComponents(d))
 						}
 					</div>
 				}
+				<Dev
+					domains={this.state.domains}
+				/>
 			</Container>
 		)
 	}
 
 	public domainComponents(domain: Domain) {
-		// Extend domain definition with default values
-
 		switch (domain.type) {
 			case DomainType.Sparkline: {
 				return (
@@ -130,10 +134,10 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 					/>
 				)
 			}
-
 			case DomainType.Event: {
 				return (
 					<Events
+						domain={domain}
 						events={this.state.events}
 						key="events"
 					/>
@@ -142,15 +146,15 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 		}
 	}
 
-	private init2 = (props) => {
-		const width = this.el.getBoundingClientRect().width
-		const height = this.el.getBoundingClientRect().height
-
-		this.setState({
-			domains: props.domains.map(d =>
-				new Domain(props.from, props.to, width, height, d)
-			)
+	private getDomains(props: ITimelineProps): Domain[] {
+		const rect = this.el.getBoundingClientRect()
+		return props.domains.map(d => {
+			return new Domain(props.from, props.to, rect.width, rect.height, props.domainCenter, d)
 		})
+	}
+
+	private getEvents(events: IServerEvent[], domain: Domain): Event[] {
+		return addTop(events.map(e => new Event(e, domain)))
 	}
 
 	// private init = () => {
@@ -169,20 +173,7 @@ class Timeline extends React.Component<ITimelineProps, ITimelineState> {
 	// 	}
 	// }
 
-	// private getVisibleDomain(domain: Domain, domainCenter: number, domainRatio: number): Domain {
-	// 	// ----- leftRatio --- visibleDomainCenter --- rightRatio -----
-	// 	// The area between leftRatio and rightRatio === this.props.visibleDomainRatio
-	// 	// Center point between leftRatio and rightRatio === this.props.visibleDomainCenter
-
-	// 	const leftRatio = domainCenter - (domainRatio/2) 
-	// 	const rightRatio = domainCenter + (domainRatio/2) 
-	// 	const from = domain.dateAtProportion(leftRatio)
-	// 	const to = domain.dateAtProportion(rightRatio)
-
-	// 	return new Domain(from, to, domain.width, domain.height)
-	// }
-
-	private debouncedHandleResize = debounce(this.init2, 200)
+	private debouncedHandleResize = debounce(() => this.setState({ domains: this.getDomains(this.props) }), 200)
 }
 
 export default Timeline
@@ -208,8 +199,4 @@ export { DomainType } from './models/domain'
 						// 		this.props.load(visibleDomain.from, visibleDomain.to)
 						// 	}}
 						// 	width={this.state.domain.positionAtDate(this.state.visibleDomain.to) - this.state.domain.positionAtDate(this.state.visibleDomain.from)}
-						// />
-						// <Dev
-						// 	domain={this.state.domain}
-						// 	visibleDomain={this.state.visibleDomain}
 						// />

@@ -31,9 +31,9 @@ const IntervalOfTimeLink = (props) =>
 			overflow: 'hidden',
 			padding: '0 4px',
 			position: 'absolute',
-			right: (props: {event: Event}) =>
-				props.event.flip ? '4px' : 'initial'
-			,
+			// right: (props: {event: Event}) =>
+			// 	props.event.flip ? '4px' : 'initial'
+			// ,
 			textDecoration: 'none',
 			textOverflow: 'ellipsis',
 		}}

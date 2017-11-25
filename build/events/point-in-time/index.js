@@ -12,7 +12,7 @@ const PointInTimeContainer = (props) => React.createElement("li", { style: {
         top: `${props.event.top}px`,
         whiteSpace: 'nowrap',
         maxWidth: `${constants_1.EVENT_MIN_SPACE}px`,
-    }, title: props.event.date }, props.children);
+    }, title: props.event.date.toString() }, props.children);
 const PointInTime = (props) => React.createElement(PointInTimeContainer, { event: props.event },
     React.createElement(point_1.default, { event: props.event }),
     props.event.title != null &&

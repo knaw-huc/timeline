@@ -52,6 +52,6 @@ const Ul = (props) => React.createElement("ul", { style: {
 const Rulers = (props) => {
     const dates = date_range_1.default(props.domain.from, props.domain.to, props.domain.granularity);
     const formatLabel = labelFormatter(props.domain.granularity);
-    return (React.createElement(Ul, Object.assign({}, props), dates.map((date, index) => React.createElement(ruler_1.default, { key: index, label: formatLabel(date), left: props.domain.positionAtDate(date) }))));
+    return (React.createElement(Ul, Object.assign({}, props), dates.map((date, index) => React.createElement(ruler_1.default, { date: date, key: index, label: formatLabel(date), left: props.domain.positionAtDate(date) }))));
 };
 exports.default = Rulers;

@@ -1,10 +1,12 @@
 /// <reference types="react" />
 import * as React from 'react';
 import Event from "../models/event";
+import Domain from '../models/domain';
 export interface IProps {
+    domain: Domain;
     events: Event[];
 }
-declare class EventsComp extends React.Component<IProps, null> {
+declare class Events extends React.PureComponent<IProps, null> {
     render(): JSX.Element;
 }
-export default EventsComp;
+export default Events;

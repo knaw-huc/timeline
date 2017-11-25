@@ -10,7 +10,7 @@ const Label = (props) => React.createElement("span", { style: {
         color: '#444',
         position: 'absolute',
         zIndex: 2,
-    } }, props.children);
+    }, title: props.title }, props.children);
 const Ruler = (props) => React.createElement("li", { style: {
         borderLeft: '1px solid #ccc',
         boxSizing: 'border-box',
@@ -21,5 +21,5 @@ const Ruler = (props) => React.createElement("li", { style: {
         transition: 'all 1s cubic-bezier(.25,.8,.25,1)',
     } }, props.children);
 const RulerComp = (props) => React.createElement(Ruler, { left: props.left },
-    React.createElement(Label, null, props.label));
+    React.createElement(Label, { title: props.date.toString() }, props.label));
 exports.default = RulerComp;

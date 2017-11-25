@@ -4,34 +4,18 @@ export interface IDateRange {
     infiniteTo?: boolean;
     to: Date;
 }
-export interface IBaseEvent {
+declare class BaseEvent {
+    body: string;
+    coordinates: any[];
     date: Date;
     dateRange: IDateRange;
     dateRangeUncertain: IDateRange;
     dateUncertain: IDateRange;
     from: Date;
-    slug: string;
-    title: string;
     to: Date;
-    types: string[];
-    countDays(): number;
-    formatFromDate(): string;
-    formatToDate(): string;
-    isInterval(): boolean;
-    isUncertain(): boolean;
-}
-declare class BaseEvent implements IBaseEvent {
-    body: string;
-    coordinates: any[];
-    date: any;
-    dateRange: any;
-    dateRangeUncertain: any;
-    dateUncertain: any;
-    from: any;
-    to: any;
     slug: string;
     title: string;
-    types: any[];
+    types: string[];
     private dateGranularity;
     private dateRangeGranularity;
     constructor(data: any);

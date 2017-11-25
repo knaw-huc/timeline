@@ -8,7 +8,7 @@ const Wrapper = (props) =>
 			backgroundColor: '#444',
 			borderBottomLeftRadius: '3px',
 			borderTopLeftRadius: '3px',
-			bottom: '100px',
+			bottom: 0, /* '100px', */
 			color: 'white',
 			cursor: 'pointer',
 			fontSize: '0.6em',
@@ -26,9 +26,7 @@ const Wrapper = (props) =>
 const DomainData = (props) =>
 	<section style={{ marginBottom: '1em', whiteSpace: 'nowrap' }}>
 		<h3 style={{ margin: 0 }}>
-			{
-				props.visible ? 'Visible domain' : 'Domain'
-			}
+			Domain
 		</h3>
 		<span>{`${props.domain.width.toFixed(0)}px wide`}</span>
 		<br />
@@ -48,8 +46,7 @@ const DomainData = (props) =>
 	</section>
 
 export interface IProps {
-	domain: Domain
-	visibleDomain: Domain
+	domains: Domain[]
 }
 export interface IState {
 	active: boolean
@@ -65,8 +62,9 @@ class Dev extends React.Component<IProps, IState> {
 				active={this.state.active}
 				onClick={(ev) => this.setState({ active: !this.state.active })}
 			>
-				<DomainData domain={this.props.domain} />
-				<DomainData domain={this.props.visibleDomain} visible />
+				{
+					this.props.domains.map(d => <DomainData domain={d} />)
+				}
 			</Wrapper>
 		)
 	}

@@ -13,7 +13,6 @@ const IntervalOfTimeLink = (props) => React.createElement("a", { style: {
         overflow: 'hidden',
         padding: '0 4px',
         position: 'absolute',
-        right: (props) => props.event.flip ? '4px' : 'initial',
         textDecoration: 'none',
         textOverflow: 'ellipsis',
     } }, props.children);

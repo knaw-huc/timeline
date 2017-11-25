@@ -10,20 +10,18 @@ export interface IDomainDef {
     rulers?: boolean;
     type?: DomainType;
 }
-interface Domain extends IDomainDef {
-}
-declare class Domain implements IDomainDef {
-    from: Date;
-    to: Date;
+declare class Domain {
     width: number;
     height: number;
+    from: Date;
+    to: Date;
     pixelsPerDay: number;
     granularity: Granularity;
     ratio: number;
     type: DomainType;
     domainLabels: boolean;
     rulers: boolean;
-    constructor(from: Date, to: Date, width: number, height: number, domainDef: IDomainDef);
+    constructor(from: Date, to: Date, width: number, height: number, domainCenter: number, domainDef: IDomainDef);
     positionAtDate(date: Date): number;
     dateAtPosition(x: number): Date;
     countDays(): number;

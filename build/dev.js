@@ -5,7 +5,7 @@ const Wrapper = (props) => React.createElement("div", { onClick: props.onClick, 
         backgroundColor: '#444',
         borderBottomLeftRadius: '3px',
         borderTopLeftRadius: '3px',
-        bottom: '100px',
+        bottom: 0,
         color: 'white',
         cursor: 'pointer',
         fontSize: '0.6em',
@@ -17,7 +17,7 @@ const Wrapper = (props) => React.createElement("div", { onClick: props.onClick, 
         width: '150px',
     } }, props.children);
 const DomainData = (props) => React.createElement("section", { style: { marginBottom: '1em', whiteSpace: 'nowrap' } },
-    React.createElement("h3", { style: { margin: 0 } }, props.visible ? 'Visible domain' : 'Domain'),
+    React.createElement("h3", { style: { margin: 0 } }, "Domain"),
     React.createElement("span", null, `${props.domain.width.toFixed(0)}px wide`),
     React.createElement("br", null),
     React.createElement("span", null, `${props.domain.countDays().toFixed(0)} days`),
@@ -43,9 +43,7 @@ class Dev extends React.Component {
         };
     }
     render() {
-        return (React.createElement(Wrapper, { active: this.state.active, onClick: (ev) => this.setState({ active: !this.state.active }) },
-            React.createElement(DomainData, { domain: this.props.domain }),
-            React.createElement(DomainData, { domain: this.props.visibleDomain, visible: true })));
+        return (React.createElement(Wrapper, { active: this.state.active, onClick: (ev) => this.setState({ active: !this.state.active }) }, this.props.domains.map(d => React.createElement(DomainData, { domain: d }))));
     }
 }
 exports.default = Dev;

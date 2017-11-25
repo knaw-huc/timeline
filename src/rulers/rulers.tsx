@@ -75,6 +75,7 @@ const Rulers: React.SFC<IProps> = (props) => {
 			{
 				dates.map((date: Date, index: number) =>
 					<Ruler
+						date={date}
 						key={index}
 						label={formatLabel(date)}
 						left={props.domain.positionAtDate(date)}

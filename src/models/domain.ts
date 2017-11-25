@@ -9,25 +9,41 @@ export interface IDomainDef {
 	type?: DomainType
 }
 
-interface Domain extends IDomainDef {}
-class Domain implements IDomainDef {
+class Domain {
+	public from: Date
+	public to: Date
 	public pixelsPerDay: number
 	public granularity: Granularity
-	public ratio = 1
-	public type = DomainType.Event
-	public domainLabels = false
-	public rulers = true
+	public ratio: number = 1
+	public type: DomainType = DomainType.Event
+	public domainLabels: boolean = false
+	public rulers: boolean = true
 
 	constructor(
-		public from: Date,
-		public to: Date,
+		from: Date,
+		to: Date,
 		public width: number,
 		public height: number,
+		domainCenter: number,
 		domainDef: IDomainDef,
 	) {
 		Object.keys(domainDef).map(k => {
 			if (domainDef[k] !== this[k]) this[k] = domainDef[k]
 		})
+
+		this.from = from
+		this.to = to
+		if (this.ratio < 1) {
+			const leftRatio = domainCenter - (this.ratio/2) 
+			const rightRatio = domainCenter + (this.ratio/2) 
+
+			// Do not assign computed from to this.from,
+			// otherwise this.dateAtProportion would wrongly compute this.to
+			const from = this.dateAtProportion(leftRatio)
+			const to = this.dateAtProportion(rightRatio)
+			this.from = from
+			this.to = to
+		}
 
 		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()
@@ -47,12 +63,9 @@ class Domain implements IDomainDef {
 
 	public dateAtProportion(proportion: number): Date {
 		if (proportion < 0 || proportion > 1) throw new Error('[dateAtProportion] proportion should be between 0 and 1.');
-
-		const fromTime = this.from.getTime();
-		const toTime = this.to.getTime();
-
-		const newTime = fromTime + ((toTime - fromTime) * proportion);
-
+		const fromTime = this.from.getTime()
+		const toTime = this.to.getTime()
+		const newTime = fromTime + ((toTime - fromTime) * proportion)
 		return new Date(newTime);
 	}
 

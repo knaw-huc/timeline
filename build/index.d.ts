@@ -2,7 +2,7 @@
 import * as React from 'react';
 import Event from "./models/event";
 import Domain, { IDomainDef } from './models/domain';
-export interface IRawEvent {
+export interface IServerEvent {
     date: Date;
     title: string;
 }
@@ -13,34 +13,30 @@ export interface IAggregate {
 export interface ITimelineProps {
     aggregate?: IAggregate[];
     async?: boolean;
-    children?: React.ReactNode;
     domainCenter?: number;
-    domainRatio?: number;
     domains: IDomainDef[];
-    events?: IRawEvent[];
+    events?: IServerEvent[];
     from: Date;
     load?: (from: Date, to: Date) => void;
     style?: React.CSSProperties;
     to: Date;
 }
 export interface ITimelineState {
-    domain: Domain;
     domains: Domain[];
     domainCenter: number;
-    domainRatio: number;
     events: Event[];
-    visibleDomain: Domain;
 }
-declare class Timeline extends React.Component<ITimelineProps, ITimelineState> {
+declare class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
     static defaultProps: Partial<ITimelineProps>;
     private el;
     state: ITimelineState;
     componentDidMount(): void;
-    componentWillReceiveProps(nextProps: any): void;
+    componentWillReceiveProps(nextProps: ITimelineProps): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
     domainComponents(domain: Domain): JSX.Element;
-    private init2;
+    private getDomains(props);
+    private getEvents(events, domain);
     private debouncedHandleResize;
 }
 export default Timeline;

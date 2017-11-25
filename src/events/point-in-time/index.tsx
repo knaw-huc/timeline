@@ -29,7 +29,7 @@ const PointInTimeContainer: React.SFC<IPointInTimeContainer> = (props) =>
 			// width: `${props.event.width}px`,
 			maxWidth: `${EVENT_MIN_SPACE}px`,
 		}}
-		title={props.event.date}
+		title={props.event.date.toString()}
 	>
 		{props.children}
 	</li>

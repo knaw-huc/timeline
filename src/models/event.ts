@@ -3,18 +3,18 @@ import * as Constants from '../constants';
 import Domain from './domain';
 
 class Event extends BaseEvent {
-	public flip: boolean
+	// public flip: boolean
 	public left: number
 	public top: number
 	public width: number
 
-	constructor(data, public visibleDomain: Domain) {
+	constructor(data, domain: Domain) {
 		super(data)
 
-		this.left = visibleDomain.positionAtDate(this.from)
-		this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
+		this.left = domain.positionAtDate(this.from)
+		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
 
-		const width = this.countDays() * visibleDomain.pixelsPerDay
+		const width = this.countDays() * domain.pixelsPerDay
 		this.width = (width > 0 && width < 12) ? 12 : width
 	}
 

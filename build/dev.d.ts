@@ -2,8 +2,7 @@
 import * as React from 'react';
 import Domain from './models/domain';
 export interface IProps {
-    domain: Domain;
-    visibleDomain: Domain;
+    domains: Domain[];
 }
 export interface IState {
     active: boolean;

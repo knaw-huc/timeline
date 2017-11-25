@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { DATE_BAR_HEIGHT } from "../constants";
 
-const Label: React.SFC = (props) =>
+interface ILabel {
+	title: string
+}
+const Label: React.SFC<ILabel> = (props) =>
 	<span
 		style={{
 			alignItems: 'flex-end',
@@ -12,6 +15,7 @@ const Label: React.SFC = (props) =>
 			position: 'absolute',
 			zIndex: 2,
 		}}
+		title={props.title}
 	>
 		{props.children}
 	</span>
@@ -36,12 +40,13 @@ const Ruler: React.SFC<IRuler> = (props) =>
 	</li>
 
 export interface IProps {
+	date: Date
 	left: number
 	label: JSX.Element
 }
 const RulerComp: React.SFC<IProps> = (props) =>
 	<Ruler left={props.left}>
-		<Label>
+		<Label title={props.date.toString()}>
 			{props.label}
 		</Label>
 	</Ruler>;
