@@ -5056,6 +5056,27 @@ exports.default = ObjectValue;
 /* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// The minimal space (in px) an event should take. This space can be bigger
+// than the width of the event, to accommodate the label.
+exports.EVENT_MIN_SPACE = 320;
+exports.EVENT_HEIGHT = 12;
+// The height (in px) of a row of events.
+exports.EVENT_ROW_HEIGHT = 16;
+exports.DATE_BAR_HEIGHT = 60;
+exports.RULER_LABELS_HEIGHT = 60;
+exports.timelineBlue = '#0091EA';
+exports.timelineLightBlue = '#00B0FF';
+exports.timelineLighterBlue = '#40C4FF';
+exports.timelineLightestBlue = '#80D8FF';
+
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = __webpack_require__(54);
 var TAG = __webpack_require__(13)('toStringTag');
@@ -5082,7 +5103,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
@@ -5129,7 +5150,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -5141,7 +5162,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -5161,7 +5182,7 @@ module.exports = win;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5192,28 +5213,8 @@ var ADDON_ID = exports.ADDON_ID = 'storybook/links';
 var EVENT_ID = exports.EVENT_ID = ADDON_ID + '/link-event';
 
 /***/ }),
-/* 91 */,
 /* 92 */,
-/* 93 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-// The minimal space (in px) an event should take. This space can be bigger
-// than the width of the event, to accommodate the label.
-exports.EVENT_MIN_SPACE = 320;
-exports.EVENT_HEIGHT = 12;
-// The height (in px) of a row of events.
-exports.EVENT_ROW_HEIGHT = 16;
-exports.DATE_BAR_HEIGHT = 60;
-exports.timelineBlue = '#0091EA';
-exports.timelineLightBlue = '#00B0FF';
-exports.timelineLighterBlue = '#40C4FF';
-exports.timelineLightestBlue = '#80D8FF';
-
-
-/***/ }),
+/* 93 */,
 /* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5261,7 +5262,7 @@ var ctx = __webpack_require__(32);
 var call = __webpack_require__(147);
 var isArrayIter = __webpack_require__(146);
 var anObject = __webpack_require__(20);
-var toLength = __webpack_require__(88);
+var toLength = __webpack_require__(89);
 var getIterFn = __webpack_require__(107);
 var BREAK = {};
 var RETURN = {};
@@ -5395,7 +5396,7 @@ exports.f = __webpack_require__(13);
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(86);
+var classof = __webpack_require__(87);
 var ITERATOR = __webpack_require__(13)('iterator');
 var Iterators = __webpack_require__(41);
 module.exports = __webpack_require__(10).getIteratorMethod = function (it) {
@@ -14030,7 +14031,7 @@ var _addons = __webpack_require__(53);
 
 var _addons2 = _interopRequireDefault(_addons);
 
-var _ = __webpack_require__(90);
+var _ = __webpack_require__(91);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14059,7 +14060,7 @@ var _addons = __webpack_require__(53);
 
 var _addons2 = _interopRequireDefault(_addons);
 
-var _ = __webpack_require__(90);
+var _ = __webpack_require__(91);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14099,7 +14100,7 @@ var _createClass3 = _interopRequireDefault(_createClass2);
 
 exports.default = createChannel;
 
-var _global = __webpack_require__(89);
+var _global = __webpack_require__(90);
 
 var _channels = __webpack_require__(240);
 
@@ -14674,7 +14675,7 @@ module.exports = function () { /* empty */ };
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(42);
-var toLength = __webpack_require__(88);
+var toLength = __webpack_require__(89);
 var toAbsoluteIndex = __webpack_require__(279);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
@@ -14760,7 +14761,7 @@ module.exports = function (fn, args, that) {
 
 "use strict";
 
-var create = __webpack_require__(87);
+var create = __webpack_require__(88);
 var descriptor = __webpack_require__(56);
 var setToStringTag = __webpack_require__(65);
 var IteratorPrototype = {};
@@ -14998,7 +14999,7 @@ module.exports = __webpack_require__(10).getIterator = function (it) {
 /* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(86);
+var classof = __webpack_require__(87);
 var ITERATOR = __webpack_require__(13)('iterator');
 var Iterators = __webpack_require__(41);
 module.exports = __webpack_require__(10).isIterable = function (it) {
@@ -15021,7 +15022,7 @@ var $export = __webpack_require__(14);
 var toObject = __webpack_require__(51);
 var call = __webpack_require__(147);
 var isArrayIter = __webpack_require__(146);
-var toLength = __webpack_require__(88);
+var toLength = __webpack_require__(89);
 var createProperty = __webpack_require__(270);
 var getIterFn = __webpack_require__(107);
 
@@ -15111,7 +15112,7 @@ $export($export.S + $export.F, 'Object', { assign: __webpack_require__(275) });
 
 var $export = __webpack_require__(14);
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-$export($export.S, 'Object', { create: __webpack_require__(87) });
+$export($export.S, 'Object', { create: __webpack_require__(88) });
 
 
 /***/ }),
@@ -15171,7 +15172,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(277).set });
 var LIBRARY = __webpack_require__(69);
 var global = __webpack_require__(16);
 var ctx = __webpack_require__(32);
-var classof = __webpack_require__(86);
+var classof = __webpack_require__(87);
 var $export = __webpack_require__(14);
 var isObject = __webpack_require__(26);
 var aFunction = __webpack_require__(64);
@@ -15475,7 +15476,7 @@ var anObject = __webpack_require__(20);
 var toIObject = __webpack_require__(42);
 var toPrimitive = __webpack_require__(104);
 var createDesc = __webpack_require__(56);
-var _create = __webpack_require__(87);
+var _create = __webpack_require__(88);
 var gOPNExt = __webpack_require__(276);
 var $GOPD = __webpack_require__(149);
 var $DP = __webpack_require__(21);
@@ -39481,7 +39482,7 @@ var _utilDeprecate2 = _interopRequireDefault(_utilDeprecate);
 
 var _addonActions = __webpack_require__(68);
 
-var _addonLinks = __webpack_require__(90);
+var _addonLinks = __webpack_require__(91);
 
 var _preview = __webpack_require__(473);
 
@@ -40497,7 +40498,7 @@ var _createClass2 = __webpack_require__(6);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _global = __webpack_require__(89);
+var _global = __webpack_require__(90);
 
 var _actions = __webpack_require__(213);
 
@@ -41535,21 +41536,54 @@ const React = __webpack_require__(0);
 const interval_of_time_1 = __webpack_require__(624);
 const index_1 = __webpack_require__(625);
 const domain_wrapper_1 = __webpack_require__(481);
-const Ul = (props) => React.createElement("ul", { style: {
-        height: '100%',
-        listStyle: 'none',
-        margin: 0,
+const constants_1 = __webpack_require__(86);
+const Wrapper = (props) => React.createElement("div", { onScroll: props.onScroll, style: {
+        height: `calc(100% - ${constants_1.RULER_LABELS_HEIGHT}px)`,
         overflowX: 'hidden',
         overflowY: 'auto',
+        position: 'relative',
+        width: '100%',
+    } }, props.children);
+const Ul = (props) => React.createElement("ul", { style: {
+        height: `${props.height}px`,
+        listStyle: 'none',
+        margin: 0,
         padding: 0,
         width: '100%',
     } }, props.children);
 class Events extends React.PureComponent {
+    constructor() {
+        super(...arguments);
+        this.state = {
+            events: this.props.events.filter(e => e.top < this.props.domain.height),
+            activeRegionHeight: this.props.domain.height,
+        };
+    }
+    componentDidMount() {
+        if (this.props.fetchEvents != null)
+            this.props.fetchEvents(this.props.domain.from, this.props.domain.to);
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.events !== nextProps.events) {
+            this.setState({
+                events: nextProps.events.filter(e => e.top < this.state.activeRegionHeight)
+            });
+        }
+    }
     render() {
         return (React.createElement(domain_wrapper_1.default, { domain: this.props.domain, style: this.props.style },
-            React.createElement(Ul, null, this.props.events.map((event, index) => event.isInterval() ?
-                React.createElement(interval_of_time_1.default, { event: event, key: index }) :
-                React.createElement(index_1.default, { event: event, key: index })))));
+            React.createElement(Wrapper, { onScroll: (ev) => {
+                    const activeRegionHeight = ev.nativeEvent.target.scrollTop + this.props.domain.height;
+                    if (activeRegionHeight > this.state.activeRegionHeight) {
+                        const events = this.props.events.filter(e => e.top < this.state.activeRegionHeight);
+                        this.setState({ activeRegionHeight, events });
+                    }
+                } },
+                React.createElement(Ul, { height: this.props.events.reduce((a, b) => { if (b.top == null)
+                        b.top = 0; return Math.max(a, b.top); }, 0) }, this.state.events
+                    .map((event, index) => event.isInterval() ?
+                    React.createElement(interval_of_time_1.default, { event: event, key: index }) :
+                    React.createElement(index_1.default, { event: event, key: index }))))));
     }
 }
 exports.default = Events;
@@ -41564,7 +41598,7 @@ exports.default = Events;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const cx = __webpack_require__(296);
-const constants_1 = __webpack_require__(93);
+const constants_1 = __webpack_require__(86);
 const IntervalOfTimeLink = (props) => React.createElement("a", { style: {
         background: 'rgba(0, 0, 0, 0.4)',
         borderRadius: '2px',
@@ -41637,7 +41671,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const point_1 = __webpack_require__(626);
 const title_1 = __webpack_require__(627);
-const constants_1 = __webpack_require__(93);
+const constants_1 = __webpack_require__(86);
 const PointInTimeContainer = (props) => React.createElement("li", { style: {
         boxSizing: 'border-box',
         fontSize: '0.8em',
@@ -41662,7 +41696,7 @@ exports.default = PointInTime;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const constants_1 = __webpack_require__(93);
+const constants_1 = __webpack_require__(86);
 const Point = (props) => React.createElement("div", { style: {
         backgroundImage: 'radial-gradient(white 20%, black 100%)',
         borderRadius: `${constants_1.EVENT_HEIGHT / 2}px`,
@@ -41682,7 +41716,7 @@ exports.default = Point;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const constants_1 = __webpack_require__(93);
+const constants_1 = __webpack_require__(86);
 const Title = (props) => React.createElement("div", { style: {
         backgroundColor: 'rgba(255, 255, 255, 0.75)',
         display: 'inline-block',
@@ -41726,7 +41760,7 @@ class Timeline extends React.PureComponent {
                     return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: "sparkline", style: { zIndex: index } }));
                 }
                 case domain_1.DomainType.Event: {
-                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, key: "events", style: { zIndex: index } }));
+                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, fetchEvents: this.props.fetchEvents, key: "events", style: { zIndex: index } }));
                 }
             }
         };
@@ -41740,7 +41774,7 @@ class Timeline extends React.PureComponent {
         // 		null
         // 	this.setState({ events, domain, visibleDomain })
         // 	if (this.props.load != null) {
-        // 		this.props.load(visibleDomain.from, visibleDomain.to)
+        // 		this.props.load(visibledomain.from, visibledomain.to)
         // 	}
         // }
         this.debouncedHandleResize = debounce(() => this.setState({ domains: this.getDomains(this.props) }), 200);
@@ -41756,10 +41790,10 @@ class Timeline extends React.PureComponent {
             this.props.to !== nextProps.to) {
             this.setState({ domains: this.getDomains(nextProps) });
         }
-        // if (nextProps.hasOwnProperty('events')) {
-        // 	const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
-        // 	this.setState({ events })
-        // }
+        if (this.props.events !== nextProps.events) {
+            const events = this.getEvents(nextProps.events, this.state.domains.find(d => d.type === domain_1.DomainType.Event));
+            this.setState({ events });
+        }
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.debouncedHandleResize);
@@ -41924,7 +41958,7 @@ exports.default = BaseEvent;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_event_1 = __webpack_require__(629);
-const Constants = __webpack_require__(93);
+const Constants = __webpack_require__(86);
 class Event extends base_event_1.default {
     constructor(data, domain) {
         super(data);
@@ -42072,7 +42106,7 @@ exports.default = Rulers;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const constants_1 = __webpack_require__(93);
+const constants_1 = __webpack_require__(86);
 const Label = (props) => React.createElement("span", { style: {
         alignItems: 'flex-end',
         bottom: '10px',
@@ -42148,7 +42182,7 @@ exports.default = Sparkline;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Constants = __webpack_require__(93);
+const Constants = __webpack_require__(86);
 const hasOverlap = (a, b) => {
     const [aLeft, aWidth] = a.space();
     const [bLeft, bWidth] = b.space();
@@ -43846,4 +43880,4 @@ module.exports = __webpack_require__(548);
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=preview.9eb94a3528a7b491dc6b.bundle.js.map
+//# sourceMappingURL=preview.0e9ae445578197018c00.bundle.js.map
