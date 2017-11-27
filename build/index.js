@@ -22,7 +22,7 @@ class Timeline extends React.PureComponent {
                     return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: "sparkline", style: { zIndex: index } }));
                 }
                 case domain_1.DomainType.Event: {
-                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, key: "events", style: { zIndex: index } }));
+                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, fetchEvents: this.props.fetchEvents, key: "events", style: { zIndex: index } }));
                 }
             }
         };
@@ -38,6 +38,10 @@ class Timeline extends React.PureComponent {
         if (this.props.from !== nextProps.from ||
             this.props.to !== nextProps.to) {
             this.setState({ domains: this.getDomains(nextProps) });
+        }
+        if (this.props.events !== nextProps.events) {
+            const events = this.getEvents(nextProps.events, this.state.domains.find(d => d.type === domain_1.DomainType.Event));
+            this.setState({ events });
         }
     }
     componentWillUnmount() {

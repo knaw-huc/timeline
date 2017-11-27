@@ -17,7 +17,8 @@ export interface ITimelineProps {
     domains: IDomainDef[];
     events?: IServerEvent[];
     from: Date;
-    load?: (from: Date, to: Date) => void;
+    fetchAggregate?: (from: Date, to: Date) => void;
+    fetchEvents?: (from: Date, to: Date) => void;
     style?: React.CSSProperties;
     to: Date;
 }

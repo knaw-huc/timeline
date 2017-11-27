@@ -9,6 +9,7 @@ export const EVENT_ROW_HEIGHT = 16
 
 
 export const DATE_BAR_HEIGHT = 60
+export const RULER_LABELS_HEIGHT = 60
 
 export const timelineBlue = '#0091EA'
 export const timelineLightBlue = '#00B0FF'

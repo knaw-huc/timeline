@@ -43,7 +43,8 @@ export interface ITimelineProps {
 	domains: IDomainDef[]
 	events?: IServerEvent[]
 	from: Date,
-	load?: (from: Date, to: Date) => void
+	fetchAggregate?: (from: Date, to: Date) => void
+	fetchEvents?: (from: Date, to: Date) => void
 	style?: React.CSSProperties
 	to: Date,
 }
@@ -82,10 +83,11 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 		) {
 			this.setState({ domains: this.getDomains(nextProps) })
 		}
-		// if (nextProps.hasOwnProperty('events')) {
-		// 	const events = addTop(nextProps.events.map(e => new Event(e, this.state.visibleDomain)))
-		// 	this.setState({ events })
-		// }
+
+		if (this.props.events !== nextProps.events) {
+			const events = this.getEvents(nextProps.events, this.state.domains.find(d => d.type === DomainType.Event))
+			this.setState({ events })
+		}
 	}
 
 	public componentWillUnmount() {
@@ -121,6 +123,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 					<Events
 						domain={domain}
 						events={this.state.events}
+						fetchEvents={this.props.fetchEvents}
 						key="events"
 						style={{ zIndex: index }}
 					/>
@@ -152,7 +155,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 	// 	this.setState({ events, domain, visibleDomain })
 
 	// 	if (this.props.load != null) {
-	// 		this.props.load(visibleDomain.from, visibleDomain.to)
+	// 		this.props.load(visibledomain.from, visibledomain.to)
 	// 	}
 	// }
 
