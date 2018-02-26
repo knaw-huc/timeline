@@ -15,6 +15,7 @@ export interface IDomainDef {
     type?: DomainType;
 }
 declare class Domain implements IDomainDef {
+    viewportWidth: number;
     domainCenter: number;
     domainLabels: boolean;
     from: Date;
@@ -29,10 +30,9 @@ declare class Domain implements IDomainDef {
     topOffsetRatio: number;
     type: DomainType;
     viewportHeight: number;
-    viewportWidth: number;
     height: number;
     width: number;
-    constructor(from: Date, to: Date, viewPortWidth: number, viewPortHeight: number, domainCenter: number, domainDef: IDomainDef);
+    constructor(from: Date, to: Date, viewportWidth: number, viewportHeight: number, domainCenter: number, domainDef: IDomainDef);
     countDays(): number;
     dateAtPosition(x: number): Date;
     dateAtProportion(proportion: number): Date;

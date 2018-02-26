@@ -7,8 +7,6 @@ const domain_wrapper_1 = require("../domain-wrapper");
 const constants_1 = require("../constants");
 const Wrapper = (props) => React.createElement("div", { onScroll: props.onScroll, style: {
         height: `calc(100% - ${constants_1.RULER_LABELS_HEIGHT}px)`,
-        overflowX: 'hidden',
-        overflowY: 'auto',
         position: 'relative',
         width: '100%',
     } }, props.children);

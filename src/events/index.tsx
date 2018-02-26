@@ -11,8 +11,8 @@ const Wrapper = (props) =>
 		onScroll={props.onScroll}
 		style={{
 			height: `calc(100% - ${RULER_LABELS_HEIGHT}px)`,
-			overflowX: 'hidden',
-			overflowY: 'auto',
+			// overflowX: 'hidden',
+			// overflowY: 'auto',
 			position: 'relative',
 			width: '100%',
 		}}

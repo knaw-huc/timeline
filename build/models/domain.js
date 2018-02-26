@@ -8,7 +8,8 @@ var DomainType;
     DomainType[DomainType["Sparkline"] = 2] = "Sparkline";
 })(DomainType = exports.DomainType || (exports.DomainType = {}));
 class Domain {
-    constructor(from, to, viewPortWidth, viewPortHeight, domainCenter, domainDef) {
+    constructor(from, to, viewportWidth, viewportHeight, domainCenter, domainDef) {
+        this.viewportWidth = viewportWidth;
         this.domainCenter = domainCenter;
         this.domainLabels = false;
         this.heightRatio = 1;
@@ -23,19 +24,10 @@ class Domain {
         });
         this.from = from;
         this.to = to;
-        if (this.visibleRatio < 1) {
-            const leftRatio = domainCenter - (this.visibleRatio / 2);
-            const rightRatio = domainCenter + (this.visibleRatio / 2);
-            const from = this.dateAtProportion(leftRatio);
-            const to = this.dateAtProportion(rightRatio);
-            this.from = from;
-            this.to = to;
-        }
-        this.viewportWidth = viewPortWidth;
-        this.viewportHeight = viewPortHeight * this.heightRatio;
+        this.viewportHeight = viewportHeight * this.heightRatio;
         this.height = this.viewportHeight;
         this.width = this.viewportWidth / this.visibleRatio;
-        this.pixelsPerDay = this.viewportWidth / this.countDays();
+        this.pixelsPerDay = this.width / this.countDays();
         this.granularity = this.getGranularity();
     }
     countDays() {
@@ -56,7 +48,7 @@ class Domain {
         return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
     }
     proportionAtPosition(position) {
-        return position / this.viewportWidth;
+        return position / this.width;
     }
     getGranularity() {
         const days = this.countDays();

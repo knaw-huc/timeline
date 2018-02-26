@@ -59,17 +59,14 @@ class Domain implements IDomainDef {
 	// Visible height of the domain in pixels
 	public viewportHeight: number
 
-	// Visible width of the domain in pixels
-	public viewportWidth: number
-
 	public height: number
 	public width: number
 
 	constructor(
 		from: Date,
 		to: Date,
-		viewPortWidth: number,
-		viewPortHeight: number,
+		public viewportWidth: number,
+		viewportHeight: number,
 		public domainCenter: number,
 		domainDef: IDomainDef,
 	) {
@@ -79,24 +76,23 @@ class Domain implements IDomainDef {
 
 		this.from = from
 		this.to = to
-		if (this.visibleRatio < 1) {
-			const leftRatio = domainCenter - (this.visibleRatio/2) 
-			const rightRatio = domainCenter + (this.visibleRatio/2) 
+		// if (this.visibleRatio < 1) {
+		// 	const leftRatio = domainCenter - (this.visibleRatio/2) 
+		// 	const rightRatio = domainCenter + (this.visibleRatio/2) 
 
-			// Do not change! `from` and `to` have to be calculated before
-			// assigning to `this.from` and `this.to`
-			const from = this.dateAtProportion(leftRatio)
-			const to = this.dateAtProportion(rightRatio)
-			this.from = from
-			this.to = to
-		}
+		// 	// Do not change! `from` and `to` have to be calculated before
+		// 	// assigning to `this.from` and `this.to`
+		// 	const from = this.dateAtProportion(leftRatio)
+		// 	const to = this.dateAtProportion(rightRatio)
+		// 	this.from = from
+		// 	this.to = to
+		// }
 
-		this.viewportWidth = viewPortWidth
-		this.viewportHeight = viewPortHeight * this.heightRatio
+		this.viewportHeight = viewportHeight * this.heightRatio
 		this.height = this.viewportHeight // TODO calc height depending on max event rows
 		this.width = this.viewportWidth / this.visibleRatio
 
-		this.pixelsPerDay = this.viewportWidth / this.countDays()
+		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()
 	}
 
@@ -121,7 +117,7 @@ class Domain implements IDomainDef {
 	}
 
 	public proportionAtPosition(position: number): number {
-		return position / this.viewportWidth
+		return position / this.width
 	}
 
 	private getGranularity(): Granularity {

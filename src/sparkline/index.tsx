@@ -13,7 +13,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// #TODO
 	// Fix sparkline if width is smaller than aggregate length,
 	// this means there are more aggregation elements than pixels
-	if (props.aggregate.length > props.domain.viewportWidth) return null
+	if (props.aggregate.length > props.domain.width) return null
 
 	// Find the highest count (in math: the range), other counts will
 	// be relative to the highest count. 
@@ -22,7 +22,7 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// Generate a path from the aggregation points
 	const path = props.aggregate.reduce((prev, curr, index) => {
 		const curveType = index === 0 ? 'M' : 'L'
-		const x = (props.domain.viewportWidth / (props.aggregate.length - 1)) * index
+		const x = (props.domain.width / (props.aggregate.length - 1)) * index
 		const y = props.domain.viewportHeight - ((curr.count / countMax) * props.domain.viewportHeight)
 		return `${prev} ${curveType} ${x} ${y}`
 	}, '')
@@ -31,9 +31,10 @@ const Sparkline: React.SFC<IProps> = (props) => {
 	// position, but it should go to the lower right corner and then to the lower
 	// left corner, just (1px) out of the viewport. So a two lines are added on the
 	// right and on the bottom to close the path manually.
-	const pathCloser = ` L ${props.domain.viewportWidth + 1} ${props.domain.viewportHeight + 1} L -1 ${props.domain.viewportHeight + 1}`
+	const pathCloser = ` L ${props.domain.width + 1} ${props.domain.viewportHeight + 1} L -1 ${props.domain.viewportHeight + 1}`
 
-	const x = (props.domain.viewportWidth * props.domain.domainCenter) - ((props.domain.viewportWidth * props.domain.visibleRatio) / 2)
+	// const x = (props.domain.width * props.domain.domainCenter) - ((props.domain.width * props.domain.visibleRatio) / 2)
+
 	return (
 		<DomainWrapper
 			domain={props.domain}
@@ -46,8 +47,8 @@ const Sparkline: React.SFC<IProps> = (props) => {
 					zIndex: 1,
 				}}
 				preserveAspectRatio="none"
-				viewBox={`${x} 0 ${props.domain.viewportWidth * props.domain.visibleRatio} ${props.domain.viewportHeight}`}
-				width={`${props.domain.viewportWidth}px`}
+				viewBox={`0 0 ${props.domain.width} ${props.domain.viewportHeight}`}
+				width={`${props.domain.width}px`}
 			>
 				<path
 					d={path + pathCloser}

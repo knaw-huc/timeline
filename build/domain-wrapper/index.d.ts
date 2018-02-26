@@ -5,5 +5,19 @@ export interface IProps {
     domain: Domain;
     style: React.CSSProperties;
 }
-declare const DomainWrapper: React.SFC<IProps>;
-export default DomainWrapper;
+export interface IState {
+    dragOffset: number;
+    left: number;
+    dragStart: number;
+}
+export default class DomainWrapper extends React.PureComponent<IProps, IState> {
+    state: {
+        dragOffset: any;
+        left: number;
+        dragStart: number;
+    };
+    render(): JSX.Element;
+    private onMouseDown;
+    private onMouseMove;
+    private onMouseUp;
+}

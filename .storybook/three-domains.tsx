@@ -18,7 +18,6 @@ storiesOf('Timeline/Three Domains', module)
 						heightRatio: .25,
 						hasIndicatorFor: 0,
 						type: DomainType.Sparkline,
-						rulerLabels: false,
 						topOffsetRatio: .5,
 						visibleRatio: .5,
 					},
@@ -28,6 +27,7 @@ storiesOf('Timeline/Three Domains', module)
 						topOffsetRatio: .75,
 					},
 				]}
+				domainCenter={.7}
 				events={events}
 				from={new Date(1964, 0, 1)}
 				to={new Date(1978, 0, 1)}
