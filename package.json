@@ -12,18 +12,19 @@
     "watch": "tsc -w"
   },
   "devDependencies": {
-    "@storybook/react": "3.1.6",
-    "@types/react": "^16.0.5",
-    "awesome-typescript-loader": "^3.4.0",
-    "react-dom": "^15.6.1",
-    "typescript": "^2.6.1"
+    "@storybook/react": "3.3.6",
+    "@types/react": "^16.0.34",
+    "awesome-typescript-loader": "^3.4.1",
+    "babel-core": "^6.26.0",
+    "react-dom": "^16.2.0",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
     "classnames": "^2.2.5",
     "lodash.debounce": "^4.0.8",
-    "react": "^15.6.1",
+    "react": "^16.2.0",
     "redux": "^4.0.0-beta.1",
-    "styled-components": "^2.1.2"
+    "styled-components": "^2.4.0"
   },
   "typings": "build/index.d.ts"
 }

@@ -45,8 +45,8 @@ export interface IState {
 }
 class Events extends React.PureComponent<IProps, IState> {
 	public state = {
-		events: this.props.events.filter(e => e.top < this.props.domain.height),
-		activeRegionHeight: this.props.domain.height,
+		events: this.props.events.filter(e => e.top < this.props.domain.viewportHeight),
+		activeRegionHeight: this.props.domain.viewportHeight,
 	}
 
 	public componentDidMount() {
@@ -69,7 +69,7 @@ class Events extends React.PureComponent<IProps, IState> {
 			>
 				<Wrapper
 					onScroll={(ev) => {
-						const activeRegionHeight = ev.nativeEvent.target.scrollTop + this.props.domain.height
+						const activeRegionHeight = ev.nativeEvent.target.scrollTop + this.props.domain.viewportHeight
 						if (activeRegionHeight > this.state.activeRegionHeight) {
 							const events = this.props.events.filter(e => e.top < this.state.activeRegionHeight)
 							this.setState({ activeRegionHeight, events })

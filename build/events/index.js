@@ -23,8 +23,8 @@ class Events extends React.PureComponent {
     constructor() {
         super(...arguments);
         this.state = {
-            events: this.props.events.filter(e => e.top < this.props.domain.height),
-            activeRegionHeight: this.props.domain.height,
+            events: this.props.events.filter(e => e.top < this.props.domain.viewportHeight),
+            activeRegionHeight: this.props.domain.viewportHeight,
         };
     }
     componentDidMount() {
@@ -41,7 +41,7 @@ class Events extends React.PureComponent {
     render() {
         return (React.createElement(domain_wrapper_1.default, { domain: this.props.domain, style: this.props.style },
             React.createElement(Wrapper, { onScroll: (ev) => {
-                    const activeRegionHeight = ev.nativeEvent.target.scrollTop + this.props.domain.height;
+                    const activeRegionHeight = ev.nativeEvent.target.scrollTop + this.props.domain.viewportHeight;
                     if (activeRegionHeight > this.state.activeRegionHeight) {
                         const events = this.props.events.filter(e => e.top < this.state.activeRegionHeight);
                         this.setState({ activeRegionHeight, events });

@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import Timeline, { DomainType } from '../src'
 import { yearAggregate, events } from './data';
 
-storiesOf('Timeline', module)
+storiesOf('Timeline/Two Domains', module)
 	.add('sparkline, event', () =>
 		<div style={{ height: '200px'}}>
 			<Timeline

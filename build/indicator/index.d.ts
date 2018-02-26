@@ -1,10 +1,11 @@
 /// <reference types="react" />
 import * as React from 'react';
+import Domain from '../models/domain';
 export interface IProps {
-    left: number;
-    onClick: (x: number) => void;
-    onMove: (left: number) => void;
-    width: number;
+    domain: Domain;
+    for: Domain;
+    onClick?: (x: number) => void;
+    onMove?: (left: number) => void;
 }
 export interface IState {
     dragOffset: number;

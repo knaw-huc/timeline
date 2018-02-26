@@ -4,6 +4,7 @@ import { Granularity } from '../constants';
 export enum DomainType { Event, Navigator, Sparkline }
 export interface IDomainDef {
 	domainLabels?: boolean
+	hasIndicatorFor?: number
 	heightRatio?: number
 	visibleRatio?: number
 	rulerLabels?: boolean
@@ -20,15 +21,14 @@ class Domain implements IDomainDef {
 	// The from date
 	public from: Date
 
-	// Height of the domain in pixels
-	public height: number
+	// Level of detail (ie century, year, month, week, day, etc)
+	public granularity: Granularity
+
+	public hasIndicatorFor: number
 
 	// Part of the horizontal space available to this domain.
 	// If the ratio is .1 only 10% of the heigth is used for this domain.
 	public heightRatio: number = 1
-
-	// Level of detail (ie century, year, month, week, day, etc)
-	public granularity: Granularity
 
 	// The amount of pixels taken by one day. Metric used for calculating 
 	// the x-position of an event or ruler on the timeline.
@@ -56,7 +56,13 @@ class Domain implements IDomainDef {
 	// Type of domain (ie sparkline, event, navigator)
 	public type: DomainType = DomainType.Event
 
-	// Width of the domain in pixels
+	// Visible height of the domain in pixels
+	public viewportHeight: number
+
+	// Visible width of the domain in pixels
+	public viewportWidth: number
+
+	public height: number
 	public width: number
 
 	constructor(
@@ -64,10 +70,10 @@ class Domain implements IDomainDef {
 		to: Date,
 		viewPortWidth: number,
 		viewPortHeight: number,
-		domainCenter: number,
+		public domainCenter: number,
 		domainDef: IDomainDef,
 	) {
-		Object.keys(domainDef).map(k => {
+		Object.keys(domainDef).forEach(k => {
 			if (domainDef[k] !== this[k]) this[k] = domainDef[k]
 		})
 
@@ -85,23 +91,21 @@ class Domain implements IDomainDef {
 			this.to = to
 		}
 
-		this.width = viewPortWidth
-		this.height = viewPortHeight * this.heightRatio
+		this.viewportWidth = viewPortWidth
+		this.viewportHeight = viewPortHeight * this.heightRatio
+		this.height = this.viewportHeight // TODO calc height depending on max event rows
+		this.width = this.viewportWidth / this.visibleRatio
 
-		this.pixelsPerDay = this.width / this.countDays()
+		this.pixelsPerDay = this.viewportWidth / this.countDays()
 		this.granularity = this.getGranularity()
-	}
-
-	public positionAtDate(date: Date): number {
-		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
-	}
-
-	public dateAtPosition(x: number): Date {
-		return this.dateAtProportion(this.proportionAtPosition(x))
 	}
 
 	public countDays(): number {
 		return DateUtils.countDays(this.from, this.to);
+	}
+
+	public dateAtPosition(x: number): Date {
+		return this.dateAtProportion(this.proportionAtPosition(x))
 	}
 
 	public dateAtProportion(proportion: number): Date {
@@ -112,8 +116,12 @@ class Domain implements IDomainDef {
 		return new Date(newTime);
 	}
 
+	public positionAtDate(date: Date): number {
+		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+	}
+
 	public proportionAtPosition(position: number): number {
-		return position / this.width
+		return position / this.viewportWidth
 	}
 
 	private getGranularity(): Granularity {

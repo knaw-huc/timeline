@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { DomainIndicator, VisibleDomainIndicator } from './indicators';
+import { DomainIndicator, VisibleDomainIndicator } from './indicators'
+import Domain from '../models/domain'
 
 export interface IProps {
-	left: number
-	onClick: (x: number) => void
-	onMove: (left: number) => void
-	width: number
+	domain: Domain
+	for: Domain
+	onClick?: (x: number) => void
+	onMove?: (left: number) => void
 }
 export interface IState {
 	dragOffset: number
@@ -17,8 +18,8 @@ class Indicator extends React.Component<IProps, IState> {
 
 	public state = {
 		dragOffset: null, // Relative to indicator
-		left: this.props.left,
-		width: this.props.width,
+		left: 200,
+		width: 100,
 	}
 
 	public componentWillReceiveProps(nextProps) {
@@ -34,10 +35,12 @@ class Indicator extends React.Component<IProps, IState> {
 	public render() {
 		return (
 			<DomainIndicator
+				domain={this.props.domain}
 				onClick={this.onClick}
 				setRef={(el) => { this.el = el }}
 			>
 				<VisibleDomainIndicator
+					domain={this.props.domain}
 					dragging={this.state.dragOffset != null}
 					onMouseDown={this.onMouseDown}
 					{...this.state}

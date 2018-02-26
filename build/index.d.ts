@@ -35,7 +35,7 @@ declare class Timeline extends React.PureComponent<ITimelineProps, ITimelineStat
     componentWillReceiveProps(nextProps: ITimelineProps): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
-    domainComponents: (domain: Domain, index: number) => JSX.Element;
+    private domainComponents;
     private getDomains(props);
     private getEvents(events, domain);
     private debouncedHandleResize;

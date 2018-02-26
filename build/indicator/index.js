@@ -7,8 +7,8 @@ class Indicator extends React.Component {
         super(...arguments);
         this.state = {
             dragOffset: null,
-            left: this.props.left,
-            width: this.props.width,
+            left: 200,
+            width: 100,
         };
         this.cursorX = (ev) => ev.clientX - this.el.getBoundingClientRect().left;
         this.onClick = (ev) => {
@@ -45,8 +45,8 @@ class Indicator extends React.Component {
         }
     }
     render() {
-        return (React.createElement(indicators_1.DomainIndicator, { onClick: this.onClick, setRef: (el) => { this.el = el; } },
-            React.createElement(indicators_1.VisibleDomainIndicator, Object.assign({ dragging: this.state.dragOffset != null, onMouseDown: this.onMouseDown }, this.state))));
+        return (React.createElement(indicators_1.DomainIndicator, { domain: this.props.domain, onClick: this.onClick, setRef: (el) => { this.el = el; } },
+            React.createElement(indicators_1.VisibleDomainIndicator, Object.assign({ domain: this.props.domain, dragging: this.state.dragOffset != null, onMouseDown: this.onMouseDown }, this.state))));
     }
 }
 exports.default = Indicator;

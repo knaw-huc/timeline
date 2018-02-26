@@ -6,9 +6,7 @@ import {addTop} from "./utils/event"
 import Sparkline from './sparkline'
 import Domain, { DomainType, IDomainDef } from './models/domain'
 // import Dev from "./dev"
-// import Indicator from './indicator'
-
-
+import Indicator from './indicator'
 
 const Container = (props) =>
 	<div
@@ -101,19 +99,29 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 				style={this.props.style}
 			>
 				{ this.state.domains.map(this.domainComponents) }
+				{ this.state.domains
+					.filter(d => d.hasIndicatorFor != null)
+					.map(d =>
+						<Indicator
+							domain={d}
+							for={this.state.domains[d.hasIndicatorFor]}
+							key={`${d.topOffsetRatio}${d.hasIndicatorFor}`}
+						/>
+					)
+				}
 				{/* <Dev domains={this.state.domains} /> */}
 			</Container>
 		)
 	}
 
-	public domainComponents = (domain: Domain, index: number) => {
+	private domainComponents = (domain: Domain, index: number) => {
 		switch (domain.type) {
 			case DomainType.Sparkline: {
 				return (
 					<Sparkline
 						aggregate={this.props.aggregate}
 						domain={domain}
-						key="sparkline"
+						key={`sparkline-${index}`}
 						style={{ zIndex: index }}
 					/>
 				)
@@ -124,7 +132,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 						domain={domain}
 						events={this.state.events}
 						fetchEvents={this.props.fetchEvents}
-						key="events"
+						key={`events-${index}`}
 						style={{ zIndex: index }}
 					/>
 				)
@@ -134,9 +142,7 @@ class Timeline extends React.PureComponent<ITimelineProps, ITimelineState> {
 
 	private getDomains(props: ITimelineProps): Domain[] {
 		const rect = this.el.getBoundingClientRect()
-		return props.domains.map(d => {
-			return new Domain(props.from, props.to, rect.width, rect.height, props.domainCenter, d)
-		})
+		return props.domains.map(d => new Domain(props.from, props.to, rect.width, rect.height, props.domainCenter, d))
 	}
 
 	private getEvents(events: IServerEvent[], domain: Domain): Event[] {

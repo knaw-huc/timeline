@@ -6,6 +6,7 @@ export declare enum DomainType {
 }
 export interface IDomainDef {
     domainLabels?: boolean;
+    hasIndicatorFor?: number;
     heightRatio?: number;
     visibleRatio?: number;
     rulerLabels?: boolean;
@@ -14,11 +15,12 @@ export interface IDomainDef {
     type?: DomainType;
 }
 declare class Domain implements IDomainDef {
+    domainCenter: number;
     domainLabels: boolean;
     from: Date;
-    height: number;
-    heightRatio: number;
     granularity: Granularity;
+    hasIndicatorFor: number;
+    heightRatio: number;
     pixelsPerDay: number;
     visibleRatio: number;
     rulerLabels: boolean;
@@ -26,12 +28,15 @@ declare class Domain implements IDomainDef {
     to: Date;
     topOffsetRatio: number;
     type: DomainType;
+    viewportHeight: number;
+    viewportWidth: number;
+    height: number;
     width: number;
     constructor(from: Date, to: Date, viewPortWidth: number, viewPortHeight: number, domainCenter: number, domainDef: IDomainDef);
-    positionAtDate(date: Date): number;
-    dateAtPosition(x: number): Date;
     countDays(): number;
+    dateAtPosition(x: number): Date;
     dateAtProportion(proportion: number): Date;
+    positionAtDate(date: Date): number;
     proportionAtPosition(position: number): number;
     private getGranularity();
 }

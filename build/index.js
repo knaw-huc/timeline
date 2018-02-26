@@ -7,6 +7,7 @@ const event_1 = require("./models/event");
 const event_2 = require("./utils/event");
 const sparkline_1 = require("./sparkline");
 const domain_1 = require("./models/domain");
+const indicator_1 = require("./indicator");
 const Container = (props) => React.createElement("div", { ref: props.setRef, style: Object.assign({ backgroundColor: 'white', boxSizing: 'border-box', height: '100%', overflow: 'hidden', position: 'relative', width: '100%' }, props.style) }, props.children);
 class Timeline extends React.PureComponent {
     constructor() {
@@ -19,10 +20,10 @@ class Timeline extends React.PureComponent {
         this.domainComponents = (domain, index) => {
             switch (domain.type) {
                 case domain_1.DomainType.Sparkline: {
-                    return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: "sparkline", style: { zIndex: index } }));
+                    return (React.createElement(sparkline_1.default, { aggregate: this.props.aggregate, domain: domain, key: `sparkline-${index}`, style: { zIndex: index } }));
                 }
                 case domain_1.DomainType.Event: {
-                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, fetchEvents: this.props.fetchEvents, key: "events", style: { zIndex: index } }));
+                    return (React.createElement(index_1.default, { domain: domain, events: this.state.events, fetchEvents: this.props.fetchEvents, key: `events-${index}`, style: { zIndex: index } }));
                 }
             }
         };
@@ -48,13 +49,15 @@ class Timeline extends React.PureComponent {
         window.removeEventListener('resize', this.debouncedHandleResize);
     }
     render() {
-        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style }, this.state.domains.map(this.domainComponents)));
+        return (React.createElement(Container, { setRef: (el) => { this.el = el; }, style: this.props.style },
+            this.state.domains.map(this.domainComponents),
+            this.state.domains
+                .filter(d => d.hasIndicatorFor != null)
+                .map(d => React.createElement(indicator_1.default, { domain: d, for: this.state.domains[d.hasIndicatorFor], key: `${d.topOffsetRatio}${d.hasIndicatorFor}` }))));
     }
     getDomains(props) {
         const rect = this.el.getBoundingClientRect();
-        return props.domains.map(d => {
-            return new domain_1.default(props.from, props.to, rect.width, rect.height, props.domainCenter, d);
-        });
+        return props.domains.map(d => new domain_1.default(props.from, props.to, rect.width, rect.height, props.domainCenter, d));
     }
     getEvents(events, domain) {
         return event_2.addTop(events.map(e => new event_1.default(e, domain)));

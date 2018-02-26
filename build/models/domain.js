@@ -9,6 +9,7 @@ var DomainType;
 })(DomainType = exports.DomainType || (exports.DomainType = {}));
 class Domain {
     constructor(from, to, viewPortWidth, viewPortHeight, domainCenter, domainDef) {
+        this.domainCenter = domainCenter;
         this.domainLabels = false;
         this.heightRatio = 1;
         this.visibleRatio = 1;
@@ -16,7 +17,7 @@ class Domain {
         this.rulers = true;
         this.topOffsetRatio = 0;
         this.type = DomainType.Event;
-        Object.keys(domainDef).map(k => {
+        Object.keys(domainDef).forEach(k => {
             if (domainDef[k] !== this[k])
                 this[k] = domainDef[k];
         });
@@ -30,19 +31,18 @@ class Domain {
             this.from = from;
             this.to = to;
         }
-        this.width = viewPortWidth;
-        this.height = viewPortHeight * this.heightRatio;
-        this.pixelsPerDay = this.width / this.countDays();
+        this.viewportWidth = viewPortWidth;
+        this.viewportHeight = viewPortHeight * this.heightRatio;
+        this.height = this.viewportHeight;
+        this.width = this.viewportWidth / this.visibleRatio;
+        this.pixelsPerDay = this.viewportWidth / this.countDays();
         this.granularity = this.getGranularity();
-    }
-    positionAtDate(date) {
-        return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
-    }
-    dateAtPosition(x) {
-        return this.dateAtProportion(this.proportionAtPosition(x));
     }
     countDays() {
         return DateUtils.countDays(this.from, this.to);
+    }
+    dateAtPosition(x) {
+        return this.dateAtProportion(this.proportionAtPosition(x));
     }
     dateAtProportion(proportion) {
         if (proportion < 0 || proportion > 1)
@@ -52,8 +52,11 @@ class Domain {
         const newTime = fromTime + ((toTime - fromTime) * proportion);
         return new Date(newTime);
     }
+    positionAtDate(date) {
+        return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+    }
     proportionAtPosition(position) {
-        return position / this.width;
+        return position / this.viewportWidth;
     }
     getGranularity() {
         const days = this.countDays();
