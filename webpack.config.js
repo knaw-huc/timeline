@@ -1,24 +1,21 @@
 module.exports = {
-	entry: "./src/index.tsx",
+	entry: "./src/index.ts",
 	output: {
-			filename: "bundle.js",
-			path: __dirname + "/build"
+		filename: "bundle.js",
+		library: "Timeline",
+		path: __dirname + "/build"
 	},
 	resolve: {
-			// Add '.ts' and '.tsx' as resolvable extensions.
-			extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+		// Add '.ts' and '.tsx' as resolvable extensions.
+		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
 	},
 	module: {
-			loaders: [
-					// All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-					{
-						test: /\.tsx?$/,
-						loader: "awesome-typescript-loader",
-					}
-			]
-	},
-	externals: {
-		react: "React",
-		'react-dom': "ReactDOM",
-	},
+		rules: [
+			// All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+			{
+				test: /\.tsx?$/,
+				loader: "ts-loader",
+			}
+		]
+	}
 };

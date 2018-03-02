@@ -3,28 +3,17 @@
   "version": "1.1.5",
   "description": "",
   "main": "build/index.js",
-  "author": "",
+  "author": "Gijsjan Brouwer",
   "license": "ISC",
   "scripts": {
-    "build": "tsc",
-    "build-storybook": "build-storybook -c .storybook -o docs",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "watch": "tsc -w"
+    "build": "webpack --mode production",
+    "watch": "webpack -w --mode development"
   },
   "devDependencies": {
-    "@storybook/react": "3.3.6",
-    "@types/react": "^16.0.34",
-    "awesome-typescript-loader": "^3.4.1",
-    "babel-core": "^6.26.0",
-    "react-dom": "^16.2.0",
-    "typescript": "^2.6.2"
-  },
-  "dependencies": {
-    "classnames": "^2.2.5",
-    "lodash.debounce": "^4.0.8",
-    "react": "^16.2.0",
-    "redux": "^4.0.0-beta.1",
-    "styled-components": "^2.4.0"
-  },
-  "typings": "build/index.d.ts"
+    "awesome-typescript-loader": "^3.5.0",
+    "ts-loader": "^4.0.0",
+    "typescript": "^2.7.2",
+    "webpack": "^4.0.0",
+    "webpack-cli": "^2.0.9"
+  }
 }

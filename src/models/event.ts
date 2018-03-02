@@ -1,14 +1,15 @@
-import BaseEvent from './base-event';
-import * as Constants from '../constants';
-import Domain from './domain';
+import BaseEvent from './base-event'
+import * as Constants from '../constants'
+import Domain from './domain'
 
 class Event extends BaseEvent {
 	// public flip: boolean
+	public isRendered: boolean
 	public left: number
 	public top: number
 	public width: number
 
-	constructor(data, domain: Domain) {
+	constructor(data, private domain: Domain) {
 		super(data)
 
 		this.left = domain.positionAtDate(this.from)
@@ -30,6 +31,14 @@ class Event extends BaseEvent {
 		// const left = (this.flip) ? this.left - width : this.left;
 		const left = this.left
 		return [left, width];
+	}
+
+	public shouldRender(): boolean {
+		return (
+			this.date > this.domain.activeFrom &&
+			this.date < this.domain.activeTo &&
+			!this.isRendered
+		)
 	}
 }
 

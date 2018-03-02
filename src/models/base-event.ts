@@ -1,5 +1,5 @@
-import * as DateUtils from '../utils/dates';
-import {Granularity} from "../constants";
+import * as DateUtils from '../utils/dates'
+import {Granularity} from "../constants"
 
 export interface IDateRange {
 	from: Date;
@@ -7,23 +7,6 @@ export interface IDateRange {
 	infiniteTo?: boolean;
 	to: Date;
 }
-
-// export interface IBaseEvent {
-// 	date: Date;
-// 	dateRange: IDateRange;
-// 	dateRangeUncertain: IDateRange;
-// 	dateUncertain: IDateRange;
-// 	from: Date;
-// 	slug: string;
-// 	title: string;
-// 	to: Date;
-// 	types: string[];
-// 	countDays(): number;
-// 	formatFromDate(): string;
-// 	formatToDate(): string;
-// 	isInterval(): boolean;
-// 	isUncertain(): boolean;
-// }
 
 class BaseEvent {
 	public body: string = ''

@@ -1,7 +1,8 @@
 import * as DateUtils from '../utils/dates'
-import { Granularity } from '../constants';
+import dateRange from '../utils/date-range'
+import { Granularity } from '../constants'
 
-export enum DomainType { Event, Navigator, Sparkline }
+export enum DomainType { Events = "EVENTS", Sparkline = "SPARKLINE" }
 export interface IDomainDef {
 	domainLabels?: boolean
 	hasIndicatorFor?: number
@@ -14,12 +15,13 @@ export interface IDomainDef {
 }
 
 class Domain implements IDomainDef {
+
+	public activeFrom: Date
+	public activeTo: Date
+
 	// Show from & to labels? Labels are shown left and right respectively
 	// of timeline. Use if rulers are to noisy
 	public domainLabels: boolean = false
-
-	// The from date
-	public from: Date
 
 	// Level of detail (ie century, year, month, week, day, etc)
 	public granularity: Granularity
@@ -34,19 +36,11 @@ class Domain implements IDomainDef {
 	// the x-position of an event or ruler on the timeline.
 	public pixelsPerDay: number
 
-	// Number between 0 and 1 representing the visible ratio of the domain
-	// in relation to the total. If the total is 1 year, a ratio of .75
-	// would show 9 months and hide 3 months.
-	public visibleRatio: number = 1
-
 	// Show ruler labels?
 	public rulerLabels: boolean = true
 
 	// Show rulers?
 	public rulers: boolean = true
-
-	// The to date
-	public to: Date
 
 	// Number between 0 and 1 representing the offset from the top
 	// at which the domain should start. A ratio of .3 would make the
@@ -54,46 +48,43 @@ class Domain implements IDomainDef {
 	public topOffsetRatio: number = 0
 
 	// Type of domain (ie sparkline, event, navigator)
-	public type: DomainType = DomainType.Event
+	public type: DomainType = DomainType.Events
 
-	// Visible height of the domain in pixels
-	public viewportHeight: number
+	// Number between 0 and 1 representing the visible ratio of the domain
+	// in relation to the total. If the total is 1 year, a ratio of .75
+	// would show 9 months and hide 3 months.
+	public visibleRatio: number = 1
 
+	public center: number
+	public left: number
 	public height: number
 	public width: number
 
 	constructor(
-		from: Date,
-		to: Date,
+		domain: IDomainDef,
+		private from: Date,
+		private to: Date,
 		public viewportWidth: number,
-		viewportHeight: number,
-		public domainCenter: number,
-		domainDef: IDomainDef,
+		public viewportHeight: number,
 	) {
-		Object.keys(domainDef).forEach(k => {
-			if (domainDef[k] !== this[k]) this[k] = domainDef[k]
+		Object.keys(domain).forEach(k => {
+			if (domain[k] !== this[k]) this[k] = domain[k]
 		})
-
-		this.from = from
-		this.to = to
-		// if (this.visibleRatio < 1) {
-		// 	const leftRatio = domainCenter - (this.visibleRatio/2) 
-		// 	const rightRatio = domainCenter + (this.visibleRatio/2) 
-
-		// 	// Do not change! `from` and `to` have to be calculated before
-		// 	// assigning to `this.from` and `this.to`
-		// 	const from = this.dateAtProportion(leftRatio)
-		// 	const to = this.dateAtProportion(rightRatio)
-		// 	this.from = from
-		// 	this.to = to
-		// }
 
 		this.viewportHeight = viewportHeight * this.heightRatio
 		this.height = this.viewportHeight // TODO calc height depending on max event rows
-		this.width = this.viewportWidth / this.visibleRatio
+		this.width = viewportWidth / this.visibleRatio
 
 		this.pixelsPerDay = this.width / this.countDays()
 		this.granularity = this.getGranularity()
+	}
+
+	public setActiveRange(iteration: number): void {
+		const deviation = iteration * this.visibleRatio				
+		const lowerDeviation = this.center - deviation > 0 ? this.center - deviation : 0
+		const upperDeviation = this.center + deviation < 1 ? this.center + deviation : 1
+		this.activeFrom = this.dateAtProportion(lowerDeviation)
+		this.activeTo = this.dateAtProportion(upperDeviation)
 	}
 
 	public countDays(): number {
@@ -112,6 +103,20 @@ class Domain implements IDomainDef {
 		return new Date(newTime);
 	}
 
+	public setCenter(center: number) {
+		if (center < 0) center = 0
+		else if (center > 1) center = 1
+		this.center = center
+		this.left = center * (this.viewportWidth - this.width)
+	}
+
+	public setLeft(left: number) {
+		if (left < -this.width + this.viewportWidth) left = -this.width + this.viewportWidth
+		else if (left > 0) left = 0 
+		this.left = left
+		this.center = left / (this.viewportWidth - this.width)	
+	}
+
 	public positionAtDate(date: Date): number {
 		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
 	}
@@ -120,8 +125,15 @@ class Domain implements IDomainDef {
 		return position / this.width
 	}
 
+	/**
+	 * Create a range from domain.from to domain.to, taking domain.granularity into account.
+	 */
+	public range() {
+		return dateRange(this.from, this.to, this.granularity)	
+	}
+
 	private getGranularity(): Granularity {
-		const days = this.countDays()
+		const days = this.countDays() / (this.width/this.viewportWidth)
 		if (days < 1) return Granularity.HOUR
 		if (days < 15) return Granularity.DAY
 		if (days < 45) return Granularity.WEEK

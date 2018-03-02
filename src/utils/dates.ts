@@ -1,4 +1,4 @@
-import {Granularity} from "../constants";
+import {Granularity} from "../constants"
 
 export const countDays = (from: Date, to: Date): number => {
 	if (to == null) return 0;
