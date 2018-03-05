@@ -5,6 +5,7 @@ const create_element_1 = require("../../../../../utils/create-element");
 class PointInTime {
     constructor(event) {
         this.event = event;
+        event.isRendered = true;
     }
     render() {
         const li = create_element_1.default('li', 'pit-wrap', [

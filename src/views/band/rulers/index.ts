@@ -1,23 +1,29 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import Ruler from './ruler'
-import { getStep } from '../../../utils/date-range'
+import { getStep } from '../../../utils/dates'
 import { Granularity } from '../../../utils/dates';
+import props from '../../../models/props';
 
-const findClosestRulerPosition = (date: Date, granularity: Granularity) => {
-	if (granularity > Granularity.YEAR) {
+export const findClosestRulerDate = (date: Date, granularity: Granularity) => {
+	let year = date.getFullYear()
+
+	if (granularity >= Granularity.YEAR) {
 		const step = getStep(granularity)
-		let year = date.getFullYear()
-		while(year % step !== 0) { year += 1 }
+		if (granularity === Granularity.YEAR) year += 1
+		else while(year % step !== 0) { year += 1 }
 		return new Date(year, 0, 1)
-	}	
+	} else if (granularity === Granularity.MONTH) {
+		return new Date(year, date.getMonth() + 1, 1)
+	} else if (granularity === Granularity.DAY) {
+		return new Date(year, date.getMonth(), date.getDate() + 1)
+	}
+
 	return date
 }
 
 export default class Rulers {
-	private iter: number = 0
 	private ul: HTMLElement
-	private prevRange: [Date, Date] = [null, null]
 
 	constructor(private domain: Domain) {}
 
@@ -38,32 +44,12 @@ export default class Rulers {
 			]
 		)
 
-		this.renderRulers()
+		let date = findClosestRulerDate(props.from, this.domain.granularity)
+		while(date.getTime() < props.to.getTime()) {
+			this.ul.appendChild(new Ruler(date, this.domain).render())
+			date = this.domain.nextDate(date)
+		}
 
 		return this.ul
-	}
-
-	private renderRulers = () => {
-		let [from, to, last] = this.domain.initialActiveRange(++this.iter)
-		from = findClosestRulerPosition(from, this.domain.granularity)
-
-		const [prevFrom, prevTo] = this.prevRange
-
-		const end = prevFrom || to
-		for (let i = from; i < end; i = new Date(this.domain.nextDate(i))) {
-			const r = new Ruler(i, this.domain)
-			this.ul.appendChild(r.render())
-		}
-
-		if (prevTo) {
-			for (let i = prevTo; i < to; i = new Date(this.domain.nextDate(i))) {
-				const r = new Ruler(i, this.domain)
-				this.ul.appendChild(r.render())
-			}
-		}
-
-		this.prevRange = [from, to]
-
-		if (!last) window.requestAnimationFrame(this.renderRulers)
 	}
 }

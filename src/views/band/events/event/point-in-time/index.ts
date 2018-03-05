@@ -1,12 +1,9 @@
-// import * as React from 'react'
 import Event from "../../../../../models/event"
 import { EVENT_MIN_SPACE, EVENT_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 
 export default class PointInTime {
-	 constructor(private event: Event) {
-		event.isRendered = true
-	}
+	 constructor(private event: Event, private segmentOffset: number) {}
 
 	public render() {
 		const li = createElement(
@@ -15,12 +12,13 @@ export default class PointInTime {
 			[
 				'box-sizing: border-box',
 				'font-size: 0.8em',
+				`margin-left: -${EVENT_HEIGHT/2}px`,
 				'position: absolute',
 				'white-space: nowrap',
 				`max-width: ${EVENT_MIN_SPACE}px`,
 			],
 			[
-				`left: ${this.event.left - 5}px`,
+				`left: ${this.event.left - this.segmentOffset}px`,
 				`top: ${this.event.top}px`,
 			]
 		)

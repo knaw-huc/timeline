@@ -9,5 +9,6 @@ export default abstract class Band {
     render(): HTMLElement;
     private onMouseDown;
     private onMouseMove;
+    protected abstract renderChildren(): void;
     private onMouseUp;
 }

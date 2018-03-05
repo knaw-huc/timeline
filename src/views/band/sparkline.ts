@@ -1,6 +1,7 @@
 import Domain from '../../models/domain'
 import { createSvg } from '../../utils/create-element'
 import Band from './index'
+import Rulers from './rulers';
 
 export default class SparklineBand extends Band {
 	constructor(domain: Domain, private aggregate) {
@@ -29,9 +30,12 @@ export default class SparklineBand extends Band {
 		svg.appendChild(path)
 
 		wrapper.appendChild(svg)
+		wrapper.appendChild(new Rulers(this.domain).render())
 
 		return wrapper
 	}
+
+	protected renderChildren() {}
 
 	private createPath(): string {
 		// Find the highest count (in math: the range), other counts will

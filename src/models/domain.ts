@@ -1,5 +1,5 @@
 import { countDays, getGranularity, Granularity } from '../utils/dates'
-import subsequentDateGenerator from '../utils/date-range'
+import { subsequentDate } from '../utils/dates'
 import props from './props'
 
 export enum DomainType { Events = "EVENTS", Sparkline = "SPARKLINE" }
@@ -73,8 +73,8 @@ class Domain implements IDomainDef {
 
 		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
 
-		this.prevDate = subsequentDateGenerator(this.granularity, true)
-		this.nextDate = subsequentDateGenerator(this.granularity)
+		this.prevDate = subsequentDate(this.granularity, true)
+		this.nextDate = subsequentDate(this.granularity)
 
 		this.pixelsPerDay = this.width / countDays(props.from, props.to)
 
@@ -120,7 +120,7 @@ class Domain implements IDomainDef {
 	}
 
 	public positionAtDate(date: Date): number {
-		return countDays(props.from, date) * this.pixelsPerDay;
+		return countDays(props.from, date) * this.pixelsPerDay
 	}
 
 	public proportionAtPosition(position: number): number {

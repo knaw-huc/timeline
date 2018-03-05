@@ -2,18 +2,20 @@ import Domain from '../../../models/domain'
 import Event from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import Band from '../index'
-import PointInTime from './event/point-in-time'
-// import { READY_FOR_RENDER_EVENT } from '../../../constants'
 import addTop from '../../../utils/add-top'
+import props from '../../../models/props'
+import Segment from './segment'
+import { findClosestRulerDate } from '../rulers'
 
 export default class EventsBand extends Band {
 	private eventsWrap
-	private iter = 0
-	private topAdder
+	private topAdder: (e: Event) => Event
+	private segments: Segment[]
 
 	constructor(domain: Domain, private events) {
 		super(domain)
 		this.topAdder = addTop(domain)
+		this.segments = this.createSegments()
 	}
 
 	public render() {
@@ -33,23 +35,60 @@ export default class EventsBand extends Band {
 			]
 		)
 
-		this.renderEvents()
+		this.segments.forEach(s => bandWrap.appendChild(s.render()))
+		this.renderChildren()
 
 		bandWrap.appendChild(this.eventsWrap)
 
 		return bandWrap
 	}
 
-	private renderEvents = () => {
-		const [from, to, last] = this.domain.initialActiveRange(++this.iter)
-		this.events
-			.filter(e => e.date >= from && e.date <= to && !e.isRendered)
-			.map(e => {
-				e.isRendered = true
-				return this.topAdder(new Event(e, this.domain))
-			})
-			.forEach(e => this.eventsWrap.appendChild(new PointInTime(e).render()))
+	protected renderChildren() {
+		const index = Math.floor(this.segments.length * props.center)
+		for (let i = 0; i < this.segments.length; i++) {
+			const seg = this.segments[i]
 
-		if (!last) window.requestAnimationFrame(this.renderEvents)
+			if (i > index - 2 && i < index + 2) {
+				if (seg.rendered) seg.show()
+				else seg.renderEvents()
+			} else {
+				seg.hide()
+			}
+		}
+	}
+
+	private createSegments() {
+		const segments = [] 
+		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
+		this.events.sort((a, b) => a.date.getTime() - b.date.getTime())
+
+		for (let i = 0; i < segmentCount; i++) {
+			const ratioFrom = this.domain.visibleRatio * i
+			const ratioTo = ratioFrom + this.domain.visibleRatio
+			const from = this.domain.dateAtProportion(ratioFrom)
+			const to = this.domain.dateAtProportion(ratioTo)
+
+			const rulerDates = []
+			let date = findClosestRulerDate(from, this.domain.granularity)
+			while(date.getTime() < to.getTime()) {
+				rulerDates.push(date)
+				date = this.domain.nextDate(date)
+			}
+
+			const outOfBoundsIndex = this.events.findIndex(e => e.date.getTime() > to.getTime())
+			let events = this.events.slice(0, outOfBoundsIndex)
+			this.events = this.events.slice(outOfBoundsIndex)
+			if (i === segmentCount - 1) events = events.concat(this.events)
+			
+			segments.push(new Segment(
+				events.map(e => new Event(e, this.domain)),
+				rulerDates,
+				i * this.domain.viewportWidth,
+				this.topAdder,
+				this.domain
+			))
+		}
+
+		return segments
 	}
 }

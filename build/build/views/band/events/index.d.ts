@@ -3,9 +3,10 @@ import Band from '../index';
 export default class EventsBand extends Band {
     private events;
     private eventsWrap;
-    private iter;
     private topAdder;
+    private segments;
     constructor(domain: Domain, events: any);
     render(): HTMLElement;
-    private renderEvents;
+    protected renderChildren(): void;
+    private createSegments();
 }

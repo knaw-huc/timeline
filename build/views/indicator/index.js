@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const create_element_1 = require("../../utils/create-element");
 const constants_1 = require("../../constants");
+const props_1 = require("../../models/props");
 class Indicator {
     constructor(hostDomain, targetDomain) {
         this.hostDomain = hostDomain;
         this.targetDomain = targetDomain;
+        this.width = this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth;
         document.addEventListener(constants_1.CENTER_CHANGE_EVENT, (e) => {
             this.indicator.style.transform = `translate3d(${this.indicatorLeft()}px, 0, 0)`;
         });
@@ -30,16 +32,13 @@ class Indicator {
         ], [
             `height: ${this.hostDomain.viewportHeight}px`,
             `transform: translate3d(${this.indicatorLeft()}px, 0, 0)`,
-            `width: ${this.indicatorWidth()}px`,
+            `width: ${this.width}px`,
         ]);
         wrapper.appendChild(this.indicator);
         return wrapper;
     }
     indicatorLeft() {
-        return (this.targetDomain.viewportWidth - this.indicatorWidth()) * this.hostDomain.center;
-    }
-    indicatorWidth() {
-        return this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth;
+        return (this.targetDomain.viewportWidth - this.width) * props_1.default.center;
     }
 }
 exports.default = Indicator;

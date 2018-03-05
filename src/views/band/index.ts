@@ -1,7 +1,6 @@
 import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
-import Rulers from './rulers'
 import { CENTER_CHANGE_EVENT } from '../../constants'
 
 export default abstract class Band {
@@ -15,6 +14,7 @@ export default abstract class Band {
 
 	private updateLeft = () => {
 		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
+		if (this.domain.type === 'EVENTS') this.renderChildren()
 	}
 
 	public render() {
@@ -32,8 +32,6 @@ export default abstract class Band {
 				`width: ${this.domain.width}px`,
 			]
 		)
-
-		this.rootElement.appendChild(new Rulers(this.domain).render())
 
 		this.rootElement.addEventListener('mousedown', this.onMouseDown)
 		this.rootElement.addEventListener('mousemove', this.onMouseMove)
@@ -53,6 +51,8 @@ export default abstract class Band {
 			props.center = left / (this.domain.viewportWidth - this.domain.width)
 		}
 	}
+
+	protected abstract renderChildren(): void
 
 	private onMouseUp = () => {
 		document.removeEventListener('mouseup', this.onMouseUp)

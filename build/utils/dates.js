@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.countDays = (from, to) => {
     if (to == null)
         return 0;
-    return Math.round(to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24);
+    return Math.round(to.getTime() - from.getTime()) / 86400000;
 };
 exports.isEqual = (date1, date2) => date1.getTime() === date2.getTime();
 exports.format = (date, granularity) => {
@@ -24,4 +24,22 @@ exports.format = (date, granularity) => {
         displayDate = `${date.getHours()}:${date.getMinutes()} ${displayDate}`;
     }
     return displayDate;
+};
+exports.getGranularity = (from, to, visibleRatio) => {
+    const days = exports.countDays(from, to) * visibleRatio;
+    if (days < 1)
+        return 0;
+    if (days < 15)
+        return 1;
+    if (days < 45)
+        return 2;
+    if (days < 1.5 * 365)
+        return 3;
+    if (days < 15 * 365)
+        return 4;
+    if (days < 150 * 365)
+        return 5;
+    if (days < 300 * 365)
+        return 6;
+    return 7;
 };

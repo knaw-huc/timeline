@@ -2,14 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const create_element_1 = require("../../utils/create-element");
 const index_1 = require("./index");
-class SparklineBand {
+class SparklineBand extends index_1.default {
     constructor(domain, aggregate) {
-        this.domain = domain;
+        super(domain);
         this.aggregate = aggregate;
     }
     render() {
-        const wrapper = new index_1.default(this.domain).render();
-        this.aggregate;
+        const wrapper = super.render();
         const svg = create_element_1.createSvg('svg', null, {
             height: `${this.domain.viewportHeight}px`,
             preserveAspectRatio: "none",

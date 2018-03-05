@@ -15,6 +15,8 @@ const defaultConfig = {
 	rootElement: null,
 }
 
+// TODO Add resize event
+// TODO Add clean up method (remove dom nodes and event listeners)
 export default class Timeline {
 	private domains: Domain[]
 	private wrapper: HTMLElement
@@ -44,8 +46,7 @@ export default class Timeline {
 			]
 		)
 			
-		this.renderEvents()
-		this.renderSparklines()
+		this.renderBands()
 		this.renderIndicators()
 
 		return this.wrapper
@@ -56,18 +57,13 @@ export default class Timeline {
 		return this.config.domains.map(d => new Domain(d, width, height))
 	}
 
-	private renderEvents(): void {
-		this.domains
-			.filter(d => d.type === 'EVENTS')
-			.map(d => new EventsBand(d, this.config.events))
-			.forEach(this.appendToWrapper)
-	}
-
-	private renderSparklines(): void {
-		this.domains
-			.filter(d => d.type === 'SPARKLINE')
-			.map(d => new SparklineBand(d, createAggregate(this.config.events)))
-			.forEach(this.appendToWrapper)
+	private renderBands(): void {
+		this.domains.forEach(d => {
+			let b
+			if (d.type === 'EVENTS') b = new EventsBand(d, this.config.events)
+			else if (d.type === 'SPARKLINE') b = new SparklineBand(d, createAggregate(this.config.events))
+			if (b) this.appendToWrapper(b)
+		})
 	}
 
 	private renderIndicators(): void {

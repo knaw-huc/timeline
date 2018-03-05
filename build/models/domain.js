@@ -1,16 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const DateUtils = require("../utils/dates");
+const dates_1 = require("../utils/dates");
 const date_range_1 = require("../utils/date-range");
+const props_1 = require("./props");
 var DomainType;
 (function (DomainType) {
     DomainType["Events"] = "EVENTS";
     DomainType["Sparkline"] = "SPARKLINE";
 })(DomainType = exports.DomainType || (exports.DomainType = {}));
 class Domain {
-    constructor(domain, from, to, viewportWidth, viewportHeight) {
-        this.from = from;
-        this.to = to;
+    constructor(domain, viewportWidth, viewportHeight) {
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         this.domainLabels = false;
@@ -27,70 +26,49 @@ class Domain {
         this.viewportHeight = viewportHeight * this.heightRatio;
         this.height = this.viewportHeight;
         this.width = viewportWidth / this.visibleRatio;
-        this.pixelsPerDay = this.width / this.countDays();
-        this.granularity = this.getGranularity();
+        this.granularity = dates_1.getGranularity(props_1.default.from, props_1.default.to, this.visibleRatio);
+        this.prevDate = date_range_1.default(this.granularity, true);
+        this.nextDate = date_range_1.default(this.granularity);
+        this.pixelsPerDay = this.width / dates_1.countDays(props_1.default.from, props_1.default.to);
+        this.updateLeft();
     }
-    setActiveRange(iteration) {
+    initialActiveRange(iteration) {
         const deviation = iteration * this.visibleRatio;
-        const lowerDeviation = this.center - deviation > 0 ? this.center - deviation : 0;
-        const upperDeviation = this.center + deviation < 1 ? this.center + deviation : 1;
-        this.activeFrom = this.dateAtProportion(lowerDeviation);
-        this.activeTo = this.dateAtProportion(upperDeviation);
-    }
-    countDays() {
-        return DateUtils.countDays(this.from, this.to);
+        const lowerDeviation = props_1.default.center - deviation > 0 ? props_1.default.center - deviation : 0;
+        const upperDeviation = props_1.default.center + deviation < 1 ? props_1.default.center + deviation : 1;
+        let activeFrom = this.prevDate(this.dateAtProportion(lowerDeviation));
+        let activeTo = this.nextDate(this.dateAtProportion(upperDeviation));
+        const last = lowerDeviation === 0 && upperDeviation === 1 ? true : false;
+        return [activeFrom, activeTo, last];
     }
     dateAtPosition(x) {
         return this.dateAtProportion(this.proportionAtPosition(x));
     }
     dateAtProportion(proportion) {
         if (proportion < 0 || proportion > 1)
-            throw new Error('[dateAtProportion] proportion should be between 0 and 1.');
-        const fromTime = this.from.getTime();
-        const toTime = this.to.getTime();
+            throw new RangeError('[dateAtProportion] proportion should be between 0 and 1.');
+        const fromTime = props_1.default.from.getTime();
+        const toTime = props_1.default.to.getTime();
         const newTime = fromTime + ((toTime - fromTime) * proportion);
         return new Date(newTime);
     }
-    setCenter(center) {
-        if (center < 0)
-            center = 0;
-        else if (center > 1)
-            center = 1;
-        this.center = center;
-        this.left = center * (this.viewportWidth - this.width);
-    }
-    setLeft(left) {
+    get left() { return this._left; }
+    set left(left) {
         if (left < -this.width + this.viewportWidth)
-            left = -this.width + this.viewportWidth;
+            left = this.viewportWidth - this.width;
         else if (left > 0)
             left = 0;
-        this.left = left;
-        this.center = left / (this.viewportWidth - this.width);
+        this._left = left;
+    }
+    updateLeft() {
+        this.left = props_1.default.center * (this.viewportWidth - this.width);
+        return this.left;
     }
     positionAtDate(date) {
-        return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+        return dates_1.countDays(props_1.default.from, date) * this.pixelsPerDay;
     }
     proportionAtPosition(position) {
         return position / this.width;
-    }
-    range() {
-        return date_range_1.default(this.from, this.to, this.granularity);
-    }
-    getGranularity() {
-        const days = this.countDays() / (this.width / this.viewportWidth);
-        if (days < 1)
-            return 0;
-        if (days < 15)
-            return 1;
-        if (days < 45)
-            return 2;
-        if (days < 1.5 * 365)
-            return 3;
-        if (days < 15 * 365)
-            return 4;
-        if (days < 150 * 365)
-            return 5;
-        return 6;
     }
 }
 exports.default = Domain;

@@ -31,7 +31,7 @@ const labelBody = (d: Date, granularity: Granularity) => {
 }
 
 export default class Ruler {
-	constructor(private date: Date, private domain: Domain) {}
+	constructor(private date: Date, private domain: Domain, private offset: number = 0) {}
 
 	public render() {
 		const li = createElement(
@@ -46,7 +46,7 @@ export default class Ruler {
 				'transition: all 1s cubic-bezier(.25,.8,.25,1)',
 			],
 			[
-				`left: ${this.domain.positionAtDate(this.date)}px`,
+				`left: ${this.domain.positionAtDate(this.date) - this.offset}px`,
 			]
 		)
 

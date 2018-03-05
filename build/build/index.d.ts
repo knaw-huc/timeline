@@ -5,8 +5,7 @@ export default class Timeline {
     constructor(config: any);
     private render();
     private createDomains();
-    private renderEvents();
-    private renderSparklines();
+    private renderBands();
     private renderIndicators();
     private appendToWrapper;
 }

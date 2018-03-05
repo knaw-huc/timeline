@@ -4,7 +4,6 @@ import Domain from './domain'
 
 class Event extends BaseEvent {
 	// public flip: boolean
-	public isRendered: boolean = false
 	public left: number
 	public top: number
 	public width: number

@@ -1,8 +1,8 @@
 export default class Timeline {
-    private props;
+    private config;
     private domains;
     private wrapper;
-    constructor(props: any);
+    constructor(config: any);
     private render();
     private createDomains();
     private renderEvents();

@@ -1,40 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const dateRange = (from, to, granularity) => {
-    const range = [];
-    let nextFrom;
-    if (granularity >= 4) {
-        from = new Date(from.getFullYear(), 0, 1);
-        const step = granularity === 7 ?
-            1000 :
-            granularity === 6 ?
-                100 :
-                granularity === 5 ?
-                    10 :
-                    1;
-        nextFrom = (from) => from.setFullYear(from.getFullYear() + step);
-    }
-    else if (granularity === 3) {
-        from = new Date(from.getFullYear(), from.getMonth(), 1);
-        nextFrom = (from) => from.setMonth(from.getMonth() + 1);
-    }
-    else if (granularity === 2) {
-        from = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-        nextFrom = (from) => from.setDate(from.getDate() + 7);
-    }
-    else if (granularity === 1) {
-        from = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-        nextFrom = (from) => from.setDate(from.getDate() + 1);
-    }
-    else if (granularity === 0) {
-        from = new Date(from.getFullYear(), from.getMonth(), from.getDate(), from.getHours());
-        nextFrom = (from) => from.setHours(from.getHours() + 1);
-    }
-    while (from < to) {
-        range.push(from);
-        from = new Date(from.valueOf());
-        nextFrom(from);
-    }
-    return range;
+exports.getStep = (granularity) => {
+    if (granularity === 4)
+        return 1;
+    if (granularity === 5)
+        return 10;
+    if (granularity === 6)
+        return 50;
+    if (granularity === 7)
+        return 100;
+    if (granularity === 8)
+        return 1000;
+    throw new RangeError("[getStep] Only steps with a granularity greater than 'year' calculated");
 };
-exports.default = dateRange;
+exports.default = (granularity, prev = false) => {
+    const modifier = prev ? -1 : 1;
+    if (granularity >= 4) {
+        return (date) => new Date(date.getFullYear() + (exports.getStep(granularity) * modifier), 0, 1);
+    }
+    if (granularity === 3) {
+        return (date) => new Date(date.getFullYear(), date.getMonth() + modifier, 1);
+    }
+    if (granularity === 2) {
+        return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + (7 * modifier));
+    }
+    if (granularity === 1) {
+        return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + modifier);
+    }
+    if (granularity === 0) {
+        return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + modifier);
+    }
+};
