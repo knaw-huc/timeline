@@ -1,16 +1,25 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import Ruler from './ruler'
+import { getStep } from '../../../utils/date-range'
+import { Granularity } from '../../../utils/dates';
+
+const findClosestRulerPosition = (date: Date, granularity: Granularity) => {
+	if (granularity > Granularity.YEAR) {
+		const step = getStep(granularity)
+		let year = date.getFullYear()
+		while(year % step !== 0) { year += 1 }
+		return new Date(year, 0, 1)
+	}	
+	return date
+}
 
 export default class Rulers {
 	private iter: number = 0
 	private ul: HTMLElement
 	private prevRange: [Date, Date] = [null, null]
-	// private nextDate
 
 	constructor(private domain: Domain) {}
-		// this.nextDate = nextDate(this.domain.granularity)
-	
 
 	public render() {
 		this.ul = createElement(
@@ -36,6 +45,7 @@ export default class Rulers {
 
 	private renderRulers = () => {
 		let [from, to, last] = this.domain.initialActiveRange(++this.iter)
+		from = findClosestRulerPosition(from, this.domain.granularity)
 
 		const [prevFrom, prevTo] = this.prevRange
 

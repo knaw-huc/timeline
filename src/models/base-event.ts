@@ -1,5 +1,5 @@
 import * as DateUtils from '../utils/dates'
-import {Granularity} from "../constants"
+import { Granularity } from '../utils/dates';
 
 export interface IDateRange {
 	from: Date;

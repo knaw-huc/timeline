@@ -1,4 +1,14 @@
-import {Granularity} from "../constants"
+export const enum Granularity {
+	HOUR,
+	DAY,
+	WEEK,
+	MONTH,
+	YEAR,
+	DECADE,
+	YEARS_50,
+	CENTURY,
+	MILLENIUM,
+}
 
 export const countDays = (from: Date, to: Date): number => {
 	if (to == null) return 0;
@@ -39,5 +49,6 @@ export const getGranularity = (from: Date, to: Date, visibleRatio: number): Gran
 	if (days < 1.5 * 365) return Granularity.MONTH
 	if (days < 15 * 365) return Granularity.YEAR
 	if (days < 150 * 365) return Granularity.DECADE
+	if (days < 300 * 365) return Granularity.YEARS_50
 	return Granularity.CENTURY
 }

@@ -1,6 +1,5 @@
-import { countDays, getGranularity } from '../utils/dates'
+import { countDays, getGranularity, Granularity } from '../utils/dates'
 import subsequentDateGenerator from '../utils/date-range'
-import { Granularity } from '../constants'
 import props from './props'
 
 export enum DomainType { Events = "EVENTS", Sparkline = "SPARKLINE" }

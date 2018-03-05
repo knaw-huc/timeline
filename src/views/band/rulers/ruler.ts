@@ -1,6 +1,7 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element' 
-import { Granularity, DATE_BAR_HEIGHT } from '../../../constants'
+import { DATE_BAR_HEIGHT } from '../../../constants'
+import { Granularity } from '../../../utils/dates';
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]

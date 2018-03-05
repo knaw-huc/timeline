@@ -13,13 +13,3 @@ export const RULER_LABELS_HEIGHT = 60
 export const CENTER_CHANGE_EVENT = 'CENTER_CHANGE_EVENT'
 export const READY_FOR_RENDER_EVENT = 'READY_FOR_RENDER_EVENT'
 
-export const enum Granularity {
-	HOUR,
-	DAY,
-	WEEK,
-	MONTH,
-	YEAR,
-	DECADE,
-	CENTURY,
-	MILLENIUM,
-}

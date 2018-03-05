@@ -1,4 +1,4 @@
-import { Granularity } from '../constants';
+import { Granularity } from '../utils/dates';
 export declare enum DomainType {
     Events = "EVENTS",
     Sparkline = "SPARKLINE",
