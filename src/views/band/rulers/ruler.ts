@@ -63,6 +63,7 @@ export default class Ruler {
 			]
 		)
 		label.textContent = labelBody(this.date, this.domain.granularity)
+		label.title = this.date
 
 		li.appendChild(label)
 		return li

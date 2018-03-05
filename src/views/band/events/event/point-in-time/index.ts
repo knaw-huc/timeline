@@ -4,7 +4,9 @@ import { EVENT_MIN_SPACE, EVENT_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 
 export default class PointInTime {
-	constructor(private event: Event) {}
+	 constructor(private event: Event) {
+		event.isRendered = true
+	}
 
 	public render() {
 		const li = createElement(

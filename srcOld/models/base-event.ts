@@ -8,23 +8,6 @@ export interface IDateRange {
 	to: Date;
 }
 
-// export interface IBaseEvent {
-// 	date: Date;
-// 	dateRange: IDateRange;
-// 	dateRangeUncertain: IDateRange;
-// 	dateUncertain: IDateRange;
-// 	from: Date;
-// 	slug: string;
-// 	title: string;
-// 	to: Date;
-// 	types: string[];
-// 	countDays(): number;
-// 	formatFromDate(): string;
-// 	formatToDate(): string;
-// 	isInterval(): boolean;
-// 	isUncertain(): boolean;
-// }
-
 class BaseEvent {
 	public body: string = ''
 	public coordinates = []

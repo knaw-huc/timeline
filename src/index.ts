@@ -1,4 +1,5 @@
 import Domain from './models/domain'
+import props from './models/props'
 import EventsBand from './views/band/events'
 import SparklineBand from './views/band/sparkline'
 import Indicator from './views/indicator'
@@ -6,7 +7,7 @@ import createElement from './utils/create-element'
 import createAggregate from './utils/create-aggregate'
 import events from './data'
 
-const defaultProps = {
+const defaultConfig = {
 	aggregate: [],
 	center: .5,
 	domains: [],
@@ -18,12 +19,15 @@ export default class Timeline {
 	private domains: Domain[]
 	private wrapper: HTMLElement
 
-	constructor(private props) {
-		this.props = {...defaultProps, ...props}
+	constructor(private config) {
+		this.config = {...defaultConfig, ...config}
+
+		props.from = this.config.events[0].date
+		props.to = this.config.events[this.config.events.length - 1].date
 
 		this.domains = this.createDomains()
 
-		this.props.rootElement.appendChild(this.render())
+		this.config.rootElement.appendChild(this.render())
 	}
 
 	private render() {
@@ -39,16 +43,6 @@ export default class Timeline {
 				'width: 100%',
 			]
 		)
-		
-
-		// const t0 = performance.now()
-		// const d = domains[0]
-		// const events = this.props.events
-		// 	.filter(x => x.date > d.dateAtProportion(.5 - d.visibleRatio) && x.date < d.dateAtProportion(.5 + d.visibleRatio))
-		// console.log(events)
-		// const t1 = performance.now()
-		// console.log((t1-t0)/1000)
-
 			
 		this.renderEvents()
 		this.renderSparklines()
@@ -58,30 +52,22 @@ export default class Timeline {
 	}
 
 	private createDomains(): Domain[] {
-		const { width, height } = this.props.rootElement.getBoundingClientRect()
-		const from = this.props.events[0].date
-		const to = this.props.events[this.props.events.length - 1].date
-		return this.props.domains
-			.map(d => {
-				const domain = new Domain(d, from, to, width, height)
-				domain.setCenter(this.props.center)
-				return domain
-			})
+		const { width, height } = this.config.rootElement.getBoundingClientRect()
+		return this.config.domains.map(d => new Domain(d, width, height))
 	}
 
 	private renderEvents(): void {
 		this.domains
 			.filter(d => d.type === 'EVENTS')
-			.map(d => new EventsBand(d, this.props.events))
+			.map(d => new EventsBand(d, this.config.events))
 			.forEach(this.appendToWrapper)
 	}
 
 	private renderSparklines(): void {
 		this.domains
 			.filter(d => d.type === 'SPARKLINE')
-			.map(d => new SparklineBand(d, createAggregate(this.props.events)))
+			.map(d => new SparklineBand(d, createAggregate(this.config.events)))
 			.forEach(this.appendToWrapper)
-
 	}
 
 	private renderIndicators(): void {

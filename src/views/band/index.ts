@@ -1,27 +1,20 @@
 import Domain from '../../models/domain'
+import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import Rulers from './rulers'
 import { CENTER_CHANGE_EVENT } from '../../constants'
 
-export default class BandWrapper {
+export default abstract class Band {
 	private dragStart: number
 	private dragOffset: number
-	private id: string
 	private rootElement: HTMLElement
 
-	constructor(private domain: Domain) {
-		this.id = crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
-
-		document.addEventListener(CENTER_CHANGE_EVENT, (e) => {
-			if (e['detail']['id'] !== this.id) {
-				this.domain.setCenter(e['detail']['center'])
-				this.updateLeft()
-			}
-		})
+	constructor(protected domain: Domain) {
+		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
 	private updateLeft = () => {
-		this.rootElement.style.transform = `translate3d(${this.domain.left}px, 0, 0)`
+		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
 	}
 
 	public render() {
@@ -29,7 +22,7 @@ export default class BandWrapper {
 			'div',
 			'band-wrap',
 			[
-				'background-color: lightyellow',
+				'background-color: white',
 				'position: absolute',
 			],
 			[
@@ -57,15 +50,7 @@ export default class BandWrapper {
 	private onMouseMove = (ev) => {
 		if (this.dragOffset) {
 			const left = this.dragStart - (this.dragOffset - ev.clientX)
-			this.domain.setLeft(left)
-			this.updateLeft()
-
-			document.dispatchEvent(new CustomEvent(CENTER_CHANGE_EVENT, {
-				detail: {
-					center: this.domain.center,
-					id: this.id,
-				}
-			}))
+			props.center = left / (this.domain.viewportWidth - this.domain.width)
 		}
 	}
 

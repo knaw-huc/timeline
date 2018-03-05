@@ -1,6 +1,6 @@
 import Domain from '../../models/domain';
-export default class SparklineBand {
-    private domain;
+import Band from './index';
+export default class SparklineBand extends Band {
     private aggregate;
     constructor(domain: Domain, aggregate: any);
     render(): HTMLElement;

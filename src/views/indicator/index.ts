@@ -1,11 +1,15 @@
 import createElement from '../../utils/create-element'
-import Domain from '../../models/domain';
-import { CENTER_CHANGE_EVENT } from '../../constants';
+import Domain from '../../models/domain'
+import { CENTER_CHANGE_EVENT } from '../../constants'
+import props from '../../models/props'
 
 export default class Indicator {
 	private indicator: HTMLElement
+	private width: number
 
 	constructor(private hostDomain: Domain, private targetDomain: Domain) {
+		this.width = this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth
+
 		document.addEventListener(CENTER_CHANGE_EVENT, (e) => {
 			this.indicator.style.transform = `translate3d(${this.indicatorLeft()}px, 0, 0)`
 		})
@@ -41,7 +45,7 @@ export default class Indicator {
 			[
 				`height: ${this.hostDomain.viewportHeight}px`,
 				`transform: translate3d(${this.indicatorLeft()}px, 0, 0)`,
-				`width: ${this.indicatorWidth()}px`,
+				`width: ${this.width}px`,
 			]
 		)
 
@@ -51,10 +55,6 @@ export default class Indicator {
 	}
 
 	private indicatorLeft() {
-		return (this.targetDomain.viewportWidth - this.indicatorWidth()) * this.hostDomain.center
-	}
-
-	private indicatorWidth() {
-		return this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth
+		return (this.targetDomain.viewportWidth - this.width) * props.center
 	}
 }

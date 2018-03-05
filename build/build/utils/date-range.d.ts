@@ -1,3 +1,3 @@
 import { Granularity } from "../constants";
-declare const dateRange: (from: Date, to: Date, granularity: Granularity) => Date[];
-export default dateRange;
+declare const _default: (granularity: Granularity, prev?: boolean) => (Date: any) => Date;
+export default _default;

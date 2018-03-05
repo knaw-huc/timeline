@@ -1,12 +1,10 @@
 import { Granularity } from "../constants"
 
-const dateRange = (from: Date, to: Date, granularity: Granularity): Date[] => {
-	const range: Date[] = []
-	let nextFrom: (Date) => Date
+// TODOD turn into generator?
+export default (granularity: Granularity, prev: boolean = false): ((Date) => Date) => {
+	const modifier = prev ? -1 : 1
 
 	if (granularity >= Granularity.YEAR) {
-		from = new Date(from.getFullYear(), 0, 1)
-
 		const step = granularity === Granularity.MILLENIUM ?
 			1000 :
 			granularity === Granularity.CENTURY ?
@@ -14,28 +12,31 @@ const dateRange = (from: Date, to: Date, granularity: Granularity): Date[] => {
 				granularity === Granularity.DECADE ?
 				10 : 
 				1
-		nextFrom = (from) => from.setFullYear(from.getFullYear() + step)
-	} else if (granularity === Granularity.MONTH) {
-		from = new Date(from.getFullYear(), from.getMonth(), 1)
-		nextFrom = (from) => from.setMonth(from.getMonth() + 1)
-	} else if (granularity === Granularity.WEEK) {
-		from = new Date(from.getFullYear(), from.getMonth(), from.getDate())
-		nextFrom = (from) => from.setDate(from.getDate() + 7)
-	} else if (granularity === Granularity.DAY) {
-		from = new Date(from.getFullYear(), from.getMonth(), from.getDate())
-		nextFrom = (from) => from.setDate(from.getDate() + 1)
-	} else if (granularity === Granularity.HOUR) {
-		from = new Date(from.getFullYear(), from.getMonth(), from.getDate(), from.getHours())
-		nextFrom = (from) => from.setHours(from.getHours() + 1)
+
+		return (date) =>
+			// const nextYear = prev ? date.getFullYear() - step : date.getFullYear() + step
+			new Date(date.getFullYear() + (step * modifier), 0, 1)
 	}
 
-	while (from < to) {
-		range.push(from)
-		from = new Date(from.valueOf())
-		nextFrom(from)
+	if (granularity === Granularity.MONTH) {
+		return (date) =>
+			// const month = prev ? date.getMonth() - 1 : date.getMonth() + 1
+			new Date(date.getFullYear(), date.getMonth() + modifier, 1)
 	}
-
-	return range
+	
+	if (granularity === Granularity.WEEK) {
+		return (date) => 
+			// const day = prev ? date.getDate() - 7 : date.getDate() + 7
+			new Date(date.getFullYear(), date.getMonth(), date.getDate() + (7 * modifier))
+	}
+	
+	if (granularity === Granularity.DAY) {
+		// const day = prev ? date.getDate() + 1
+		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + modifier)
+	}
+	
+	if (granularity === Granularity.HOUR) {
+		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + modifier)
+		// return (date) => date.setHours(date.getHours() + 1)
+	}
 }
-
-export default dateRange

@@ -4,12 +4,12 @@ import Domain from './domain'
 
 class Event extends BaseEvent {
 	// public flip: boolean
-	public isRendered: boolean
+	public isRendered: boolean = false
 	public left: number
 	public top: number
 	public width: number
 
-	constructor(data, private domain: Domain) {
+	constructor(data, domain: Domain) {
 		super(data)
 
 		this.left = domain.positionAtDate(this.from)
@@ -26,19 +26,11 @@ class Event extends BaseEvent {
 	 * @returns {[number, number]} The first element is the left position, the second element the width.
 	 */
 	public space(): [number, number] {
-		const minWidth = (w) => (w === 0 || w < Constants.EVENT_MIN_SPACE) ? Constants.EVENT_MIN_SPACE : w;
-		const width = minWidth(this.width);
+		// const width = minWidth(this.width);
 		// const left = (this.flip) ? this.left - width : this.left;
-		const left = this.left
-		return [left, width];
-	}
-
-	public shouldRender(): boolean {
-		return (
-			this.date > this.domain.activeFrom &&
-			this.date < this.domain.activeTo &&
-			!this.isRendered
-		)
+		// const left = this.left
+		const width = (this.width === 0 || this.width < Constants.EVENT_MIN_SPACE) ? Constants.EVENT_MIN_SPACE : this.width
+		return [this.left, width];
 	}
 }
 

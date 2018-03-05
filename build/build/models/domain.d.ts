@@ -14,12 +14,8 @@ export interface IDomainDef {
     type?: DomainType;
 }
 declare class Domain implements IDomainDef {
-    private from;
-    private to;
     viewportWidth: number;
     viewportHeight: number;
-    activeFrom: Date;
-    activeTo: Date;
     domainLabels: boolean;
     granularity: Granularity;
     hasIndicatorFor: number;
@@ -30,20 +26,18 @@ declare class Domain implements IDomainDef {
     topOffsetRatio: number;
     type: DomainType;
     visibleRatio: number;
-    center: number;
-    left: number;
+    private _left;
     height: number;
     width: number;
-    constructor(domain: IDomainDef, from: Date, to: Date, viewportWidth: number, viewportHeight: number);
-    setActiveRange(iteration: number): void;
-    countDays(): number;
+    prevDate: (d: Date) => Date;
+    nextDate: (d: Date) => Date;
+    constructor(domain: IDomainDef, viewportWidth: number, viewportHeight: number);
+    initialActiveRange(iteration: number): [Date, Date, boolean];
     dateAtPosition(x: number): Date;
     dateAtProportion(proportion: number): Date;
-    setCenter(center: number): void;
-    setLeft(left: number): void;
+    left: number;
+    updateLeft(): number;
     positionAtDate(date: Date): number;
     proportionAtPosition(position: number): number;
-    range(): Date[];
-    private getGranularity();
 }
 export default Domain;

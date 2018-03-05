@@ -1,24 +1,24 @@
 import Domain from '../../../models/domain'
 import Event from '../../../models/event'
 import createElement from '../../../utils/create-element'
-import BandWrapper from '../index'
+import Band from '../index'
 import PointInTime from './event/point-in-time'
 // import { READY_FOR_RENDER_EVENT } from '../../../constants'
 import addTop from '../../../utils/add-top'
 
-export default class EventsBand {
-	private events
+export default class EventsBand extends Band {
 	private eventsWrap
+	private iter = 0
+	private topAdder
 
-	constructor(private domain: Domain, events) {
-		this.events = events
-			.map(e => new Event(e, this.domain))
-			.map(addTop())
-
-		// document.addEventListener(READY_FOR_RENDER_EVENT, this.renderChildren)
+	constructor(domain: Domain, private events) {
+		super(domain)
+		this.topAdder = addTop(domain)
 	}
 
 	public render() {
+		const bandWrap = super.render()
+
 		this.eventsWrap = createElement(
 			'ul',
 			'events-wrap',
@@ -33,17 +33,23 @@ export default class EventsBand {
 			]
 		)
 
-		this.events
-			// .filter(e => e.shouldRender())
-			// .map(e => e.isInterval() ? new TimeInterval(e) : new PointInTime(e))
-			.map(e => new PointInTime(e).render())
-			.forEach(e => this.eventsWrap.appendChild(e))
+		this.renderEvents()
 
-		const bandWrap = new BandWrapper(this.domain).render()
 		bandWrap.appendChild(this.eventsWrap)
 
 		return bandWrap
-		// const frag = document.createDocumentFragment()
+	}
 
+	private renderEvents = () => {
+		const [from, to, last] = this.domain.initialActiveRange(++this.iter)
+		this.events
+			.filter(e => e.date >= from && e.date <= to && !e.isRendered)
+			.map(e => {
+				e.isRendered = true
+				return this.topAdder(new Event(e, this.domain))
+			})
+			.forEach(e => this.eventsWrap.appendChild(new PointInTime(e).render()))
+
+		if (!last) window.requestAnimationFrame(this.renderEvents)
 	}
 }

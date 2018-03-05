@@ -1,6 +1,7 @@
-import * as DateUtils from '../utils/dates'
-import dateRange from '../utils/date-range'
+import { countDays, getGranularity } from '../utils/dates'
+import subsequentDateGenerator from '../utils/date-range'
 import { Granularity } from '../constants'
+import props from './props'
 
 export enum DomainType { Events = "EVENTS", Sparkline = "SPARKLINE" }
 export interface IDomainDef {
@@ -15,10 +16,6 @@ export interface IDomainDef {
 }
 
 class Domain implements IDomainDef {
-
-	public activeFrom: Date
-	public activeTo: Date
-
 	// Show from & to labels? Labels are shown left and right respectively
 	// of timeline. Use if rulers are to noisy
 	public domainLabels: boolean = false
@@ -55,15 +52,15 @@ class Domain implements IDomainDef {
 	// would show 9 months and hide 3 months.
 	public visibleRatio: number = 1
 
-	public center: number
-	public left: number
+	private _left: number
 	public height: number
 	public width: number
 
+	public prevDate: (d: Date) => Date
+	public nextDate: (d: Date) => Date
+
 	constructor(
 		domain: IDomainDef,
-		private from: Date,
-		private to: Date,
 		public viewportWidth: number,
 		public viewportHeight: number,
 	) {
@@ -75,20 +72,29 @@ class Domain implements IDomainDef {
 		this.height = this.viewportHeight // TODO calc height depending on max event rows
 		this.width = viewportWidth / this.visibleRatio
 
-		this.pixelsPerDay = this.width / this.countDays()
-		this.granularity = this.getGranularity()
+		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
+
+		this.prevDate = subsequentDateGenerator(this.granularity, true)
+		this.nextDate = subsequentDateGenerator(this.granularity)
+
+		this.pixelsPerDay = this.width / countDays(props.from, props.to)
+
+		this.updateLeft()
 	}
 
-	public setActiveRange(iteration: number): void {
+	/**
+	 * Get the initial active range. This is the range which is visible to the user
+	 * plus a left/right offset. The range is used to find the events that should
+	 * be rendered on page load.
+	 */
+	public initialActiveRange(iteration: number): [Date, Date, boolean] {
 		const deviation = iteration * this.visibleRatio				
-		const lowerDeviation = this.center - deviation > 0 ? this.center - deviation : 0
-		const upperDeviation = this.center + deviation < 1 ? this.center + deviation : 1
-		this.activeFrom = this.dateAtProportion(lowerDeviation)
-		this.activeTo = this.dateAtProportion(upperDeviation)
-	}
-
-	public countDays(): number {
-		return DateUtils.countDays(this.from, this.to);
+		const lowerDeviation = props.center - deviation > 0 ? props.center - deviation : 0
+		const upperDeviation = props.center + deviation < 1 ? props.center + deviation : 1
+		let activeFrom = this.prevDate(this.dateAtProportion(lowerDeviation))
+		let activeTo = this.nextDate(this.dateAtProportion(upperDeviation))
+		const last = lowerDeviation === 0 && upperDeviation === 1 ? true : false
+		return [activeFrom, activeTo, last]
 	}
 
 	public dateAtPosition(x: number): Date {
@@ -96,51 +102,30 @@ class Domain implements IDomainDef {
 	}
 
 	public dateAtProportion(proportion: number): Date {
-		if (proportion < 0 || proportion > 1) throw new Error('[dateAtProportion] proportion should be between 0 and 1.');
-		const fromTime = this.from.getTime()
-		const toTime = this.to.getTime()
+		if (proportion < 0 || proportion > 1) throw new RangeError('[dateAtProportion] proportion should be between 0 and 1.');
+		const fromTime = props.from.getTime()
+		const toTime = props.to.getTime()
 		const newTime = fromTime + ((toTime - fromTime) * proportion)
 		return new Date(newTime);
 	}
 
-	public setCenter(center: number) {
-		if (center < 0) center = 0
-		else if (center > 1) center = 1
-		this.center = center
-		this.left = center * (this.viewportWidth - this.width)
-	}
-
-	public setLeft(left: number) {
-		if (left < -this.width + this.viewportWidth) left = -this.width + this.viewportWidth
+	get left() { return this._left }
+	set left(left: number) {
+		if (left < -this.width + this.viewportWidth) left = this.viewportWidth - this.width
 		else if (left > 0) left = 0 
-		this.left = left
-		this.center = left / (this.viewportWidth - this.width)	
+		this._left = left
+	}
+	public updateLeft() {
+		this.left = props.center * (this.viewportWidth - this.width)
+		return this.left
 	}
 
 	public positionAtDate(date: Date): number {
-		return DateUtils.countDays(this.from, date) * this.pixelsPerDay;
+		return countDays(props.from, date) * this.pixelsPerDay;
 	}
 
 	public proportionAtPosition(position: number): number {
 		return position / this.width
-	}
-
-	/**
-	 * Create a range from domain.from to domain.to, taking domain.granularity into account.
-	 */
-	public range() {
-		return dateRange(this.from, this.to, this.granularity)	
-	}
-
-	private getGranularity(): Granularity {
-		const days = this.countDays() / (this.width/this.viewportWidth)
-		if (days < 1) return Granularity.HOUR
-		if (days < 15) return Granularity.DAY
-		if (days < 45) return Granularity.WEEK
-		if (days < 1.5 * 365) return Granularity.MONTH
-		if (days < 15 * 365) return Granularity.YEAR
-		if (days < 150 * 365) return Granularity.DECADE
-		return Granularity.CENTURY
 	}
 }
 

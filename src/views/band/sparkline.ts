@@ -1,13 +1,14 @@
 import Domain from '../../models/domain'
 import { createSvg } from '../../utils/create-element'
-import BandWrapper from './index'
+import Band from './index'
 
-export default class SparklineBand {
-	constructor(private domain: Domain, private aggregate) {}
+export default class SparklineBand extends Band {
+	constructor(domain: Domain, private aggregate) {
+		super(domain)
+	}
 
 	public render() {
-		const wrapper = new BandWrapper(this.domain).render()
-		this.aggregate
+		const wrapper = super.render()
 
 		const svg = createSvg('svg', null, {
 			height: `${this.domain.viewportHeight}px`,
