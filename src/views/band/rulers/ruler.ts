@@ -24,7 +24,10 @@ const labelBody = (d: Date, granularity: Granularity) => {
 	} else if (granularity === Granularity.WEEK) {
 		return `${months[d.getMonth()]}<br />week ${getWeekNumber(d)}`
 	} else if (granularity === Granularity.DAY) {
-		return days[d.getDate()]
+		let body = days[d.getDay()]
+		body = `${body}<br />${months[d.getMonth()]} ${d.getDate()}`
+		if (d.getMonth() === 0 && d.getDate() === 1) body = `${body}, ${d.getFullYear().toString()}`
+		return body
 	} else if (granularity === Granularity.HOUR) {
 		return 'NOT IMPLEMENTED'
 	}
@@ -61,7 +64,7 @@ export default class Ruler {
 				'font-size: .75em',
 				`height: calc(${DATE_BAR_HEIGHT} - 10px)`,
 				'position: absolute',
-				'width: 60px',
+				'width: 75px',
 				'zIndex: 2',
 			]
 		)
