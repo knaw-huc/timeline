@@ -1,8 +1,10 @@
 import Domain from '../../models/domain';
 import Band from './index';
 export default class SparklineBand extends Band {
+    private events;
     private aggregate;
-    constructor(domain: Domain, aggregate: any);
+    constructor(domain: Domain, events: any, aggregate: any);
     render(): HTMLElement;
-    private createPath();
+    protected renderChildren(): void;
+    private createPath(aggregate);
 }

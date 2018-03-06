@@ -25,6 +25,7 @@ class BaseEvent {
 	private dateRangeGranularity = null;
 
 	constructor(data) {
+		data.date = new Date(data.date)
 		Object.assign(this, data);
 		this.setTo();
 		this.setFrom();

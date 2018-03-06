@@ -9,6 +9,7 @@ export default class Indicator {
 
 	constructor(private hostDomain: Domain, private targetDomain: Domain) {
 		this.width = this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth
+		if (this.width < 2) this.width = 2
 
 		document.addEventListener(CENTER_CHANGE_EVENT, (e) => {
 			this.indicator.style.transform = `translate3d(${this.indicatorLeft()}px, 0, 0)`

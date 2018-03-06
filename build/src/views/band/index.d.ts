@@ -5,10 +5,11 @@ export default abstract class Band {
     private dragOffset;
     private rootElement;
     constructor(domain: Domain);
-    private updateLeft;
     render(): HTMLElement;
+    protected abstract renderChildren(): void;
+    private updateLeft;
     private onMouseDown;
     private onMouseMove;
-    protected abstract renderChildren(): void;
     private onMouseUp;
+    private onDblClick;
 }

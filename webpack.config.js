@@ -1,8 +1,11 @@
 module.exports = {
-	entry: "./src/index.ts",
+	entry: {
+		bundle: "./src/index.ts",
+	},
 	output: {
-		filename: "bundle.js",
+		filename: "[name].js",
 		library: "Timeline",
+		libraryTarget: "commonjs2",
 		path: __dirname + "/build"
 	},
 	resolve: {
@@ -15,6 +18,15 @@ module.exports = {
 			{
 				test: /\.tsx?$/,
 				loader: "ts-loader",
+			},
+			{
+				test: /\.worker\.js$/,
+				use: {
+					loader: 'worker-loader',
+					options: {
+						inline: true,
+					},
+				},
 			}
 		]
 	}

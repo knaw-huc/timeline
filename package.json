@@ -2,7 +2,7 @@
   "name": "timeline",
   "version": "1.1.5",
   "description": "",
-  "main": "build/index.js",
+  "main": "build/bundle.js",
   "author": "Gijsjan Brouwer",
   "license": "ISC",
   "scripts": {
@@ -10,10 +10,10 @@
     "watch": "webpack -w --mode development"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.5.0",
     "ts-loader": "^4.0.0",
     "typescript": "^2.7.2",
     "webpack": "^4.0.0",
-    "webpack-cli": "^2.0.9"
+    "webpack-cli": "^2.0.9",
+    "worker-loader": "^1.1.1"
   }
 }

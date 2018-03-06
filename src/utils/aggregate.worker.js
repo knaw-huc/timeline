@@ -1,6 +1,6 @@
-export default (events) => {
+onmessage = function(e) {
 	let prevYear
-	const run1 = events
+	const run1 = e.data
 		.reduce((prev, curr, index, array) => {
 			const year = curr.date.getFullYear()
 			if (prev.hasOwnProperty(year)) {
@@ -16,5 +16,5 @@ export default (events) => {
 			return prev
 		}, {})
 	const run2 = Object.keys(run1).map((year, index) => ({ year, count: run1[year]}))
-	return run2
+	postMessage(run2)
 }

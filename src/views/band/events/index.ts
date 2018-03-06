@@ -14,7 +14,13 @@ export default class EventsBand extends Band {
 
 	constructor(domain: Domain, private events) {
 		super(domain)
+
 		this.topAdder = addTop(domain)
+
+		this.events = events
+			.map(e => new Event(e, domain))
+			.sort((a, b) => a.date.getTime() - b.date.getTime())
+
 		this.segments = this.createSegments()
 	}
 
@@ -60,7 +66,6 @@ export default class EventsBand extends Band {
 	private createSegments() {
 		const segments = [] 
 		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
-		this.events.sort((a, b) => a.date.getTime() - b.date.getTime())
 
 		for (let i = 0; i < segmentCount; i++) {
 			const ratioFrom = this.domain.visibleRatio * i
@@ -81,7 +86,7 @@ export default class EventsBand extends Band {
 			if (i === segmentCount - 1) events = events.concat(this.events)
 			
 			segments.push(new Segment(
-				events.map(e => new Event(e, this.domain)),
+				events,
 				rulerDates,
 				i * this.domain.viewportWidth,
 				this.topAdder,

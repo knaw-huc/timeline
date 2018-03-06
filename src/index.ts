@@ -4,19 +4,20 @@ import EventsBand from './views/band/events'
 import SparklineBand from './views/band/sparkline'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
-import createAggregate from './utils/create-aggregate'
-import events from './data'
 
+// TODO create Config class
 const defaultConfig = {
 	aggregate: [],
 	center: .5,
 	domains: [],
-	events: events,
+	events: [],
 	rootElement: null,
 }
 
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)
+// TODO Create intervals
+// TODO Add open ranges (ie: people still alive)
 export default class Timeline {
 	private domains: Domain[]
 	private wrapper: HTMLElement
@@ -24,8 +25,19 @@ export default class Timeline {
 	constructor(private config) {
 		this.config = {...defaultConfig, ...config}
 
-		props.from = this.config.events[0].date
-		props.to = this.config.events[this.config.events.length - 1].date
+		const edges = []
+		if (this.config.domains.some(d => d.type === 'EVENTS') && this.config.events.length > 1) {
+			edges.push(new Date(this.config.events[0].date))
+			edges.push(props.to = new Date(this.config.events[this.config.events.length - 1].date))
+		}
+		if (this.config.domains.some(d => d.type === 'SPARKLINE') && this.config.aggregate.length > 1) {
+			edges.push(new Date(this.config.aggregate[0].year, 0, 1))
+			edges.push(new Date(this.config.aggregate[this.config.aggregate.length - 1].year, 0, 1))
+		}
+		if (edges.length < 2) throw Error('Cannot draw Timeline with this config')
+
+		props.from = new Date(Math.min(...edges))
+		props.to = new Date(Math.max(...edges))
 
 		this.domains = this.createDomains()
 
@@ -42,6 +54,7 @@ export default class Timeline {
 				'height: 100%',
 				'overflow: hidden',
 				'position: relative',
+				'user-select: none',
 				'width: 100%',
 			]
 		)
@@ -53,7 +66,9 @@ export default class Timeline {
 	}
 
 	private createDomains(): Domain[] {
-		const { width, height } = this.config.rootElement.getBoundingClientRect()
+		const style = getComputedStyle(this.config.rootElement)
+		const height = parseInt(style.getPropertyValue('height'), 10)
+		const width = parseInt(style.getPropertyValue('width'), 10)
 		return this.config.domains.map(d => new Domain(d, width, height))
 	}
 
@@ -61,7 +76,7 @@ export default class Timeline {
 		this.domains.forEach(d => {
 			let b
 			if (d.type === 'EVENTS') b = new EventsBand(d, this.config.events)
-			else if (d.type === 'SPARKLINE') b = new SparklineBand(d, createAggregate(this.config.events))
+			else if (d.type === 'SPARKLINE') b = new SparklineBand(d, this.config.events, this.config.aggregate)
 			if (b) this.appendToWrapper(b)
 		})
 	}

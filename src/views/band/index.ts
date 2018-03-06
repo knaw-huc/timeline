@@ -12,11 +12,6 @@ export default abstract class Band {
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
-	private updateLeft = () => {
-		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
-		if (this.domain.type === 'EVENTS') this.renderChildren()
-	}
-
 	public render() {
 		this.rootElement = createElement(
 			'div',
@@ -35,8 +30,16 @@ export default abstract class Band {
 
 		this.rootElement.addEventListener('mousedown', this.onMouseDown)
 		this.rootElement.addEventListener('mousemove', this.onMouseMove)
+		this.rootElement.addEventListener('dblclick', this.onDblClick)
 
 		return this.rootElement
+	}
+
+	protected abstract renderChildren(): void
+
+	private updateLeft = () => {
+		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
+		if (this.domain.type === 'EVENTS') this.renderChildren()
 	}
 
 	private onMouseDown = (ev) => {
@@ -52,10 +55,14 @@ export default abstract class Band {
 		}
 	}
 
-	protected abstract renderChildren(): void
-
 	private onMouseUp = () => {
 		document.removeEventListener('mouseup', this.onMouseUp)
 		this.dragOffset = null
+	}
+
+	private onDblClick = (ev) => {
+		const rootLeft = this.rootElement.getBoundingClientRect().left
+		const proportion = this.domain.proportionAtPosition(ev.clientX - rootLeft)
+		props.center = proportion
 	}
 }

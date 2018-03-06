@@ -8,6 +8,10 @@ export const createSvg = (name: string, style?: string[], attrs = {}) => {
 	return el
 }
 
+const element = document.createElement('style')
+document.head.appendChild(element)
+const sheet = <CSSStyleSheet>element.sheet
+
 const rules = {}
 export default (name: string, className?: string, style?: string[], dynamicStyle?: string[]) => {
 	if (!className) return document.createElement(name)
@@ -20,8 +24,7 @@ export default (name: string, className?: string, style?: string[], dynamicStyle
 		el.classList.add(className)
 
 		if (style) {
-			// TODO create stylesheet when not present
-			(<CSSStyleSheet>document.styleSheets[0]).insertRule(`.${className} { ${style.join(';').concat(';')} }`)
+			sheet.insertRule(`.${className} { ${style.join(';').concat(';')} }`)
 		}
 		rules[className] = el.cloneNode(false)
 	}

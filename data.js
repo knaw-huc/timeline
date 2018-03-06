@@ -1,4 +1,6 @@
-export default [{
+const fs = require('fs')
+
+const data = [{
 				date: new Date('1595-04-02'),
 				title: "AMSTERDAM"
 			},{
@@ -24545,3 +24547,5 @@ export default [{
 				date: new Date('1795'),
 				title: "VERTROUWEN"
 			},]
+
+fs.writeFileSync('data.json', JSON.stringify(data), 'utf8')

@@ -2,7 +2,7 @@ import Event from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
 import Ruler from '../rulers/ruler'
-import Domain from '../../../models/domain';
+import Domain from '../../../models/domain'
 
 export default class Segment {
 	public rendered: boolean = false

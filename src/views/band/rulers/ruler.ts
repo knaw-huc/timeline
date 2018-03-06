@@ -22,7 +22,7 @@ const labelBody = (d: Date, granularity: Granularity) => {
 		if (d.getMonth() === 0) body = `${d.getFullYear().toString()}, ${body}`
 		return body
 	} else if (granularity === Granularity.WEEK) {
-		return `${months[d.getMonth()]}, week ${getWeekNumber(d)}`
+		return `${months[d.getMonth()]}<br />week ${getWeekNumber(d)}`
 	} else if (granularity === Granularity.DAY) {
 		return days[d.getDate()]
 	} else if (granularity === Granularity.HOUR) {
@@ -38,7 +38,7 @@ export default class Ruler {
 			'li',
 			'ruler',
 			[
-				'border-left: 1px solid #ccc',
+				'border-left: 1px solid #EEE',
 				'box-sizing: border-box',
 				'height: 100%',
 				'padding-left: 6px',
@@ -56,14 +56,16 @@ export default class Ruler {
 			[
 				'alignItems: flex-end',
 				'bottom: 10px',
+				'color: #888',
 				'display: flex',
+				'font-size: .75em',
 				`height: calc(${DATE_BAR_HEIGHT} - 10px)`,
-				'color: #444',
 				'position: absolute',
+				'width: 60px',
 				'zIndex: 2',
 			]
 		)
-		label.textContent = labelBody(this.date, this.domain.granularity)
+		label.innerHTML = labelBody(this.date, this.domain.granularity)
 		label.title = this.date
 
 		li.appendChild(label)
