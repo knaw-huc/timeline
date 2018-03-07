@@ -67,7 +67,8 @@ export const subsequentDate = (granularity: Granularity, prev: boolean = false):
 	const modifier = prev ? -1 : 1
 
 	if (granularity >= Granularity.YEAR) {
-		return (date) => new Date(date.getFullYear() + (getStep(granularity) * modifier), 0, 1)
+		const diff = getStep(granularity) * modifier
+		return (date) => new Date(date.getFullYear() + diff, 0, 1)
 	}
 
 	if (granularity === Granularity.MONTH) {
@@ -75,7 +76,8 @@ export const subsequentDate = (granularity: Granularity, prev: boolean = false):
 	}
 	
 	if (granularity === Granularity.WEEK) {
-		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + (7 * modifier))
+		const diff = 7 * modifier
+		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff)
 	}
 	
 	if (granularity === Granularity.DAY) {

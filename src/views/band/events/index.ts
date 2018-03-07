@@ -64,6 +64,7 @@ export default class EventsBand extends Band {
 	}
 
 	private createSegments() {
+		const t0 = performance.now()
 		const segments = [] 
 		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
 
@@ -93,6 +94,8 @@ export default class EventsBand extends Band {
 				this.domain
 			))
 		}
+		const t1 = performance.now()
+		console.log('Performance: ', `${t1 - t0}ms`)
 
 		return segments
 	}
