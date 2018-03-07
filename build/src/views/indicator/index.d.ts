@@ -5,6 +5,8 @@ export default class Indicator {
     private indicator;
     private width;
     constructor(hostDomain: Domain, targetDomain: Domain);
+    remove(): void;
     render(): any;
+    private handleCenterChange;
     private indicatorLeft();
 }

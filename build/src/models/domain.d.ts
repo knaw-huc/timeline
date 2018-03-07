@@ -14,8 +14,6 @@ export interface IDomainDef {
     type?: DomainType;
 }
 declare class Domain implements IDomainDef {
-    viewportWidth: number;
-    viewportHeight: number;
     domainLabels: boolean;
     granularity: Granularity;
     hasIndicatorFor: number;
@@ -31,7 +29,7 @@ declare class Domain implements IDomainDef {
     width: number;
     prevDate: (d: Date) => Date;
     nextDate: (d: Date) => Date;
-    constructor(domain: IDomainDef, viewportWidth: number, viewportHeight: number);
+    constructor(domain: IDomainDef);
     initialActiveRange(iteration: number): [Date, Date, boolean];
     dateAtPosition(x: number): Date;
     dateAtProportion(proportion: number): Date;

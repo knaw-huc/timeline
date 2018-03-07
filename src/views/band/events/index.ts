@@ -88,7 +88,7 @@ export default class EventsBand extends Band {
 			segments.push(new Segment(
 				events,
 				rulerDates,
-				i * this.domain.viewportWidth,
+				i * props.viewportWidth,
 				this.topAdder,
 				this.domain
 			))

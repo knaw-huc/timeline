@@ -13,9 +13,9 @@ export default class SparklineBand extends Band {
 		const wrapper = super.render()
 
 		const svg = createSvg('svg', null, {
-			height: `${this.domain.viewportHeight}px`,
+			height: `${this.domain.height}px`,
 			preserveAspectRatio: "none",
-			viewBox: `0 0 ${this.domain.width} ${this.domain.viewportHeight}`,
+			viewBox: `0 0 ${this.domain.width} ${this.domain.height}`,
 			width: `${this.domain.width}px`,
 		})
 
@@ -64,7 +64,7 @@ export default class SparklineBand extends Band {
 		const path = aggregate.reduce((prev, curr, index) => {
 			const curveType = index === 0 ? 'M' : 'L'
 			const x = (this.domain.width / (aggregate.length - 1)) * index
-			const y = this.domain.viewportHeight - ((curr.count / countMax) * this.domain.viewportHeight)
+			const y = this.domain.height - ((curr.count / countMax) * this.domain.height)
 			return `${prev} ${curveType} ${x} ${y}`
 		}, '')
 
@@ -72,7 +72,7 @@ export default class SparklineBand extends Band {
 		// position, but it should go to the lower right corner and then to the lower
 		// left corner, just (1px) out of the viewport. So a two lines are added on the
 		// right and on the bottom to close the path manually.
-		const pathCloser = ` L ${this.domain.width + 1} ${this.domain.viewportHeight + 1} L -1 ${this.domain.viewportHeight + 1}`
+		const pathCloser = ` L ${this.domain.width + 1} ${this.domain.height + 1} L -1 ${this.domain.height + 1}`
 
 		return path + pathCloser
 	}

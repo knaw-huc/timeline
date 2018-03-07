@@ -12,6 +12,13 @@ export default abstract class Band {
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
+	public remove() {
+		document.removeEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
+		this.rootElement.removeEventListener('mousedown', this.onMouseDown)
+		this.rootElement.removeEventListener('mousemove', this.onMouseMove)
+		this.rootElement.removeEventListener('dblclick', this.onDblClick)
+	}
+
 	public render() {
 		this.rootElement = createElement(
 			'div',
@@ -28,8 +35,10 @@ export default abstract class Band {
 			]
 		)
 
-		this.rootElement.addEventListener('mousedown', this.onMouseDown)
-		this.rootElement.addEventListener('mousemove', this.onMouseMove)
+		if (this.domain.visibleRatio < 1) {
+			this.rootElement.addEventListener('mousedown', this.onMouseDown)
+			this.rootElement.addEventListener('mousemove', this.onMouseMove)
+		}
 		this.rootElement.addEventListener('dblclick', this.onDblClick)
 
 		return this.rootElement
@@ -51,12 +60,25 @@ export default abstract class Band {
 	private onMouseMove = (ev) => {
 		if (this.dragOffset) {
 			const left = this.dragStart - (this.dragOffset - ev.clientX)
-			props.center = left / (this.domain.viewportWidth - this.domain.width)
+			props.center = left / (props.viewportWidth - this.domain.width)
 		}
 	}
 
-	private onMouseUp = () => {
+	private onMouseUp = (ev) => {
 		document.removeEventListener('mouseup', this.onMouseUp)
+		// const shift = ev.clientX - this.dragOffset
+		// let left = this.dragStart - (this.dragOffset - ev.clientX)
+		// if (Math.abs(shift) > 300) {
+		// 	let t = 0
+		// 	const intervalId = setInterval(() => {
+		// 		t += 50
+		// 		if (t === 1000 || props.center === 0 || props.center === 1) return clearInterval(intervalId)
+
+		// 		left += (shift / 100) * (-t/1000 + 1)
+		// 		props.center = left / (this.domain.viewportWidth - this.domain.width)
+		// 		console.log(t, -t/1000 + 1, left, props.center)
+		// 	}, 50)
+		// }
 		this.dragOffset = null
 	}
 

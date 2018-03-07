@@ -3,6 +3,7 @@ import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
 import Ruler from '../rulers/ruler'
 import Domain from '../../../models/domain'
+import props from '../../../models/props';
 
 export default class Segment {
 	public rendered: boolean = false
@@ -28,7 +29,7 @@ export default class Segment {
 				'padding: 0',
 				'position: absolute',
 				'top: 0',
-				`width: ${this.domain.viewportWidth}px`,
+				`width: ${props.viewportWidth}px`,
 
 			],
 			[

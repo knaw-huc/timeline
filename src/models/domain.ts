@@ -60,16 +60,13 @@ class Domain implements IDomainDef {
 
 	constructor(
 		domain: IDomainDef,
-		public viewportWidth: number,
-		public viewportHeight: number,
 	) {
 		Object.keys(domain).forEach(k => {
 			if (domain[k] !== this[k]) this[k] = domain[k]
 		})
 
-		this.viewportHeight = viewportHeight * this.heightRatio
-		this.height = this.viewportHeight // TODO calc height depending on max event rows
-		this.width = viewportWidth / this.visibleRatio
+		this.height = props.viewportHeight * this.heightRatio
+		this.width = props.viewportWidth / this.visibleRatio
 
 		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
 
@@ -110,12 +107,12 @@ class Domain implements IDomainDef {
 
 	get left() { return this._left }
 	set left(left: number) {
-		if (left < -this.width + this.viewportWidth) left = this.viewportWidth - this.width
+		if (left < -this.width + props.viewportWidth) left = props.viewportWidth - this.width
 		else if (left > 0) left = 0 
 		this._left = left
 	}
 	public updateLeft() {
-		this.left = props.center * (this.viewportWidth - this.width)
+		this.left = props.center * (props.viewportWidth - this.width)
 		return this.left
 	}
 

@@ -8,12 +8,14 @@ export default class Indicator {
 	private width: number
 
 	constructor(private hostDomain: Domain, private targetDomain: Domain) {
-		this.width = this.hostDomain.width / this.targetDomain.width * this.targetDomain.viewportWidth
+		this.width = this.hostDomain.width / this.targetDomain.width * props.viewportWidth
 		if (this.width < 2) this.width = 2
 
-		document.addEventListener(CENTER_CHANGE_EVENT, (e) => {
-			this.indicator.style.transform = `translate3d(${this.indicatorLeft()}px, 0, 0)`
-		})
+		document.addEventListener(CENTER_CHANGE_EVENT, this.handleCenterChange)
+	}
+
+	public remove() {
+		document.removeEventListener(CENTER_CHANGE_EVENT, this.handleCenterChange)
 	}
 
 	public render() {
@@ -28,7 +30,7 @@ export default class Indicator {
 				'right: 0',
 			],
 			[
-				`height: ${this.hostDomain.viewportHeight}px`,
+				`height: ${this.hostDomain.height}px`,
 				`top: ${this.hostDomain.topOffsetRatio * 100}%`,
 			]
 		)
@@ -44,7 +46,7 @@ export default class Indicator {
 				'z-index: 3',
 			],
 			[
-				`height: ${this.hostDomain.viewportHeight}px`,
+				`height: ${this.hostDomain.height}px`,
 				`transform: translate3d(${this.indicatorLeft()}px, 0, 0)`,
 				`width: ${this.width}px`,
 			]
@@ -54,8 +56,12 @@ export default class Indicator {
 
 		return wrapper
 	}
+	
+	private handleCenterChange = (e) => {
+		this.indicator.style.transform = `translate3d(${this.indicatorLeft()}px, 0, 0)`
+	}
 
 	private indicatorLeft() {
-		return (this.targetDomain.viewportWidth - this.width) * props.center
+		return (props.viewportWidth - this.width) * props.center
 	}
 }

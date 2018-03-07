@@ -5,7 +5,7 @@ module.exports = {
 	output: {
 		filename: "[name].js",
 		library: "Timeline",
-		libraryTarget: "commonjs2",
+		libraryTarget: "umd",
 		path: __dirname + "/build"
 	},
 	resolve: {
