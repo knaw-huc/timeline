@@ -18,15 +18,6 @@ module.exports = {
 			{
 				test: /\.tsx?$/,
 				loader: "ts-loader",
-			},
-			{
-				test: /\.worker\.js$/,
-				use: {
-					loader: 'worker-loader',
-					options: {
-						inline: true,
-					},
-				},
 			}
 		]
 	}

@@ -70,16 +70,12 @@ export function subsequentDate(granularity: Granularity, prev: boolean = false):
 	if (granularity >= Granularity.YEAR) {
 		const diff = getStep(granularity) * modifier
 		return (date) => {
-			// date.setFullYear(date.getFullYear() + diff)
-			// return date
 			return new Date(date.getFullYear() + diff, 0, 1)
 		}
 	}
 
 	if (granularity === Granularity.MONTH) {
 		return (date) => {
-			// date.setMonth(date.getMonth() + modifier)
-			// return date
 			return new Date(date.getFullYear(), date.getMonth() + modifier, 1)
 		}
 	}
