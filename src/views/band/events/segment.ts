@@ -4,6 +4,7 @@ import PointInTime from './event/point-in-time'
 import Ruler from '../rulers/ruler'
 import Domain from '../../../models/domain'
 import props from '../../../models/props';
+import { findClosestRulerDate } from '../rulers';
 
 export default class Segment {
 	public rendered: boolean = false
@@ -11,7 +12,8 @@ export default class Segment {
 
 	constructor(
 		public events: Event[],
-		public rulerDates: Date[],
+		private from: Date,
+		private to: Date,
 		public left: number,
 		private topAdder: (e: Event) => Event,
 		private domain: Domain
@@ -40,9 +42,9 @@ export default class Segment {
 		return this.rootElement
 	}
 
-	public renderEvents() {
-		this.rulerDates.forEach(d => this.rootElement.appendChild(new Ruler(d, this.domain, this.left).render()))
+	public renderChildren() {
 		this.events.forEach(e => this.rootElement.appendChild(new PointInTime(this.topAdder(e), this.left).render()))
+		this.renderRulers()
 		this.show()
 		this.rendered = true
 	}
@@ -53,5 +55,14 @@ export default class Segment {
 
 	public hide() {
 		this.rootElement.style.display = 'none'
+	}
+
+	private renderRulers = () => {
+		let date = findClosestRulerDate(this.from, this.domain.granularity)
+		const to = this.to.getTime()
+		while(date.getTime() < to) {
+			this.rootElement.appendChild(new Ruler(date, this.domain, this.left).render())
+			date = this.domain.nextDate(date)
+		}
 	}
 }

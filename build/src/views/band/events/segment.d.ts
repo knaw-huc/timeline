@@ -2,15 +2,17 @@ import Event from '../../../models/event';
 import Domain from '../../../models/domain';
 export default class Segment {
     events: Event[];
-    rulerDates: Date[];
+    private from;
+    private to;
     left: number;
     private topAdder;
     private domain;
     rendered: boolean;
     private rootElement;
-    constructor(events: Event[], rulerDates: Date[], left: number, topAdder: (e: Event) => Event, domain: Domain);
+    constructor(events: Event[], from: Date, to: Date, left: number, topAdder: (e: Event) => Event, domain: Domain);
     render(): HTMLElement;
-    renderEvents(): void;
+    renderChildren(): void;
     show(): void;
     hide(): void;
+    private renderRulers;
 }

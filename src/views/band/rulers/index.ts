@@ -5,7 +5,7 @@ import { getStep } from '../../../utils/dates'
 import { Granularity } from '../../../utils/dates';
 import props from '../../../models/props';
 
-export const findClosestRulerDate = (date: Date, granularity: Granularity) => {
+export function findClosestRulerDate(date: Date, granularity: Granularity) {
 	let year = date.getFullYear()
 
 	if (granularity >= Granularity.YEAR) {

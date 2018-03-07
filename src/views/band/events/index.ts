@@ -5,7 +5,6 @@ import Band from '../index'
 import addTop from '../../../utils/add-top'
 import props from '../../../models/props'
 import Segment from './segment'
-import { findClosestRulerDate } from '../rulers'
 
 export default class EventsBand extends Band {
 	private eventsWrap
@@ -56,7 +55,7 @@ export default class EventsBand extends Band {
 
 			if (i > index - 2 && i < index + 2) {
 				if (seg.rendered) seg.show()
-				else seg.renderEvents()
+				else seg.renderChildren()
 			} else {
 				seg.hide()
 			}
@@ -64,7 +63,6 @@ export default class EventsBand extends Band {
 	}
 
 	private createSegments() {
-		const t0 = performance.now()
 		const segments = [] 
 		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
 
@@ -74,13 +72,6 @@ export default class EventsBand extends Band {
 			const from = this.domain.dateAtProportion(ratioFrom)
 			const to = this.domain.dateAtProportion(ratioTo)
 
-			const rulerDates = []
-			let date = findClosestRulerDate(from, this.domain.granularity)
-			while(date.getTime() < to.getTime()) {
-				rulerDates.push(date)
-				date = this.domain.nextDate(date)
-			}
-
 			const outOfBoundsIndex = this.events.findIndex(e => e.date.getTime() > to.getTime())
 			let events = this.events.slice(0, outOfBoundsIndex)
 			this.events = this.events.slice(outOfBoundsIndex)
@@ -88,14 +79,13 @@ export default class EventsBand extends Band {
 			
 			segments.push(new Segment(
 				events,
-				rulerDates,
+				from,
+				to,
 				i * props.viewportWidth,
 				this.topAdder,
 				this.domain
 			))
 		}
-		const t1 = performance.now()
-		console.log('Performance: ', `${t1 - t0}ms`)
 
 		return segments
 	}

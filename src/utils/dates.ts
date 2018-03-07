@@ -63,16 +63,25 @@ export const getStep = (granularity: Granularity): number => {
 }
 
 // TODOD turn into generator?
-export const subsequentDate = (granularity: Granularity, prev: boolean = false): ((Date) => Date) => {
+// export type Timestamp = number
+export function subsequentDate(granularity: Granularity, prev: boolean = false): ((Date) => Date) {
 	const modifier = prev ? -1 : 1
 
 	if (granularity >= Granularity.YEAR) {
 		const diff = getStep(granularity) * modifier
-		return (date) => new Date(date.getFullYear() + diff, 0, 1)
+		return (date) => {
+			// date.setFullYear(date.getFullYear() + diff)
+			// return date
+			return new Date(date.getFullYear() + diff, 0, 1)
+		}
 	}
 
 	if (granularity === Granularity.MONTH) {
-		return (date) => new Date(date.getFullYear(), date.getMonth() + modifier, 1)
+		return (date) => {
+			// date.setMonth(date.getMonth() + modifier)
+			// return date
+			return new Date(date.getFullYear(), date.getMonth() + modifier, 1)
+		}
 	}
 	
 	if (granularity === Granularity.WEEK) {
