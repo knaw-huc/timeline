@@ -2,13 +2,24 @@ import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import { CENTER_CHANGE_EVENT } from '../../constants'
+import Sparkline from './sparkline'
+import Rulers from './rulers'
+import EventsBand from './events'
+import { AggregateEntry, RawEv3nt } from '../../models/config'
+import DomainConfig from '../../models/domain.config'
+import Ev3nt from '../../models/event'
 
-export default abstract class Band {
+export default class Band {
 	private dragStart: number
 	private dragOffset: number
 	private rootElement: HTMLElement
+	public domain: Domain
+	private events: Ev3nt[]
+	private eventsBand: EventsBand
 
-	constructor(public domain: Domain) {
+	constructor(domainConfig: DomainConfig, events: RawEv3nt[], private aggregate: AggregateEntry[]) {
+		this.domain = new Domain(domainConfig)
+		this.events = events.map(e => new Ev3nt(e, this.domain))
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
@@ -35,6 +46,20 @@ export default abstract class Band {
 			]
 		)
 
+		if (this.domain.config.hasSparkline) {
+			const sparkline = new Sparkline(this.domain, this.events, this.aggregate)
+			this.rootElement.appendChild(sparkline.render())
+		}
+		
+		if (this.domain.config.hasRulers && !this.domain.config.hasEvents) {
+			this.rootElement.appendChild(new Rulers(this.domain).render())
+		}
+
+		if (this.domain.config.hasEvents) {
+			this.eventsBand = new EventsBand(this.domain, this.events)
+			this.rootElement.appendChild(this.eventsBand.render())
+		}
+
 		if (this.domain.config.visibleRatio < 1) {
 			this.rootElement.addEventListener('mousedown', this.onMouseDown)
 			this.rootElement.addEventListener('mousemove', this.onMouseMove)
@@ -44,11 +69,9 @@ export default abstract class Band {
 		return this.rootElement
 	}
 
-	protected abstract renderChildren(): void
-
 	private updateLeft = () => {
 		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
-		if (this.domain.config.type === 'EVENTS') this.renderChildren()
+		if (this.eventsBand != null) this.eventsBand.renderChildren()
 	}
 
 	private onMouseDown = (ev) => {

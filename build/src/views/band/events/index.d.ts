@@ -1,13 +1,12 @@
-import Band from '../index';
-import EventsDomain from '../../../models/events.domain';
-export default class EventsBand extends Band {
-    private eventsWrap;
+import Ev3nt from '../../../models/event';
+import Domain from '../../../models/domain';
+export default class Events {
+    private domain;
+    private events;
     private topAdder;
     private segments;
-    private events;
-    constructor(domain: EventsDomain);
-    remove(): void;
-    render(): HTMLElement;
-    protected renderChildren(): void;
+    constructor(domain: Domain, events: Ev3nt[]);
+    render(): any;
+    renderChildren(): void;
     private createSegments();
 }

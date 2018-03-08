@@ -1,6 +1,7 @@
 import BaseEvent from './base-event'
 import * as Constants from '../constants'
 import Domain from './domain'
+import { RawEv3nt } from './config';
 
 class Ev3nt extends BaseEvent {
 	// public flip: boolean
@@ -8,8 +9,8 @@ class Ev3nt extends BaseEvent {
 	public top: number
 	public width: number
 
-	constructor(data, domain: Domain) {
-		super(data)
+	constructor(rawEvent: RawEv3nt, domain: Domain) {
+		super(rawEvent)
 
 		this.left = domain.positionAtDate(this.from)
 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width

@@ -18,11 +18,13 @@
 		const t = new Timeline.default({
 			domains: [
 				{
+					hasSparkline: false,
 					heightRatio: .5,
 					type: "EVENTS",
 					visibleRatio: .005,
 				},
 				{
+					hasEvents: false,
 					hasIndicatorFor: 0,
 					heightRatio: .25,
 					topOffsetRatio: .5,
@@ -30,6 +32,7 @@
 					visibleRatio: .25
 				},
 				{	
+					hasEvents: false,
 					hasIndicatorFor: 0,
 					heightRatio: .25,
 					topOffsetRatio: .75,

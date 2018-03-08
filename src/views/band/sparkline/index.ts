@@ -1,30 +1,24 @@
-import Domain from '../../models/domain'
-import { createSvg } from '../../utils/create-element'
-import Band from './index'
-import Rulers from './rulers';
-import aggregateWorker from '../../utils/aggregate.worker'
-import { AggregateEntry, RawEv3nt } from '../../models/config';
+import Domain from '../../../models/domain'
+import Ev3nt from '../../../models/event'
+import { createSvg } from '../../../utils/create-element'
+// import Band from './index'
+// import Rulers from '../rulers'
+import aggregateWorker from '../../../utils/aggregate.worker'
+import { AggregateEntry } from '../../../models/config'
 
 
-export default class SparklineBand extends Band {
+export default class Sparkline {
 	private svg: SVGElement
 
-	constructor(domain: Domain, private events: RawEv3nt[], private aggregate: AggregateEntry[]) {
-		super(domain)
-	}
+	constructor(private domain: Domain, private events: Ev3nt[], private aggregate: AggregateEntry[]) {}
 
 	public render() {
-		const wrapper = super.render()
-
 		this.svg = createSvg('svg', null, {
 			height: `${this.domain.height}px`,
 			preserveAspectRatio: "none",
 			viewBox: `0 0 ${this.domain.width} ${this.domain.height}`,
 			width: `${this.domain.width}px`,
 		})
-
-		wrapper.appendChild(this.svg)
-		wrapper.appendChild(new Rulers(this.domain).render())
 
 		if (this.aggregate.length) {
 			this.renderPath()
@@ -34,7 +28,7 @@ export default class SparklineBand extends Band {
 			this.renderPath()
 		})
 
-		return wrapper
+		return this.svg
 	}
 
 	protected renderChildren() {}

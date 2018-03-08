@@ -1,11 +1,8 @@
-import EventsDomain from './models/events.domain'
-import Domain from './models/domain'
 import props from './models/props'
-import EventsBand from './views/band/events'
-import SparklineBand from './views/band/sparkline'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import Config from './models/config'
+import Band from './views/band';
 
 const debounce = (func, wait) => {
 	let timeout
@@ -24,7 +21,7 @@ const debounce = (func, wait) => {
 // TODO Scroll vertical when events higher than viewportHeight
 export default class Timeline {
 	private config: Config
-	private bands:(EventsBand | SparklineBand)[] = []
+	private bands:Band[] = []
 	private wrapper: HTMLElement
 
 	constructor(config: Partial<Config>) {
@@ -74,11 +71,7 @@ export default class Timeline {
 	}
 
 	private renderBands(): void {
-		this.bands = this.config.domains
-			.map(d => {
-				if (d.type === 'EVENTS') return new EventsBand(new EventsDomain(d, this.config.events))
-				if (d.type === 'SPARKLINE') return new SparklineBand(new Domain(d), this.config.events, this.config.aggregate)
-			})
+		this.bands = this.config.domains.map(d => new Band(d, this.config.events, this.config.aggregate))
 		this.bands.forEach(b => this.appendToWrapper(b))
 
 		this.renderIndicators()

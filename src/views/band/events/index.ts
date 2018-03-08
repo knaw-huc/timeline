@@ -1,36 +1,22 @@
 import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
-import Band from '../index'
 import addTop from '../../../utils/add-top'
 import props from '../../../models/props'
 import Segment from './segment'
-import EventsDomain from '../../../models/events.domain';
+import Domain from '../../../models/domain'
 
-export default class EventsBand extends Band {
-	private eventsWrap
+export default class Events {
 	private topAdder: (e: Ev3nt) => Ev3nt
 	private segments: Segment[]
-	private events:Ev3nt[] = []
 
-	constructor(domain: EventsDomain) {
-		super(domain)
-
+	constructor(private domain: Domain, private events: Ev3nt[]) {
 		this.topAdder = addTop(domain)
-
-		this.events = domain.events
 
 		this.segments = this.createSegments()
 	}
 
-	public remove() {
-		super.remove()
-		this.events = null
-	}
-
 	public render() {
-		const bandWrap = super.render()
-
-		this.eventsWrap = createElement(
+		const segmentsWrap = createElement(
 			'ul',
 			'events-wrap',
 			[
@@ -44,15 +30,13 @@ export default class EventsBand extends Band {
 			]
 		)
 
-		this.segments.forEach(s => bandWrap.appendChild(s.render()))
+		this.segments.forEach(s => segmentsWrap.appendChild(s.render()))
 		this.renderChildren()
 
-		bandWrap.appendChild(this.eventsWrap)
-
-		return bandWrap
+		return segmentsWrap
 	}
 
-	protected renderChildren() {
+	public renderChildren() {
 		const index = Math.floor(this.segments.length * props.center)
 		for (let i = 0; i < this.segments.length; i++) {
 			const seg = this.segments[i]
@@ -70,25 +54,31 @@ export default class EventsBand extends Band {
 		const segments = [] 
 		const segmentCount = Math.ceil(1 / this.domain.config.visibleRatio)
 
+		let lowerIndex = 0 
 		for (let i = 0; i < segmentCount; i++) {
 			const ratioFrom = this.domain.config.visibleRatio * i
 			const ratioTo = ratioFrom + this.domain.config.visibleRatio
 			const from = this.domain.dateAtProportion(ratioFrom)
 			const to = this.domain.dateAtProportion(ratioTo)
 
-			const outOfBoundsIndex = this.events.findIndex(e => e.date.getTime() > to.getTime())
-			let events = this.events.slice(0, outOfBoundsIndex)
-			this.events = this.events.slice(outOfBoundsIndex)
-			if (i === segmentCount - 1) events = events.concat(this.events)
+			const toTime = to.getTime()
+			let upperIndex = this.events.findIndex(e => e.date.getTime() > toTime)
+			const tmpUpperIndex = (lowerIndex > upperIndex) ? -1 : upperIndex--
+
+			if (i === segmentCount - 1) upperIndex = this.events.length - 1
 			
 			segments.push(new Segment(
-				events,
+				this.domain,
 				from,
 				to,
+				lowerIndex,
+				tmpUpperIndex,
 				i * props.viewportWidth,
 				this.topAdder,
-				this.domain
+				this.events
 			))
+
+			lowerIndex = upperIndex + 1
 		}
 
 		return segments
