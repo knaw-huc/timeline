@@ -1,6 +1,6 @@
 import Domain from '../../models/domain';
 export default abstract class Band {
-    protected domain: Domain;
+    domain: Domain;
     private dragStart;
     private dragOffset;
     private rootElement;

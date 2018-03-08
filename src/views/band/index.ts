@@ -8,7 +8,7 @@ export default abstract class Band {
 	private dragOffset: number
 	private rootElement: HTMLElement
 
-	constructor(protected domain: Domain) {
+	constructor(public domain: Domain) {
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
@@ -28,14 +28,14 @@ export default abstract class Band {
 				'position: absolute',
 			],
 			[
-				`height: ${this.domain.heightRatio * 100}%`,
-				`top: ${this.domain.topOffsetRatio * 100}%`,
+				`height: ${this.domain.config.heightRatio * 100}%`,
+				`top: ${this.domain.config.topOffsetRatio * 100}%`,
 				`transform: translate3d(${this.domain.left}px, 0, 0)`,
 				`width: ${this.domain.width}px`,
 			]
 		)
 
-		if (this.domain.visibleRatio < 1) {
+		if (this.domain.config.visibleRatio < 1) {
 			this.rootElement.addEventListener('mousedown', this.onMouseDown)
 			this.rootElement.addEventListener('mousemove', this.onMouseMove)
 		}
@@ -48,7 +48,7 @@ export default abstract class Band {
 
 	private updateLeft = () => {
 		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
-		if (this.domain.type === 'EVENTS') this.renderChildren()
+		if (this.domain.config.type === 'EVENTS') this.renderChildren()
 	}
 
 	private onMouseDown = (ev) => {

@@ -1,11 +1,11 @@
-import Domain from '../../../models/domain';
 import Band from '../index';
+import EventsDomain from '../../../models/events.domain';
 export default class EventsBand extends Band {
-    private events;
     private eventsWrap;
     private topAdder;
     private segments;
-    constructor(domain: Domain, events: any);
+    private events;
+    constructor(domain: EventsDomain);
     remove(): void;
     render(): HTMLElement;
     protected renderChildren(): void;

@@ -1,3 +1,4 @@
+import EventsDomain from './models/events.domain'
 import Domain from './models/domain'
 import props from './models/props'
 import EventsBand from './views/band/events'
@@ -23,15 +24,12 @@ const debounce = (func, wait) => {
 // TODO Scroll vertical when events higher than viewportHeight
 export default class Timeline {
 	private config: Config
-	private domains: Domain[]
-	private views = []
+	private bands:(EventsBand | SparklineBand)[] = []
 	private wrapper: HTMLElement
 
 	constructor(config: Partial<Config>) {
 		this.config = new Config(config)
 		props.init(this.config)
-
-		this.domains = this.createDomains()
 
 		this.config.rootElement.appendChild(this.render())
 
@@ -41,7 +39,6 @@ export default class Timeline {
 
 	public remove() {
 		window.removeEventListener('resize', this.debouncedRefresh)
-		this.views.forEach(v => v.remove())
 		this.config.rootElement.removeChild(this.wrapper)
 		this.wrapper.remove()
 		this.wrapper.innerHTML = ''
@@ -51,8 +48,6 @@ export default class Timeline {
 	public refresh = (config: Partial<Config> = {}) => {
 		this.config.refresh(config)
 		this.remove()
-		this.domains = null
-		this.domains = this.createDomains()
 		this.config.rootElement.appendChild(this.render())
 		window.addEventListener('resize', this.debouncedRefresh)
 	}
@@ -74,30 +69,26 @@ export default class Timeline {
 		)
 			
 		this.renderBands()
-		this.renderIndicators()
 
 		return this.wrapper
 	}
 
-	private createDomains(): Domain[] {
-		return this.config.domains.map(d => new Domain(d))
-	}
-
 	private renderBands(): void {
-		const bands = this.domains.map(d => {
-			if (d.type === 'EVENTS') return new EventsBand(d, this.config.events)
-			if (d.type === 'SPARKLINE') return new SparklineBand(d, this.config.events, this.config.aggregate)
-		})
-		this.views.push(...bands)
-		bands.forEach(b => this.appendToWrapper(b))
+		this.bands = this.config.domains
+			.map(d => {
+				if (d.type === 'EVENTS') return new EventsBand(new EventsDomain(d, this.config.events))
+				if (d.type === 'SPARKLINE') return new SparklineBand(new Domain(d), this.config.events, this.config.aggregate)
+			})
+		this.bands.forEach(b => this.appendToWrapper(b))
+
+		this.renderIndicators()
 	}
 
 	private renderIndicators(): void {
-		const indicators = this.domains
-			.filter(d => d.hasIndicatorFor != null)
-			.map(d => new Indicator(d, this.domains[d.hasIndicatorFor]))
-		this.views.push(...indicators)
-		indicators.forEach(this.appendToWrapper)
+		this.bands
+			.filter(band => band.domain.config.hasIndicatorFor != null)
+			.map(band => new Indicator(band.domain, this.bands[band.domain.config.hasIndicatorFor].domain))
+			.forEach(this.appendToWrapper)
 	}
 
 	private appendToWrapper = (child) => this.wrapper.appendChild(child.render())

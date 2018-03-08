@@ -1,55 +1,15 @@
 import { countDays, getGranularity, Granularity } from '../utils/dates'
 import { subsequentDate } from '../utils/dates'
 import props from './props'
+import DomainConfig from './domain.config'
 
-export enum DomainType { Events = "EVENTS", Sparkline = "SPARKLINE" }
-export interface IDomainDef {
-	domainLabels?: boolean
-	hasIndicatorFor?: number
-	heightRatio?: number
-	visibleRatio?: number
-	rulerLabels?: boolean
-	rulers?: boolean
-	topOffsetRatio?: number
-	type?: DomainType
-}
-
-class Domain implements IDomainDef {
-	// Show from & to labels? Labels are shown left and right respectively
-	// of timeline. Use if rulers are to noisy
-	public domainLabels: boolean = false
-
+class Domain {
 	// Level of detail (ie century, year, month, week, day, etc)
 	public granularity: Granularity
-
-	public hasIndicatorFor: number
-
-	// Part of the horizontal space available to this domain.
-	// If the ratio is .1 only 10% of the heigth is used for this domain.
-	public heightRatio: number = 1
 
 	// The amount of pixels taken by one day. Metric used for calculating 
 	// the x-position of an event or ruler on the timeline.
 	public pixelsPerDay: number
-
-	// Show ruler labels?
-	public rulerLabels: boolean = true
-
-	// Show rulers?
-	public rulers: boolean = true
-
-	// Number between 0 and 1 representing the offset from the top
-	// at which the domain should start. A ratio of .3 would make the
-	// domain start at 30% from the top.
-	public topOffsetRatio: number = 0
-
-	// Type of domain (ie sparkline, event, navigator)
-	public type: DomainType = DomainType.Events
-
-	// Number between 0 and 1 representing the visible ratio of the domain
-	// in relation to the total. If the total is 1 year, a ratio of .75
-	// would show 9 months and hide 3 months.
-	public visibleRatio: number = 1
 
 	private _left: number
 	public height: number
@@ -58,17 +18,11 @@ class Domain implements IDomainDef {
 	public prevDate: (d: Date) => Date
 	public nextDate: (d: Date) => Date
 
-	constructor(
-		domain: IDomainDef,
-	) {
-		Object.keys(domain).forEach(k => {
-			if (domain[k] !== this[k]) this[k] = domain[k]
-		})
+	constructor(public config: DomainConfig) {
+		this.height = props.viewportHeight * this.config.heightRatio
+		this.width = props.viewportWidth / this.config.visibleRatio
 
-		this.height = props.viewportHeight * this.heightRatio
-		this.width = props.viewportWidth / this.visibleRatio
-
-		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
+		this.granularity = getGranularity(props.from, props.to, this.config.visibleRatio)
 
 		this.prevDate = subsequentDate(this.granularity, true)
 		this.nextDate = subsequentDate(this.granularity)
@@ -84,7 +38,7 @@ class Domain implements IDomainDef {
 	 * be rendered on page load.
 	 */
 	public initialActiveRange(iteration: number): [Date, Date, boolean] {
-		const deviation = iteration * this.visibleRatio				
+		const deviation = iteration * this.config.visibleRatio				
 		const lowerDeviation = props.center - deviation > 0 ? props.center - deviation : 0
 		const upperDeviation = props.center + deviation < 1 ? props.center + deviation : 1
 		let activeFrom = this.prevDate(this.dateAtProportion(lowerDeviation))

@@ -1,4 +1,4 @@
-import { IAggregateEntry } from "../models/config";
+import { AggregateEntry } from "../models/config";
 
 const func = `onmessage = function(e) {
 	let prevYear
@@ -22,7 +22,7 @@ const func = `onmessage = function(e) {
 }`
 
 
-export default (events, done: (response: IAggregateEntry[]) => void) => {
+export default (events, done: (response: AggregateEntry[]) => void) => {
 	const objectURL = URL.createObjectURL(new Blob([func]))
 	let worker: Worker = new Worker(objectURL)
 	worker.postMessage(events)

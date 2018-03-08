@@ -1,24 +1,17 @@
-import { DomainType } from "./domain";
-export interface IAggregateEntry {
+import DomainConfig from "./domain.config";
+export declare class AggregateEntry {
     count: number;
     year: number;
 }
-export interface IRawEntry {
+export declare class RawEv3nt {
     title: string;
     date: string;
 }
-export interface IRawDomain {
-    hasIndicatorFor?: number;
-    heightRatio?: number;
-    visibleRatio?: number;
-    topOffsetRatio?: number;
-    type: DomainType;
-}
 export default class Config {
-    aggregate: IAggregateEntry[];
+    aggregate: AggregateEntry[];
     center: number;
-    domains: IRawDomain[];
-    events: IRawEntry[];
+    domains: DomainConfig[];
+    events: RawEv3nt[];
     rootElement: HTMLElement;
     constructor(config: Partial<Config>);
     refresh(config: Partial<Config>): void;

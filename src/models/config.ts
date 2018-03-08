@@ -1,37 +1,28 @@
-import { DomainType } from "./domain";
-import props from "./props";
+import props from "./props"
+import DomainConfig from "./domain.config"
 
-export interface IAggregateEntry {
+export class AggregateEntry {
 	count: number
 	year: number 
 }
 
-export interface IRawEntry {
+export class RawEv3nt {
 	title: string
 	date: string
 }
 
-export interface IRawDomain {
-	// domainLabels?: boolean
-	hasIndicatorFor?: number
-	heightRatio?: number
-	visibleRatio?: number
-	// rulerLabels?: boolean
-	// rulers?: boolean
-	topOffsetRatio?: number
-	type: DomainType
-}
 
 export default class Config {
-	public aggregate: IAggregateEntry[] = []
+	public aggregate: AggregateEntry[] = []
 	public center: number = .5
-	public domains: IRawDomain[] = []
-	public events: IRawEntry[] = []
+	public domains: DomainConfig[] = []
+	public events: RawEv3nt[] = []
 	public rootElement: HTMLElement = null
 
 	constructor(config: Partial<Config>) {
 		Object.keys(config).forEach(k => {
-			if (this.hasOwnProperty(k)) this[k] = config[k]
+			if (k === 'domains') this[k] = config.domains.map(d => new DomainConfig(d))
+			else if (this.hasOwnProperty(k)) this[k] = config[k]
 		})
 	}
 

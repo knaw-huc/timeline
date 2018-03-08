@@ -3,13 +3,13 @@ import { createSvg } from '../../utils/create-element'
 import Band from './index'
 import Rulers from './rulers';
 import aggregateWorker from '../../utils/aggregate.worker'
-import { IAggregateEntry, IRawEntry } from '../../models/config';
+import { AggregateEntry, RawEv3nt } from '../../models/config';
 
 
 export default class SparklineBand extends Band {
 	private svg: SVGElement
 
-	constructor(domain: Domain, private events: IRawEntry[], private aggregate: IAggregateEntry[]) {
+	constructor(domain: Domain, private events: RawEv3nt[], private aggregate: AggregateEntry[]) {
 		super(domain)
 	}
 

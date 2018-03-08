@@ -1,24 +1,23 @@
-import Domain from '../../../models/domain'
 import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import Band from '../index'
 import addTop from '../../../utils/add-top'
 import props from '../../../models/props'
 import Segment from './segment'
+import EventsDomain from '../../../models/events.domain';
 
 export default class EventsBand extends Band {
 	private eventsWrap
 	private topAdder: (e: Ev3nt) => Ev3nt
 	private segments: Segment[]
+	private events:Ev3nt[] = []
 
-	constructor(domain: Domain, private events) {
+	constructor(domain: EventsDomain) {
 		super(domain)
 
 		this.topAdder = addTop(domain)
 
-		this.events = events
-			.map(e => new Ev3nt(e, domain))
-			.sort((a, b) => a.date.getTime() - b.date.getTime())
+		this.events = domain.events
 
 		this.segments = this.createSegments()
 	}
@@ -69,11 +68,11 @@ export default class EventsBand extends Band {
 
 	private createSegments(): Segment[] {
 		const segments = [] 
-		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
+		const segmentCount = Math.ceil(1 / this.domain.config.visibleRatio)
 
 		for (let i = 0; i < segmentCount; i++) {
-			const ratioFrom = this.domain.visibleRatio * i
-			const ratioTo = ratioFrom + this.domain.visibleRatio
+			const ratioFrom = this.domain.config.visibleRatio * i
+			const ratioTo = ratioFrom + this.domain.config.visibleRatio
 			const from = this.domain.dateAtProportion(ratioFrom)
 			const to = this.domain.dateAtProportion(ratioTo)
 

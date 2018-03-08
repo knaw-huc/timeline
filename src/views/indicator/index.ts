@@ -31,7 +31,7 @@ export default class Indicator {
 			],
 			[
 				`height: ${this.hostDomain.height}px`,
-				`top: ${this.hostDomain.topOffsetRatio * 100}%`,
+				`top: ${this.hostDomain.config.topOffsetRatio * 100}%`,
 			]
 		)
 
