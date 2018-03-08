@@ -6,7 +6,8 @@ export default class Timeline {
     private wrapper;
     constructor(config: Partial<Config>);
     remove(): void;
-    private resize;
+    refresh: (config?: Partial<Config>) => void;
+    private debouncedRefresh;
     private render();
     private createDomains();
     private renderBands();

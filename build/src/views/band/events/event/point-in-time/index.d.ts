@@ -1,7 +1,7 @@
-import Event from "../../../../../models/event";
+import Ev3nt from "../../../../../models/event";
 export default class PointInTime {
     private event;
     private segmentOffset;
-    constructor(event: Event, segmentOffset: number);
+    constructor(event: Ev3nt, segmentOffset: number);
     render(): any;
 }

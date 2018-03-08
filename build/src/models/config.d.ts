@@ -20,5 +20,6 @@ export default class Config {
     domains: IRawDomain[];
     events: IRawEntry[];
     rootElement: HTMLElement;
-    constructor(config: any);
+    constructor(config: Partial<Config>);
+    refresh(config: Partial<Config>): void;
 }

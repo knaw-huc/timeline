@@ -6,6 +6,7 @@ export default class EventsBand extends Band {
     private topAdder;
     private segments;
     constructor(domain: Domain, events: any);
+    remove(): void;
     render(): HTMLElement;
     protected renderChildren(): void;
     private createSegments();

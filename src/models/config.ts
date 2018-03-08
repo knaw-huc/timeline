@@ -1,4 +1,5 @@
 import { DomainType } from "./domain";
+import props from "./props";
 
 export interface IAggregateEntry {
 	count: number
@@ -28,9 +29,19 @@ export default class Config {
 	public events: IRawEntry[] = []
 	public rootElement: HTMLElement = null
 
-	constructor(config) {
+	constructor(config: Partial<Config>) {
 		Object.keys(config).forEach(k => {
 			if (this.hasOwnProperty(k)) this[k] = config[k]
 		})
+	}
+
+	public refresh(config: Partial<Config>) {
+		Object.keys(config).forEach(k => {
+			if (this.hasOwnProperty(k)) this[k] = config[k]
+		})
+
+		if (config.hasOwnProperty('aggregate') || config.hasOwnProperty('events')) props.edges = this
+		if (config.hasOwnProperty('center')) props.center = this.center
+		props.dimensions = this.rootElement
 	}
 }

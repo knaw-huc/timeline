@@ -2,7 +2,7 @@ import BaseEvent from './base-event'
 import * as Constants from '../constants'
 import Domain from './domain'
 
-class Event extends BaseEvent {
+class Ev3nt extends BaseEvent {
 	// public flip: boolean
 	public left: number
 	public top: number
@@ -25,12 +25,9 @@ class Event extends BaseEvent {
 	 * @returns {[number, number]} The first element is the left position, the second element the width.
 	 */
 	public space(): [number, number] {
-		// const width = minWidth(this.width);
-		// const left = (this.flip) ? this.left - width : this.left;
-		// const left = this.left
 		const width = (this.width === 0 || this.width < Constants.EVENT_MIN_SPACE) ? Constants.EVENT_MIN_SPACE : this.width
 		return [this.left, width];
 	}
 }
 
-export default Event;
+export default Ev3nt;

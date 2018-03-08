@@ -1,5 +1,5 @@
 import * as DateUtils from '../utils/dates'
-import { Granularity } from '../utils/dates';
+// import { Granularity } from '../utils/dates';
 
 export interface IDateRange {
 	from: Date;
@@ -8,7 +8,7 @@ export interface IDateRange {
 	to: Date;
 }
 
-class BaseEvent {
+abstract class BaseEvent {
 	public body: string = ''
 	public coordinates = []
 	public date: Date
@@ -21,8 +21,8 @@ class BaseEvent {
 	public title: string
 	public types: string[] = []
 
-	private dateGranularity = Granularity.DAY;
-	private dateRangeGranularity = null;
+	// private dateGranularity = Granularity.DAY;
+	// private dateRangeGranularity = null;
 
 	constructor(data) {
 		data.date = new Date(data.date)
@@ -34,55 +34,6 @@ class BaseEvent {
 	public countDays(): number {
 		return DateUtils.countDays(this.from, this.to);
 	}
-
-	public formatFromDate(): string {
-		return this.formatDate('from');
-	}
-
-	public formatToDate(): string {
-		return this.formatDate('to');
-	}
-
-	public isInterval(): boolean {
-		return this.dateRange != null;
-	}
-
-	public isUncertain(): boolean {
-		return this.dateUncertain != null || this.dateRangeUncertain != null;
-	}
-
-	private formatDate = (dateToFormat: 'from' | 'to'): string => {
-		let date = this.date;
-		let granularity = this.dateGranularity;
-
-		if (date == null) {
-			if (this.dateUncertain != null) {
-				const from = DateUtils.format(this.dateUncertain.from, this.dateGranularity);
-				const to = DateUtils.format(this.dateUncertain.to, this.dateRangeGranularity);
-				return `${from} - ${to}`;
-			} else if (dateToFormat == null) {
-				throw new Error('[formatDate] Unknown date to format!');
-			} else {
-				granularity = (dateToFormat === 'from') ?
-					this.dateGranularity :
-					this.dateRangeGranularity;
-
-				if (this.dateRangeUncertain == null) {
-					date = this.dateRange[dateToFormat];
-				} else {
-					if (DateUtils.isEqual(this.dateRange[dateToFormat], this.dateRangeUncertain[dateToFormat])) {
-						date = this.dateRangeUncertain[dateToFormat];
-					} else {
-						const from = DateUtils.format(this.dateRange[dateToFormat], granularity);
-						const to = DateUtils.format(this.dateRangeUncertain[dateToFormat], granularity);
-						return `${from} - ${to}`;
-					}
-				}
-			}
-		}
-
-		return DateUtils.format(date, granularity);
-	};
 
 	private setFrom(): void {
 		this.from = (this.dateRange != null) ?
@@ -105,6 +56,57 @@ class BaseEvent {
 				this.dateUncertain.to :
 				null;
 	}
+
+	public isInterval(): boolean {
+		return this.dateRange != null;
+	}
+
+	public isUncertain(): boolean {
+		return this.dateUncertain != null || this.dateRangeUncertain != null;
+	}
+
+	// public formatFromDate(): string {
+	// 	return this.formatDate('from');
+	// }
+
+	// public formatToDate(): string {
+	// 	return this.formatDate('to');
+	// }
+
+
+	// private formatDate = (dateToFormat: 'from' | 'to'): string => {
+	// 	let date = this.date;
+	// 	let granularity = this.dateGranularity;
+
+	// 	if (date == null) {
+	// 		if (this.dateUncertain != null) {
+	// 			const from = DateUtils.format(this.dateUncertain.from, this.dateGranularity);
+	// 			const to = DateUtils.format(this.dateUncertain.to, this.dateRangeGranularity);
+	// 			return `${from} - ${to}`;
+	// 		} else if (dateToFormat == null) {
+	// 			throw new Error('[formatDate] Unknown date to format!');
+	// 		} else {
+	// 			granularity = (dateToFormat === 'from') ?
+	// 				this.dateGranularity :
+	// 				this.dateRangeGranularity;
+
+	// 			if (this.dateRangeUncertain == null) {
+	// 				date = this.dateRange[dateToFormat];
+	// 			} else {
+	// 				if (DateUtils.isEqual(this.dateRange[dateToFormat], this.dateRangeUncertain[dateToFormat])) {
+	// 					date = this.dateRangeUncertain[dateToFormat];
+	// 				} else {
+	// 					const from = DateUtils.format(this.dateRange[dateToFormat], granularity);
+	// 					const to = DateUtils.format(this.dateRangeUncertain[dateToFormat], granularity);
+	// 					return `${from} - ${to}`;
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+
+	// 	return DateUtils.format(date, granularity);
+	// };
+
 }
 
 export default BaseEvent;

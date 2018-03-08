@@ -1,7 +1,7 @@
-import Event from '../../../models/event';
+import Ev3nt from '../../../models/event';
 import Domain from '../../../models/domain';
 export default class Segment {
-    events: Event[];
+    events: Ev3nt[];
     private from;
     private to;
     left: number;
@@ -9,7 +9,7 @@ export default class Segment {
     private domain;
     rendered: boolean;
     private rootElement;
-    constructor(events: Event[], from: Date, to: Date, left: number, topAdder: (e: Event) => Event, domain: Domain);
+    constructor(events: Ev3nt[], from: Date, to: Date, left: number, topAdder: (e: Ev3nt) => Ev3nt, domain: Domain);
     render(): HTMLElement;
     renderChildren(): void;
     show(): void;

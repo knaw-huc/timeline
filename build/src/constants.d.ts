@@ -4,4 +4,4 @@ export declare const EVENT_ROW_HEIGHT = 16;
 export declare const DATE_BAR_HEIGHT = 60;
 export declare const RULER_LABELS_HEIGHT = 60;
 export declare const CENTER_CHANGE_EVENT = "CENTER_CHANGE_EVENT";
-export declare const READY_FOR_RENDER_EVENT = "READY_FOR_RENDER_EVENT";
+export declare const DIMENSIONS_CHANGE_EVENT = "DIMENSIONS_CHANGE_EVENT";

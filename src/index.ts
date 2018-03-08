@@ -9,8 +9,8 @@ import Config from './models/config'
 const debounce = (func, wait) => {
 	let timeout
 	return () => {
-		if (timeout != null) clearTimeout(timeout)
-		timeout = setTimeout(() => { func('a'); console.log(timeout, this)}, wait)
+		clearTimeout(timeout)
+		timeout = setTimeout(func, wait)
 	}
 }
 
@@ -35,11 +35,12 @@ export default class Timeline {
 
 		this.config.rootElement.appendChild(this.render())
 
-		window.addEventListener('resize', debounce(this.resize, 1000))
+		window.addEventListener('resize', this.debouncedRefresh)
 	}
 
+
 	public remove() {
-		window.removeEventListener('resize', this.resize)
+		window.removeEventListener('resize', this.debouncedRefresh)
 		this.views.forEach(v => v.remove())
 		this.config.rootElement.removeChild(this.wrapper)
 		this.wrapper.remove()
@@ -47,13 +48,15 @@ export default class Timeline {
 		this.wrapper = null
 	}
 
-	private resize = (i) => {
-		console.log('r', i)
-		// this.remove()
-		// this.domains = this.createDomains()
-		// this.config.rootElement.appendChild(this.render())
-		// window.addEventListener('resize', this.resize)
+	public refresh = (config: Partial<Config> = {}) => {
+		this.config.refresh(config)
+		this.remove()
+		this.domains = null
+		this.domains = this.createDomains()
+		this.config.rootElement.appendChild(this.render())
+		window.addEventListener('resize', this.debouncedRefresh)
 	}
+	private debouncedRefresh = debounce(this.refresh, 1000)
 
 	private render() {
 		this.wrapper = createElement(

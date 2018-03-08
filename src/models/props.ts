@@ -1,4 +1,4 @@
-import { CENTER_CHANGE_EVENT } from "../constants";
+import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT } from "../constants";
 import Config from "./config";
 
 export class Props {
@@ -45,8 +45,18 @@ export class Props {
 	get viewportHeight() { return this._viewportHeight }
 	set dimensions(rootElement: HTMLElement) {
 		const style = getComputedStyle(rootElement)
-		this._viewportWidth = parseInt(style.getPropertyValue('width'), 10)
-		this._viewportHeight = parseInt(style.getPropertyValue('height'), 10)
+		const nextWidth = parseInt(style.getPropertyValue('width'), 10)
+		const nextHeight = parseInt(style.getPropertyValue('height'), 10)
+
+		if (
+			(this._viewportWidth != null && this._viewportWidth !== nextWidth) ||
+			(this._viewportHeight != null && this._viewportHeight !== nextHeight)
+		) {
+			document.dispatchEvent(new CustomEvent(DIMENSIONS_CHANGE_EVENT))
+		}
+
+		this._viewportWidth = nextWidth
+		this._viewportHeight = nextHeight
 	}
 }
 

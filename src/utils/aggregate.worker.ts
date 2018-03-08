@@ -21,10 +21,14 @@ const func = `onmessage = function(e) {
 	postMessage(run2)
 }`
 
-const objectURL = URL.createObjectURL(new Blob([func]))
 
 export default (events, done: (response: IAggregateEntry[]) => void) => {
-	const worker: Worker = new Worker(objectURL)
+	const objectURL = URL.createObjectURL(new Blob([func]))
+	let worker: Worker = new Worker(objectURL)
 	worker.postMessage(events)
-	worker.onmessage = (e) => done(e.data)
+	worker.onmessage = (e) => {
+		URL.revokeObjectURL(objectURL)
+		worker.terminate()
+		done(e.data)
+	}
 }

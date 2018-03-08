@@ -1,5 +1,5 @@
 import Domain from '../../../models/domain'
-import Event from '../../../models/event'
+import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import Band from '../index'
 import addTop from '../../../utils/add-top'
@@ -8,7 +8,7 @@ import Segment from './segment'
 
 export default class EventsBand extends Band {
 	private eventsWrap
-	private topAdder: (e: Event) => Event
+	private topAdder: (e: Ev3nt) => Ev3nt
 	private segments: Segment[]
 
 	constructor(domain: Domain, private events) {
@@ -17,10 +17,15 @@ export default class EventsBand extends Band {
 		this.topAdder = addTop(domain)
 
 		this.events = events
-			.map(e => new Event(e, domain))
+			.map(e => new Ev3nt(e, domain))
 			.sort((a, b) => a.date.getTime() - b.date.getTime())
 
 		this.segments = this.createSegments()
+	}
+
+	public remove() {
+		super.remove()
+		this.events = null
 	}
 
 	public render() {
@@ -62,7 +67,7 @@ export default class EventsBand extends Band {
 		}
 	}
 
-	private createSegments() {
+	private createSegments(): Segment[] {
 		const segments = [] 
 		const segmentCount = Math.ceil(1 / this.domain.visibleRatio)
 

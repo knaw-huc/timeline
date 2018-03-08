@@ -1,9 +1,9 @@
-import Event from "../../../../../models/event"
+import Ev3nt from "../../../../../models/event"
 import { EVENT_MIN_SPACE, EVENT_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 
 export default class PointInTime {
-	 constructor(private event: Event, private segmentOffset: number) {}
+	 constructor(private event: Ev3nt, private segmentOffset: number) {}
 
 	public render() {
 		const li = createElement(

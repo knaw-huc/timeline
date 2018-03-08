@@ -4,7 +4,7 @@ export interface IDateRange {
     infiniteTo?: boolean;
     to: Date;
 }
-declare class BaseEvent {
+declare abstract class BaseEvent {
     body: string;
     coordinates: any[];
     date: Date;
@@ -16,16 +16,11 @@ declare class BaseEvent {
     slug: string;
     title: string;
     types: string[];
-    private dateGranularity;
-    private dateRangeGranularity;
     constructor(data: any);
     countDays(): number;
-    formatFromDate(): string;
-    formatToDate(): string;
-    isInterval(): boolean;
-    isUncertain(): boolean;
-    private formatDate;
     private setFrom();
     private setTo();
+    isInterval(): boolean;
+    isUncertain(): boolean;
 }
 export default BaseEvent;

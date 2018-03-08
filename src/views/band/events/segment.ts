@@ -1,4 +1,4 @@
-import Event from '../../../models/event'
+import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
 import Ruler from '../rulers/ruler'
@@ -11,11 +11,11 @@ export default class Segment {
 	private rootElement: HTMLElement
 
 	constructor(
-		public events: Event[],
+		public events: Ev3nt[],
 		private from: Date,
 		private to: Date,
 		public left: number,
-		private topAdder: (e: Event) => Event,
+		private topAdder: (e: Ev3nt) => Ev3nt,
 		private domain: Domain
 	) {}
 

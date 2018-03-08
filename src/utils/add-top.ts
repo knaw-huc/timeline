@@ -1,10 +1,10 @@
-import Event from '../models/event'
+import Ev3nt from '../models/event'
 import { EVENT_ROW_HEIGHT } from '../constants';
 
 export default (domain) => {
 	const grid = []
 
-	return (event: Event): Event => {
+	return (event: Ev3nt): Ev3nt => {
 		const [left, width] = event.space()
 		let row
 
