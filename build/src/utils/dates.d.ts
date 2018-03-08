@@ -14,4 +14,4 @@ export declare const isEqual: (date1: Date, date2: Date) => boolean;
 export declare const format: (date: Date, granularity: Granularity) => string;
 export declare const getGranularity: (from: Date, to: Date, visibleRatio: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
-export declare function subsequentDate(granularity: Granularity, prev?: boolean): ((Date) => Date);
+export declare function subsequentDate(granularity: Granularity): ((Date) => Date);

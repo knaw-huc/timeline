@@ -13,6 +13,7 @@ export default class Config {
     domains: DomainConfig[];
     events: RawEv3nt[];
     rootElement: HTMLElement;
+    sortEvents: boolean;
     constructor(config: Partial<Config>);
     refresh(config: Partial<Config>): void;
 }

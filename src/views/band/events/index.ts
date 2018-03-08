@@ -1,16 +1,13 @@
 import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
-import addTop from '../../../utils/add-top'
 import props from '../../../models/props'
 import Segment from './segment'
 import Domain from '../../../models/domain'
 
 export default class Events {
-	private topAdder: (e: Ev3nt) => Ev3nt
 	private segments: Segment[]
 
 	constructor(private domain: Domain, private events: Ev3nt[]) {
-		this.topAdder = addTop(domain)
 
 		this.segments = this.createSegments()
 	}
@@ -61,21 +58,26 @@ export default class Events {
 			const from = this.domain.dateAtProportion(ratioFrom)
 			const to = this.domain.dateAtProportion(ratioTo)
 
-			const toTime = to.getTime()
-			let upperIndex = this.events.findIndex(e => e.date.getTime() > toTime)
-			const tmpUpperIndex = (lowerIndex > upperIndex) ? -1 : upperIndex--
+			// Find the next 'out of bounds' index
+			let upperIndex = this.events.findIndex(e => e.date.getTime() > to.getTime())
 
-			if (i === segmentCount - 1) upperIndex = this.events.length - 1
+			// Create a new variable for the upperIndex, because when there are no
+			// events in the current segment, the upperIndex should be set to -1, but
+			// the upperIndex value should not be forgotten.
+			let tmpUpperIndex = (lowerIndex > upperIndex) ? -1 : upperIndex--
+
+			// If it's the last cycle, include the last events in the last segment.
+			// They are excluded because of the `<` sign.
+			if (i === segmentCount - 1) tmpUpperIndex = this.events.length - 1 
 			
 			segments.push(new Segment(
 				this.domain,
+				this.events,
 				from,
 				to,
 				lowerIndex,
 				tmpUpperIndex,
-				i * props.viewportWidth,
-				this.topAdder,
-				this.events
+				i * props.viewportWidth
 			))
 
 			lowerIndex = upperIndex + 1

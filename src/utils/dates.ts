@@ -63,33 +63,13 @@ export const getStep = (granularity: Granularity): number => {
 }
 
 // TODOD turn into generator?
-// export type Timestamp = number
-export function subsequentDate(granularity: Granularity, prev: boolean = false): ((Date) => Date) {
-	const modifier = prev ? -1 : 1
-
+export function subsequentDate(granularity: Granularity): ((Date) => Date) {
 	if (granularity >= Granularity.YEAR) {
-		const diff = getStep(granularity) * modifier
-		return (date) => {
-			return new Date(date.getFullYear() + diff, 0, 1)
-		}
+		const step = getStep(granularity)
+		return (date) => new Date(date.getFullYear() + step, 0, 1)
 	}
-
-	if (granularity === Granularity.MONTH) {
-		return (date) => {
-			return new Date(date.getFullYear(), date.getMonth() + modifier, 1)
-		}
-	}
-	
-	if (granularity === Granularity.WEEK) {
-		const diff = 7 * modifier
-		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff)
-	}
-	
-	if (granularity === Granularity.DAY) {
-		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + modifier)
-	}
-	
-	if (granularity === Granularity.HOUR) {
-		return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + modifier)
-	}
+	if (granularity === Granularity.MONTH) return (date) => new Date(date.getFullYear(), date.getMonth() + 1, 1)
+	if (granularity === Granularity.WEEK) return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7)
+	if (granularity === Granularity.DAY) return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+	if (granularity === Granularity.HOUR) return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + 1)
 }

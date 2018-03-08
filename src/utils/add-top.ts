@@ -1,7 +1,7 @@
 import Ev3nt from '../models/event'
 import { EVENT_ROW_HEIGHT } from '../constants';
 
-export default (domain) => {
+export default () => {
 	const grid = []
 
 	return (event: Ev3nt): Ev3nt => {

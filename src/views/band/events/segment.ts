@@ -12,14 +12,12 @@ export default class Segment {
 
 	constructor(
 		private domain: Domain,
-		// public events: Ev3nt[],
+		private events: Ev3nt[],
 		private from: Date,
 		private to: Date,
 		private lowerIndex: number,
 		private upperIndex: number,
 		public left: number,
-		private topAdder: (e: Ev3nt) => Ev3nt,
-		private events: Ev3nt[]
 	) {}
 
 	public render() {
@@ -46,12 +44,13 @@ export default class Segment {
 	}
 
 	public renderChildren() {
+		this.renderRulers()
+
 		for (let i = this.lowerIndex; i <= this.upperIndex; i++) {
-			const pit = new PointInTime(this.topAdder(this.events[i]), this.left)
+			const pit = new PointInTime(this.domain.topAdder(this.events[i]), this.left)
 			this.rootElement.appendChild(pit.render())
 		}
 
-		this.renderRulers()
 		this.show()
 		this.rendered = true
 	}
