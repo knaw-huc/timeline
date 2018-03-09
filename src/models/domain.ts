@@ -31,7 +31,7 @@ class Domain {
 
 		this.pixelsPerDay = this.width / countDays(props.from, props.to)
 
-		if (this.config.type === 'EVENTS') this.topAdder = addTop()
+		if (this.config.type === 'EVENTS') this.topAdder = addTop() // topAdder does not have to be a prop on Domain, but prob it will need the domain in the future
 
 		this.updateLeft()
 	}
