@@ -9,6 +9,7 @@ export class AggregateEntry {
 export class RawEv3nt {
 	title: string
 	date: string
+	endDate: string
 }
 
 

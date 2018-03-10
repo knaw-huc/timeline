@@ -6,6 +6,7 @@ export declare class AggregateEntry {
 export declare class RawEv3nt {
     title: string;
     date: string;
+    endDate: string;
 }
 export default class Config {
     aggregate: AggregateEntry[];

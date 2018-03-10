@@ -8,7 +8,6 @@ export default class Events {
 	private segments: Segment[]
 
 	constructor(private domain: Domain, private events: Ev3nt[]) {
-
 		this.segments = this.createSegments()
 	}
 

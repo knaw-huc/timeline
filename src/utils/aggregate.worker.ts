@@ -1,10 +1,12 @@
 import { AggregateEntry } from "../models/config";
 
+// Worker receives the raw Ev3nt Object, not the Ev3nt class,
+// so getters and setters are not available.
 const func = `onmessage = function(e) {
 	let prevYear
 	const run1 = e.data
 		.reduce((prev, curr, index, array) => {
-			const year = curr.date.getFullYear()
+			const year = curr._date.getFullYear()
 			if (prev.hasOwnProperty(year)) {
 				prev[year]++
 			} else {

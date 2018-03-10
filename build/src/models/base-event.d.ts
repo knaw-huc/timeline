@@ -1,26 +1,21 @@
-export interface IDateRange {
-    from: Date;
-    infiniteFrom?: boolean;
-    infiniteTo?: boolean;
-    to: Date;
-}
+import Domain from './domain';
+import { RawEv3nt } from './config';
 declare abstract class BaseEvent {
-    body: string;
-    coordinates: any[];
+    private _date;
     date: Date;
-    dateRange: IDateRange;
-    dateRangeUncertain: IDateRange;
-    dateUncertain: IDateRange;
-    from: Date;
-    to: Date;
-    slug: string;
+    private _endDate;
+    endDate: Date;
+    private _title;
     title: string;
-    types: string[];
-    constructor(data: any);
+    private _left;
+    left: number;
+    private _top;
+    top: number;
+    private _width;
+    width: number;
+    constructor(rawEvent: RawEv3nt, domain: Domain);
+    space(): [number, number];
     countDays(): number;
-    private setFrom();
-    private setTo();
     isInterval(): boolean;
-    isUncertain(): boolean;
 }
 export default BaseEvent;

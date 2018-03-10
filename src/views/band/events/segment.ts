@@ -1,6 +1,7 @@
 import Ev3nt from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
+import Interval from './event/interval'
 import Ruler from '../rulers/ruler'
 import Domain from '../../../models/domain'
 import props from '../../../models/props';
@@ -47,7 +48,9 @@ export default class Segment {
 		this.renderRulers()
 
 		for (let i = this.lowerIndex; i <= this.upperIndex; i++) {
-			const pit = new PointInTime(this.domain.topAdder(this.events[i]), this.left)
+			const event = this.events[i]
+			const Klass = event.isInterval() ? Interval : PointInTime
+			const pit = new Klass(this.domain.topAdder(this.events[i]), this.left)
 			this.rootElement.appendChild(pit.render())
 		}
 

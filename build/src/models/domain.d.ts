@@ -6,14 +6,16 @@ declare class Domain {
     granularity: Granularity;
     pixelsPerDay: number;
     private _left;
-    height: number;
+    left: number;
+    private _width;
     width: number;
+    private _height;
+    height: number;
     nextDate: (d: Date) => Date;
     topAdder: (e: Ev3nt) => Ev3nt;
     constructor(config: DomainConfig);
     dateAtPosition(x: number): Date;
     dateAtProportion(proportion: number): Date;
-    left: number;
     updateLeft(): number;
     positionAtDate(date: Date): number;
     proportionAtPosition(position: number): number;

@@ -1,11 +1,21 @@
-import BaseEvent from './base-event';
 import Domain from './domain';
 import { RawEv3nt } from './config';
-declare class Ev3nt extends BaseEvent {
+declare class Event {
+    private _date;
+    date: Date;
+    private _endDate;
+    endDate: Date;
+    private _title;
+    title: string;
+    private _left;
     left: number;
+    private _top;
     top: number;
+    private _width;
     width: number;
     constructor(rawEvent: RawEv3nt, domain: Domain);
     space(): [number, number];
+    countDays(): number;
+    isInterval(): boolean;
 }
-export default Ev3nt;
+export default Event;
