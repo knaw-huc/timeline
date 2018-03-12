@@ -3,10 +3,10 @@ import { AggregateEntry, RawEv3nt } from '../../models/config';
 import DomainConfig from '../../models/domain.config';
 export default class Band {
     private aggregate;
+    domain: Domain;
     private dragStart;
     private dragOffset;
     private rootElement;
-    domain: Domain;
     private events;
     private eventsBand;
     constructor(domainConfig: DomainConfig, events: RawEv3nt[], aggregate: AggregateEntry[]);

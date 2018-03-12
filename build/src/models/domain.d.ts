@@ -19,5 +19,6 @@ declare class Domain {
     updateLeft(): number;
     positionAtDate(date: Date): number;
     proportionAtPosition(position: number): number;
+    proportionAtDate(date: Date): number;
 }
 export default Domain;

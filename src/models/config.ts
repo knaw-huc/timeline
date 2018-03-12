@@ -37,6 +37,10 @@ export default class Config {
 			config.events.sort((a, b) => {
 				if (a.date < b.date) return -1
 				if (a.date > b.date) return 1
+				if (a.hasOwnProperty('endDate') && b.hasOwnProperty('endDate')) {
+					if (a.endDate < b.endDate) return -1
+					if (a.endDate > b.endDate) return 1
+				}
 				return 0
 			})
 		}

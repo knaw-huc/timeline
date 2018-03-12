@@ -9,8 +9,8 @@ declare class Event {
     title: string;
     private _left;
     left: number;
-    private _top;
-    top: number;
+    private _row;
+    row: number;
     private _width;
     width: number;
     constructor(rawEvent: RawEv3nt, domain: Domain);

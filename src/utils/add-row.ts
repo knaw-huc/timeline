@@ -1,5 +1,4 @@
 import Ev3nt from '../models/event'
-import { EVENT_ROW_HEIGHT } from '../constants';
 
 export default () => {
 	const grid = []
@@ -31,7 +30,7 @@ export default () => {
 			row = grid.push([[left, width]])
 		}
 
-		event.top = row * EVENT_ROW_HEIGHT
+		event.row = row
 		return event
 	}
 }

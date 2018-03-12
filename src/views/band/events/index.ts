@@ -4,6 +4,20 @@ import props from '../../../models/props'
 import Segment from './segment'
 import Domain from '../../../models/domain'
 
+const partition = (arr, filterFunc): [any, any] => {
+	const matched = []
+	const unmatched = []
+
+	for (let i = 0; i < arr.length; i++) {
+		const bool = filterFunc.call(arr, arr[i], i)
+		if (bool) matched.push(arr[i])
+		else unmatched.push(arr[i])
+	}
+
+	return [matched, unmatched];
+};
+
+
 export default class Events {
 	private segments: Segment[]
 
@@ -33,54 +47,72 @@ export default class Events {
 	}
 
 	public renderChildren() {
-		const index = Math.floor(this.segments.length * props.center)
-		for (let i = 0; i < this.segments.length; i++) {
-			const seg = this.segments[i]
-
-			if (i > index - 2 && i < index + 2) {
-				if (seg.rendered) seg.show()
-				else seg.renderChildren()
-			} else {
-				seg.hide()
-			}
+		let index = Math.floor(this.segments.length * props.center)
+		this.segments[index].renderChildren()
+		for (let i = index - 2; i <= index + 2; i++) {
+			if (i > 0 && i < this.segments.length && i !== index) this.segments[i].renderChildren()
 		}
 	}
 
 	private createSegments(): Segment[] {
-		const segments = [] 
-		const segmentCount = Math.ceil(1 / this.domain.config.visibleRatio)
+		const t0 = performance.now()
+		const segments = []
+		const ratios = []
+		let lower = props.center
+		let upper = props.center
+		let i = 0
 
-		let lowerIndex = 0 
-		for (let i = 0; i < segmentCount; i++) {
-			const ratioFrom = this.domain.config.visibleRatio * i
-			const ratioTo = ratioFrom + this.domain.config.visibleRatio
-			const from = this.domain.dateAtProportion(ratioFrom)
-			const to = this.domain.dateAtProportion(ratioTo)
+		let prevLower
+		let prevUpper
 
-			// Find the next 'out of bounds' index
-			let upperIndex = this.events.findIndex(e => e.date.getTime() > to.getTime())
+		while (lower > 0) {
+			if (i === 0) {
+				lower = props.center - this.domain.config.visibleRatio * 1.5
+				upper = props.center + this.domain.config.visibleRatio * 1.5
+				ratios.push([lower, upper])
+			}
+			else {
+				lower -= this.domain.config.visibleRatio
+				upper += this.domain.config.visibleRatio
 
-			// Create a new variable for the upperIndex, because when there are no
-			// events in the current segment, the upperIndex should be set to -1, but
-			// the upperIndex value should not be forgotten.
-			let tmpUpperIndex = (lowerIndex > upperIndex) ? -1 : upperIndex--
+				if (lower > 0) ratios.push([lower, prevLower])
+				else if (lower <= 0 && prevLower > 0) ratios.push([0, prevLower])
+				if (upper < 1) ratios.push([prevUpper, upper])
+				else if (upper >= 1 && prevUpper < 1) ratios.push([prevUpper, 1])
+			}
 
-			// If it's the last cycle, include the last events in the last segment.
-			// They are excluded because of the `<` sign.
-			if (i === segmentCount - 1) tmpUpperIndex = this.events.length - 1 
-			
-			segments.push(new Segment(
-				this.domain,
-				this.events,
-				from,
-				to,
-				lowerIndex,
-				tmpUpperIndex,
-				i * props.viewportWidth
-			))
+			prevLower = lower
+			prevUpper = upper
 
-			lowerIndex = upperIndex + 1
+			i++
 		}
+
+		let evs = this.events
+		for(let j = 0; j < ratios.length; j++) {
+			const [lower, upper] = ratios[j]
+			const part = partition(evs, (e) => {
+				const curr = this.domain.proportionAtDate(e.date)
+				if (curr >= lower && curr <= upper) return true			//      [  |--]----|
+				else if (e.endDate != null) {
+					const currEnd = this.domain.proportionAtDate(e.endDate)
+					if (
+						(currEnd >= lower && currEnd <= upper) ||			// |----[--|  ]
+						(curr < lower && currEnd > upper)				// |----[-----]----|
+					) return true
+					else return false
+				}
+				return false	
+			})	
+			segments.push(new Segment(this.domain, part[0], lower, upper))
+			evs = part[1]
+		}
+
+		segments.sort((a, b) => {
+			if (a.fromRatio < b.fromRatio) return -1
+			if (a.fromRatio > b.fromRatio) return 1
+			return 0
+		})
+		const t1 = performance.now(); console.log('Performance: ', `${t1 - t0}ms`)
 
 		return segments
 	}

@@ -1,4 +1,4 @@
-import * as DateUtils from '../utils/dates'
+import { countDays } from '../utils/dates'
 import { EVENT_MIN_SPACE } from '../constants';
 import Domain from './domain';
 import { RawEv3nt } from './config';
@@ -20,9 +20,9 @@ class Event {
 	get left() { return this._left }
 	set left(left) { this._left = left }
 
-	private _top: number
-	get top() { return this._top }
-	set top(top) { this._top = top }
+	private _row: number
+	get row() { return this._row }
+	set row(row) { this._row = row }
 
 	private _width: number
 	get width() { return this._width }
@@ -50,7 +50,7 @@ class Event {
 
 	countDays(): number {
 		if (!this.isInterval()) return 0
-		return DateUtils.countDays(this._date, this._endDate);
+		return countDays(this._date, this._endDate);
 	}
 
 	isInterval(): boolean {

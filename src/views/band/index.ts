@@ -10,10 +10,10 @@ import DomainConfig from '../../models/domain.config'
 import Ev3nt from '../../models/event'
 
 export default class Band {
+	domain: Domain
 	private dragStart: number
 	private dragOffset: number
 	private rootElement: HTMLElement
-	public domain: Domain
 	private events: Ev3nt[]
 	private eventsBand: EventsBand
 
@@ -23,14 +23,14 @@ export default class Band {
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 
-	public remove() {
+	remove() {
 		document.removeEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 		this.rootElement.removeEventListener('mousedown', this.onMouseDown)
 		this.rootElement.removeEventListener('mousemove', this.onMouseMove)
 		this.rootElement.removeEventListener('dblclick', this.onDblClick)
 	}
 
-	public render() {
+	render() {
 		this.rootElement = createElement(
 			'div',
 			'band-wrap',

@@ -1,11 +1,11 @@
-import { AggregateEntry } from "../models/config";
+import { AggregateEntry } from "../models/config"
 
-// Worker receives the raw Ev3nt Object, not the Ev3nt class,
-// so getters and setters are not available.
-const func = `onmessage = function(e) {
+function aggregateWorker(e) {
 	let prevYear
 	const run1 = e.data
 		.reduce((prev, curr, index, array) => {
+			// Worker receives the raw Ev3nt Object, not the Ev3nt class,
+			// so getters and setters are not available, hence curr._date
 			const year = curr._date.getFullYear()
 			if (prev.hasOwnProperty(year)) {
 				prev[year]++
@@ -20,8 +20,11 @@ const func = `onmessage = function(e) {
 			return prev
 		}, {})
 	const run2 = Object.keys(run1).map((year, index) => ({ year, count: run1[year]}))
+	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
 	postMessage(run2)
-}`
+}
+
+const func = `onmessage = ${aggregateWorker.toString()}`
 
 
 export default (events, done: (response: AggregateEntry[]) => void) => {

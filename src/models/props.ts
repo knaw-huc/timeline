@@ -1,18 +1,16 @@
-import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT } from "../constants";
-import Config from "./config";
+import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT } from "../constants"
+import Config from "./config"
+import { debounce } from "../utils"
 
 export class Props {
-	private _center: number = .5
-	private _from: Date
-	private _to: Date
-	private _viewportWidth: number
-	private _viewportHeight: number
 
 	init(config: Config) {
 		this.edges = config
 		this.dimensions = config.rootElement
 	}
 
+	private _center: number = .5
+	/** Current center of the timeline by ratio [0, 1] */
 	get center() { return this._center }
 	set center(n: number) {
 		if ((this._center === 0 && n < 0) || (this._center === 1 && n > 1)) return
@@ -21,9 +19,14 @@ export class Props {
 		else this._center = n
 
 		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_EVENT, { detail: n }))
+		this.centerChangeDone()
 	}
 
+	private _from: Date
+	private _to: Date
+	/** Lowest date on the timeline */
 	get from() { return this._from }
+	/** Highest date on the timeline */
 	get to() { return this._to }
 	set edges(config: Config) {
 		const edges = []
@@ -39,9 +42,18 @@ export class Props {
 
 		this._from = new Date(Math.min(...edges))
 		this._to = new Date(Math.max(...edges))
+		this._time = this._to.getTime() - this._from.getTime()
 	}
 
+	private _time: number
+	/** Total time (ms) of the timeline */
+	get time() { return this._time }
+
+	private _viewportWidth: number
+	private _viewportHeight: number
+	/** Width of the timeline's viewport */
 	get viewportWidth() { return this._viewportWidth }
+	/** Height of the timeline's viewport */
 	get viewportHeight() { return this._viewportHeight }
 	set dimensions(rootElement: HTMLElement) {
 		const style = getComputedStyle(rootElement)
@@ -58,6 +70,8 @@ export class Props {
 		this._viewportWidth = nextWidth
 		this._viewportHeight = nextHeight
 	}
+
+	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 300)
 }
 
 export default new Props()

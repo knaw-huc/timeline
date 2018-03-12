@@ -8,26 +8,25 @@ import props from '../../../models/props';
 import { findClosestRulerDate } from '../rulers';
 
 export default class Segment {
-	public rendered: boolean = false
+	private _rendered: boolean = false
 	private rootElement: HTMLElement
+	private left: number
 
 	constructor(
 		private domain: Domain,
 		private events: Ev3nt[],
-		private from: Date,
-		private to: Date,
-		private lowerIndex: number,
-		private upperIndex: number,
-		public left: number,
-	) {}
+		public fromRatio: number,
+		private toRatio: number,
+	) {
+		this.left = this.fromRatio * this.domain.width
+	}
 
-	public render() {
+	render() {
 		this.rootElement = createElement(
 			'ul',
 			'segment',
 			[
 				'bottom: 0',
-				'display: none',
 				'list-style: none',
 				'margin: 0',
 				'padding: 0',
@@ -44,31 +43,24 @@ export default class Segment {
 		return this.rootElement
 	}
 
-	public renderChildren() {
+	renderChildren() {
+		if (this._rendered) return
+
 		this.renderRulers()
 
-		for (let i = this.lowerIndex; i <= this.upperIndex; i++) {
+		for (let i = 0; i < this.events.length; i++) {
 			const event = this.events[i]
-			const Klass = event.isInterval() ? Interval : PointInTime
-			const pit = new Klass(this.domain.topAdder(this.events[i]), this.left)
-			this.rootElement.appendChild(pit.render())
+			const EventClass = event.isInterval() ? Interval : PointInTime
+			const view = new EventClass(this.domain.topAdder(event), this.left)
+			this.rootElement.appendChild(view.render())
 		}
 
-		this.show()
-		this.rendered = true
-	}
-
-	public show() {
-		this.rootElement.style.display = 'block'
-	}
-
-	public hide() {
-		this.rootElement.style.display = 'none'
+		this._rendered = true
 	}
 
 	private renderRulers = () => {
-		let date = findClosestRulerDate(this.from, this.domain.granularity)
-		const to = this.to.getTime()
+		let date = findClosestRulerDate(this.domain.dateAtProportion(this.fromRatio), this.domain.granularity)
+		const to = this.domain.dateAtProportion(this.toRatio).getTime()
 		while(date.getTime() < to) {
 			this.rootElement.appendChild(new Ruler(date, this.domain, this.left).render())
 			date = this.domain.nextDate(date)

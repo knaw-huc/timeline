@@ -1,5 +1,5 @@
 import Ev3nt from "../../../../../models/event"
-import { EVENT_MIN_SPACE, EVENT_HEIGHT } from "../../../../../constants"
+import { EVENT_MIN_SPACE, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 
 export default class PointInTime {
@@ -19,7 +19,7 @@ export default class PointInTime {
 			],
 			[
 				`left: ${this.event.left - this.segmentOffset}px`,
-				`top: ${this.event.top}px`,
+				`top: ${this.event.row * EVENT_ROW_HEIGHT}px`,
 			]
 		)
 		li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}`)

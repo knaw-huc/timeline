@@ -5,11 +5,12 @@ export const EVENT_MIN_SPACE = 160
 export const EVENT_HEIGHT = 12
 
 // The height (in px) of a row of events.
-export const EVENT_ROW_HEIGHT = 16
+export const EVENT_ROW_HEIGHT = 20
 
 export const DATE_BAR_HEIGHT = 60
 export const RULER_LABELS_HEIGHT = 60
 
 export const CENTER_CHANGE_EVENT = 'CENTER_CHANGE_EVENT'
+export const CENTER_CHANGE_DONE_EVENT = 'CENTER_CHANGE_EVENT'
 export const DIMENSIONS_CHANGE_EVENT = 'DIMENSIONS_CHANGE_EVENT'
 

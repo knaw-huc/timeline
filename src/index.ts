@@ -1,20 +1,12 @@
 import props from './models/props'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
+import { debounce } from './utils/index'
 import Config from './models/config'
 import Band from './views/band';
 
-const debounce = (func, wait) => {
-	let timeout
-	return () => {
-		clearTimeout(timeout)
-		timeout = setTimeout(func, wait)
-	}
-}
-
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)
-// TODO Create intervals
 // TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval 
 // TODO flip PiT when on edge of timeline
@@ -32,7 +24,6 @@ export default class Timeline {
 
 		window.addEventListener('resize', this.debouncedRefresh)
 	}
-
 
 	public remove() {
 		window.removeEventListener('resize', this.debouncedRefresh)

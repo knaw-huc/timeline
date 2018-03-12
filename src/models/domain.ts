@@ -1,6 +1,6 @@
 import { countDays, getGranularity, Granularity } from '../utils/dates'
 import { subsequentDate } from '../utils/dates'
-import addTop from '../utils/add-top'
+import addRow from '../utils/add-row'
 import props from './props'
 import DomainConfig from './domain.config'
 import Ev3nt from './event';
@@ -39,7 +39,7 @@ class Domain {
 		this.granularity = getGranularity(props.from, props.to, this.config.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
 		this.pixelsPerDay = this.width / countDays(props.from, props.to)
-		if (this.config.type === 'EVENTS') this.topAdder = addTop() // topAdder does not have to be a prop on Domain, but prob it will need the domain in the future
+		if (this.config.type === 'EVENTS') this.topAdder = addRow() // topAdder does not have to be a prop on Domain, but prob it will need the domain in the future
 		this.updateLeft()
 	}
 
@@ -50,8 +50,7 @@ class Domain {
 	dateAtProportion(proportion: number): Date {
 		if (proportion < 0 || proportion > 1) throw new RangeError('[dateAtProportion] proportion should be between 0 and 1.');
 		const fromTime = props.from.getTime()
-		const toTime = props.to.getTime()
-		const newTime = fromTime + ((toTime - fromTime) * proportion)
+		const newTime = fromTime + (props.time * proportion)
 		return new Date(newTime);
 	}
 
@@ -66,6 +65,14 @@ class Domain {
 
 	proportionAtPosition(position: number): number {
 		return position / this.width
+	}
+
+	proportionAtDate(date: Date): number {
+		// return this.proportionAtPosition(this.positionAtDate(date))
+		// const fromTime = props.from.getTime()
+		// const toTime = props.to.getTime()
+		// const newTime = date.getTime()
+		return (date.getTime() - props.from.getTime()) / props.time
 	}
 }
 
