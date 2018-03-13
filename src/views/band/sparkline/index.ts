@@ -1,8 +1,6 @@
 import Domain from '../../../models/domain'
 import Ev3nt from '../../../models/event'
 import { createSvg } from '../../../utils/create-element'
-// import Band from './index'
-// import Rulers from '../rulers'
 import aggregateWorker from '../../../utils/aggregate.worker'
 import { AggregateEntry } from '../../../models/config'
 
@@ -23,10 +21,12 @@ export default class Sparkline {
 		if (this.aggregate.length) {
 			this.renderPath()
 		}
-		else if (this.events.length) aggregateWorker(this.events, (aggregate) => {
-			this.aggregate = aggregate
-			this.renderPath()
-		})
+		else if (this.events.length) {
+			aggregateWorker(this.events, (aggregate) => {
+				this.aggregate = aggregate
+				this.renderPath()
+			})
+		}
 
 		return this.svg
 	}

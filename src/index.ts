@@ -1,9 +1,11 @@
 import props from './models/props'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
+// import eventsWorker from './utils/events.worker'
 import { debounce } from './utils/index'
 import Config from './models/config'
 import Band from './views/band';
+import Domain from './models/domain';
 
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)

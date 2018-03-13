@@ -19,7 +19,7 @@ export default class Band {
 
 	constructor(domainConfig: DomainConfig, events: RawEv3nt[], private aggregate: AggregateEntry[]) {
 		this.domain = new Domain(domainConfig)
-		this.events = events.map(e => new Ev3nt(e, this.domain))
+		// this.events = events.map(e => new Ev3nt(e, this.domain))
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 

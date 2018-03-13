@@ -11,13 +11,18 @@ export default class Segment {
 	private _rendered: boolean = false
 	private rootElement: HTMLElement
 	private left: number
+	public fromRatio: number
+	private events
+	private toRatio
 
 	constructor(
 		private domain: Domain,
-		private events: Ev3nt[],
-		public fromRatio: number,
-		private toRatio: number,
+		segmentData,
 	) {
+		const [events, fromRatio, toRatio] = segmentData
+		this.events = events.map(e => this.domain.topAdder(new Ev3nt(e, this.domain)))
+		this.fromRatio = fromRatio
+		this.toRatio = toRatio
 		this.left = this.fromRatio * this.domain.width
 	}
 
