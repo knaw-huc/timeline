@@ -23,7 +23,7 @@ export default class Segment {
 
 	render() {
 		this.rootElement = createElement(
-			'ul',
+			'div',
 			'segment',
 			[
 				'bottom: 0',
@@ -47,23 +47,38 @@ export default class Segment {
 		if (this._rendered) return
 
 		this.renderRulers()
-
-		for (let i = 0; i < this.events.length; i++) {
-			const event = this.events[i]
-			const EventClass = event.isInterval() ? Interval : PointInTime
-			const view = new EventClass(this.domain.topAdder(event), this.left)
-			this.rootElement.appendChild(view.render())
-		}
+		this.renderEvents()
 
 		this._rendered = true
 	}
 
 	private renderRulers = () => {
+		const ul = createElement('ul', 'rulers', [
+			'list-style: none',
+			'margin: 0',
+			'padding: 0',
+		])
 		let date = findClosestRulerDate(this.domain.dateAtProportion(this.fromRatio), this.domain.granularity)
 		const to = this.domain.dateAtProportion(this.toRatio).getTime()
 		while(date.getTime() < to) {
-			this.rootElement.appendChild(new Ruler(date, this.domain, this.left).render())
+			ul.appendChild(new Ruler(date, this.domain, this.left).render())
 			date = this.domain.nextDate(date)
 		}
+		this.rootElement.appendChild(ul)
+	}
+
+	private renderEvents() {
+		const ul = createElement('ul', 'events', [
+			'list-style: none',
+			'margin: 0',
+			'padding: 0',
+		])
+		for (let i = 0; i < this.events.length; i++) {
+			const event = this.domain.topAdder(this.events[i])
+			const EventClass = event.isInterval() ? Interval : PointInTime
+			const view = new EventClass(event, this.left)
+			ul.appendChild(view.render())
+		}
+		this.rootElement.appendChild(ul)
 	}
 }

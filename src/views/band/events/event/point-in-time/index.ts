@@ -19,7 +19,7 @@ export default class PointInTime {
 			],
 			[
 				`left: ${this.event.left - this.segmentOffset}px`,
-				`top: ${this.event.row * EVENT_ROW_HEIGHT}px`,
+				`top: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 			]
 		)
 		li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}`)

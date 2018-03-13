@@ -26,9 +26,7 @@ export default () => {
 			}	
 		}
 
-		if (row == null) {
-			row = grid.push([[left, width]])
-		}
+		if (row == null) row = grid.push([[left, width]]) - 1
 
 		event.row = row
 		return event

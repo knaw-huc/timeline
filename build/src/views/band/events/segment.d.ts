@@ -12,4 +12,5 @@ export default class Segment {
     render(): HTMLElement;
     renderChildren(): void;
     private renderRulers;
+    private renderEvents();
 }

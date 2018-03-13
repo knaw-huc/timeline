@@ -47,15 +47,20 @@ export default class Events {
 	}
 
 	public renderChildren() {
-		let index = Math.floor(this.segments.length * props.center)
-		this.segments[index].renderChildren()
+		// Find the index of the visible segment, which is located at props.center
+		let index = Math.floor((this.segments.length - 1) * props.center)
+		const segment = this.segments[index]
+
+		// Render the visible segment first
+		segment.renderChildren()
+
+		// Render the subsequent segments
 		for (let i = index - 2; i <= index + 2; i++) {
-			if (i > 0 && i < this.segments.length && i !== index) this.segments[i].renderChildren()
+			if (i >= 0 && i < this.segments.length && i !== index) segment.renderChildren()
 		}
 	}
 
 	private createSegments(): Segment[] {
-		const t0 = performance.now()
 		const segments = []
 		const ratios = []
 		let lower = props.center
@@ -92,12 +97,12 @@ export default class Events {
 			const [lower, upper] = ratios[j]
 			const part = partition(evs, (e) => {
 				const curr = this.domain.proportionAtDate(e.date)
-				if (curr >= lower && curr <= upper) return true			//      [  |--]----|
+				if (curr >= lower && curr <= upper) return true				//      [  |--]----|
 				else if (e.endDate != null) {
 					const currEnd = this.domain.proportionAtDate(e.endDate)
 					if (
 						(currEnd >= lower && currEnd <= upper) ||			// |----[--|  ]
-						(curr < lower && currEnd > upper)				// |----[-----]----|
+						(curr < lower && currEnd > upper)					// |----[-----]----|
 					) return true
 					else return false
 				}
@@ -112,7 +117,6 @@ export default class Events {
 			if (a.fromRatio > b.fromRatio) return 1
 			return 0
 		})
-		const t1 = performance.now(); console.log('Performance: ', `${t1 - t0}ms`)
 
 		return segments
 	}
