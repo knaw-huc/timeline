@@ -5,12 +5,10 @@ declare class Domain {
     config: DomainConfig;
     granularity: Granularity;
     pixelsPerDay: number;
+    width: number;
+    height: number;
     private _left;
     left: number;
-    private _width;
-    width: number;
-    private _height;
-    height: number;
     nextDate: (d: Date) => Date;
     topAdder: (e: Ev3nt) => Ev3nt;
     constructor(config: DomainConfig);

@@ -12,7 +12,7 @@ export default class PointInTime {
 			'li',
 			'interval-wrap',
 			[
-				'border: 1px solid black',
+				// 'border: 1px solid black',
 				'box-sizing: border-box',
 				'font-size: 0.8em',
 				`height: ${EVENT_ROW_HEIGHT - 6}px`,
@@ -23,7 +23,7 @@ export default class PointInTime {
 			[
 				`background-color: ${backgroundColor}`,
 				`left: ${this.event.left - this.segmentOffset}px`,
-				`top: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
+				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 				`width: ${this.event.width}px`,
 			]
 		)

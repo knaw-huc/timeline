@@ -1,9 +1,9 @@
 import { countDays, getGranularity, Granularity } from '../utils/dates'
 import { subsequentDate } from '../utils/dates'
-import addRow from '../utils/add-row'
 import props from './props'
 import DomainConfig from './domain.config'
 import Ev3nt from './event';
+import { Pixels } from '../constants';
 
 class Domain {
 	// Level of detail (ie century, year, month, week, day, etc)
@@ -13,21 +13,17 @@ class Domain {
 	// the x-position of an event or ruler on the timeline.
 	pixelsPerDay: number
 
-	private _left: number
+	width: number
+	height: number
+
+
+	private _left: Pixels
 	get left() { return this._left }
 	set left(left) { 
 		if (left < -this.width + props.viewportWidth) left = props.viewportWidth - this.width
 		else if (left > 0) left = 0 
 		this._left = left
 	}
-
-	private _width: number
-	get width() { return this._width }
-	set width(width) { this._width = width }
-
-	private _height: number
-	get height() { return this._height }
-	set height(height) { this._height = height }
 
 	nextDate: (d: Date) => Date
 
@@ -39,7 +35,6 @@ class Domain {
 		this.granularity = getGranularity(props.from, props.to, this.config.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
 		this.pixelsPerDay = this.width / countDays(props.from, props.to)
-		if (this.config.type === 'EVENTS') this.topAdder = addRow() // topAdder does not have to be a prop on Domain, but prob it will need the domain in the future
 		this.updateLeft()
 	}
 
@@ -49,8 +44,7 @@ class Domain {
 
 	dateAtProportion(proportion: number): Date {
 		if (proportion < 0 || proportion > 1) throw new RangeError('[dateAtProportion] proportion should be between 0 and 1.');
-		const fromTime = props.from.getTime()
-		const newTime = fromTime + (props.time * proportion)
+		const newTime = props.from + (props.time * proportion)
 		return new Date(newTime);
 	}
 
@@ -60,7 +54,7 @@ class Domain {
 	}
 
 	positionAtDate(date: Date): number {
-		return countDays(props.from, date) * this.pixelsPerDay
+		return countDays(props.from, date.getTime()) * this.pixelsPerDay
 	}
 
 	proportionAtPosition(position: number): number {
@@ -68,11 +62,7 @@ class Domain {
 	}
 
 	proportionAtDate(date: Date): number {
-		// return this.proportionAtPosition(this.positionAtDate(date))
-		// const fromTime = props.from.getTime()
-		// const toTime = props.to.getTime()
-		// const newTime = date.getTime()
-		return (date.getTime() - props.from.getTime()) / props.time
+		return (date.getTime() - props.from) / props.time
 	}
 }
 

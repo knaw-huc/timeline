@@ -1,3 +1,5 @@
+import { Milliseconds, Ratio } from "../constants";
+
 export const enum Granularity {
 	HOUR,
 	DAY,
@@ -10,9 +12,9 @@ export const enum Granularity {
 	MILLENIUM,
 }
 
-export const countDays = (from: Date, to: Date): number => {
+export const countDays = (from: Milliseconds, to: Milliseconds): number => {
 	if (to == null) return 0;
-	return Math.round(to.getTime() - from.getTime()) / 86400000 // 1000ms * 60s * 60m * 24h
+	return (to - from) / 86400000 // 1000ms * 60s * 60m * 24h
 }
 
 export const isEqual = (date1: Date, date2: Date): boolean => date1.getTime() === date2.getTime()
@@ -41,7 +43,7 @@ export const format = (date: Date, granularity: Granularity): string => {
 	return displayDate;
 }
 
-export const getGranularity = (from: Date, to: Date, visibleRatio: number): Granularity => {
+export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRatio: Ratio): Granularity => {
 	const days = countDays(from, to) * visibleRatio
 	if (days < 1) return Granularity.HOUR
 	if (days < 15) return Granularity.DAY
@@ -66,7 +68,16 @@ export const getStep = (granularity: Granularity): number => {
 export function subsequentDate(granularity: Granularity): ((Date) => Date) {
 	if (granularity >= Granularity.YEAR) {
 		const step = getStep(granularity)
-		return (date) => new Date(date.getFullYear() + step, 0, 1)
+		return (date) => {
+			const year = date.getFullYear() + step
+			date = Date.UTC(date.getFullYear() + step, 0, 1)
+			if (year > -1 && year < 100) {
+				date = new Date(date)
+				date.setUTCFullYear(year)
+				date = date.getTime()
+			} 
+			return new Date(date)
+		}
 	}
 	if (granularity === Granularity.MONTH) return (date) => new Date(date.getFullYear(), date.getMonth() + 1, 1)
 	if (granularity === Granularity.WEEK) return (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7)

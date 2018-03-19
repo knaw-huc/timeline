@@ -44,9 +44,8 @@ export default class Rulers {
 			]
 		)
 
-		let date = findClosestRulerDate(props.from, this.domain.granularity)
-		const to = props.to.getTime()
-		while(date.getTime() < to) {
+		let date = findClosestRulerDate(new Date(props.from), this.domain.granularity)
+		while(date.getTime() < props.to) {
 			this.ul.appendChild(new Ruler(date, this.domain).render())
 			date = this.domain.nextDate(date)
 		}

@@ -1,3 +1,4 @@
+import { Ratio } from "../constants";
 export declare enum DomainType {
     Events = "EVENTS",
     Sparkline = "SPARKLINE",
@@ -5,11 +6,11 @@ export declare enum DomainType {
 export default class DomainConfig {
     hasEvents: boolean;
     hasIndicatorFor: number;
-    heightRatio: number;
+    heightRatio: Ratio;
     hasRulers: boolean;
     hasSparkline: boolean;
-    topOffsetRatio: number;
+    topOffsetRatio: Ratio;
     type: DomainType;
-    visibleRatio: number;
+    visibleRatio: Ratio;
     constructor(props: any);
 }

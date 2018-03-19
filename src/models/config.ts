@@ -1,20 +1,15 @@
 import props from "./props"
 import DomainConfig from "./domain.config"
+import { RawEv3nt, Ratio } from "../constants";
 
 export class AggregateEntry {
 	count: number
 	year: number 
 }
 
-export class RawEv3nt {
-	title: string
-	date: string
-	endDate: string
-}
-
 export default class Config {
 	aggregate: AggregateEntry[] = []
-	center: number = .5
+	center: Ratio = .5
 	domains: DomainConfig[] = []
 	events: RawEv3nt[] = []
 
@@ -32,17 +27,17 @@ export default class Config {
 			else if (this.hasOwnProperty(k)) this[k] = config[k]
 		})
 		
-		if (config.sortEvents) {
-			config.events.sort((a, b) => {
-				if (a.date < b.date) return -1
-				if (a.date > b.date) return 1
-				if (a.hasOwnProperty('endDate') && b.hasOwnProperty('endDate')) {
-					if (a.endDate < b.endDate) return -1
-					if (a.endDate > b.endDate) return 1
-				}
-				return 0
-			})
-		}
+		// if (config.sortEvents) {
+		// 	config.events.sort((a, b) => {
+		// 		if (a.date < b.date) return -1
+		// 		if (a.date > b.date) return 1
+		// 		if (a.hasOwnProperty('endDate') && b.hasOwnProperty('endDate')) {
+		// 			if (a.endDate < b.endDate) return -1
+		// 			if (a.endDate > b.endDate) return 1
+		// 		}
+		// 		return 0
+		// 	})
+		// }
 	}
 
 	refresh(config: Partial<Config>) {
@@ -50,7 +45,7 @@ export default class Config {
 			if (this.hasOwnProperty(k)) this[k] = config[k]
 		})
 
-		if (config.hasOwnProperty('aggregate') || config.hasOwnProperty('events')) props.edges = this
+		// if (config.hasOwnProperty('aggregate') || config.hasOwnProperty('events')) props.edges = this
 		if (config.hasOwnProperty('center')) props.center = this.center
 		props.dimensions = this.rootElement
 	}

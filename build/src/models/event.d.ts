@@ -1,20 +1,13 @@
 import Domain from './domain';
-import { RawEv3nt } from './config';
+import { RawEv3nt, Pixels } from '../constants';
 declare class Event {
-    private _date;
     date: Date;
-    private _endDate;
     endDate: Date;
-    private _title;
-    title: string;
-    private _left;
-    left: number;
-    private _row;
+    left: Pixels;
     row: number;
-    private _width;
-    width: number;
+    title: string;
+    width: Pixels;
     constructor(rawEvent: RawEv3nt, domain: Domain);
-    space(): [number, number];
     countDays(): number;
     isInterval(): boolean;
 }

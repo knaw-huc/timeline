@@ -1,27 +1,58 @@
-import { RawEv3nt } from "../models/config"
+import { Milliseconds, Grid, RawEv3nt } from "../constants"
 
-function eventsWorker(e) {
-	let [events, center, visibleRatio, fromTime, time] = e.data
+function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
+	// const rawEvents: RawEv3nt[] = e.data.events
 
-	events = events
-		.sort((a, b) => {
-			if (a.date < b.date) return -1
-			if (a.date > b.date) return 1
-			if (a.hasOwnProperty('endDate') && b.hasOwnProperty('endDate')) {
-				if (a.endDate < b.endDate) return -1
-				if (a.endDate > b.endDate) return 1
+	/** Keep a count the number of rows. It's returned to the main thread to construct the events bar and indicators */
+	let rowCount: number = 0
+
+	/**
+	 * The grid exists of rows of cells. A cell is an event defined by it's left position and width:
+	 * cell = [left, width], row = [cell, cell, etc], grid = [row, row, etc]
+	*/
+	const grid: Grid = []
+
+	const addRow = (event: RawEv3nt): RawEv3nt => {
+		// Create a variable to hold the row to find
+		let row: number
+
+		// The right position of the event (event.date is the left position)
+		// let right: Milliseconds = event.hasOwnProperty('endDate') ? event.endDate : event.date
+
+		// Search the grid for a row which has space for the current event
+		let rowIterator = 0
+		while (row == null && rowIterator < grid.length) {
+			const rows = grid[rowIterator]
+			let cellIterator = 0
+			let hasSpace = true
+
+			while (hasSpace && cellIterator < rows.length) {
+				hasSpace = (event.endDate < rows[cellIterator][0] || event.date > rows[cellIterator][1])
+				cellIterator++
 			}
-			return 0
-		})
-		.map(e => {
-			e.date = new Date(e.date).getTime()
-			if (e.hasOwnProperty('endDate')) e.endDate = new Date(e.endDate).getTime()
-			return e
-		})
 
-	const proportionAtDate = (date: number): number => (date - fromTime) / time
+			if (hasSpace) {
+				rows.push([event.date, event.endDate])
+				row = rowIterator
+			}	
 
-	const partition = (arr, filterFunc): [any, any] => {
+			rowIterator++
+		}
+
+		// If row is undefined, it means there is no space in the current grid and
+		// we need to add an extra row to the grid
+		if (row == null) row = grid.push([[event.date, event.endDate]]) - 1
+
+		// Increment the row count if necessary
+		if (row > rowCount) rowCount = row
+
+		// Add the found row to the event
+		event.row = row
+
+		return event
+	}
+
+	function partition<T>(arr: T[], filterFunc: (T) => boolean): [T[], T[]] {
 		const matched = []
 		const unmatched = []
 
@@ -32,76 +63,34 @@ function eventsWorker(e) {
 		}
 
 		return [matched, unmatched];
-	};
-
-	const segments = []
-	const ratios = []
-	let lower = center
-	let upper = center
-	let i = 0
-
-	let prevLower
-	let prevUpper
-
-	while (lower > 0) {
-		if (i === 0) {
-			lower = center - visibleRatio * 1.5
-			upper = center + visibleRatio * 1.5
-			ratios.push([lower, upper])
-		}
-		else {
-			lower -= visibleRatio
-			upper += visibleRatio
-
-			if (lower > 0) ratios.push([lower, prevLower])
-			else if (lower <= 0 && prevLower > 0) ratios.push([0, prevLower])
-			if (upper < 1) ratios.push([prevUpper, upper])
-			else if (upper >= 1 && prevUpper < 1) ratios.push([prevUpper, 1])
-		}
-
-		prevLower = lower
-		prevUpper = upper
-
-		i++
 	}
 
-	for(let j = 0; j < ratios.length; j++) {
-		const [lower, upper] = ratios[j]
-		const part = partition(events, (e) => {
-			const curr = proportionAtDate(e.date)
-			if (curr >= lower && curr <= upper) return true				//      [  |--]----|
-			else if (e.endDate != null) {
-				const currEnd = proportionAtDate(e.endDate)
-				if (
-					(currEnd >= lower && currEnd <= upper) ||			// |----[--|  ]
-					(curr < lower && currEnd > upper)					// |----[-----]----|
-				) return true
-				else return false
-			}
-			return false	
-		})	
-		segments.push({
-			events: part[0],
-			fromRatio: lower,
-			toRatio: upper,
+	const [intervals, pointsInTime] = partition(e.data.events, (e) => e.endDate != null)
+
+	const events = intervals
+		.sort((a, b) => {
+			if (a.date < b.date) return -1
+			if (a.date > b.date) return 1
+
+			if (a.endDate < b.endDate) return -1
+			if (a.endDate > b.endDate) return 1
+
+			return 0
 		})
-		events = part[1]
-	}
+		.map(addRow)
 
-	segments.sort((a, b) => {
-		if (a.fromRatio < b.fromRatio) return -1
-		if (a.fromRatio > b.fromRatio) return 1
-		return 0
-	})
+	const from: Milliseconds = events[0].date
+	const lastEvent = events[events.length - 1]
+	const to: Milliseconds = lastEvent.hasOwnProperty('endDate') ? lastEvent.endDate : lastEvent.date
 
 	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
-	postMessage(segments)
+	postMessage([from, to, events, pointsInTime, grid, rowCount])
 }
 
 const func = `onmessage = ${eventsWorker.toString()}`
 
 
-export default (events, done: (response: RawEv3nt[]) => void) => {
+export default (events, done: (response: [Milliseconds, Milliseconds, RawEv3nt[], RawEv3nt[], Grid, number]) => void) => {
 	const objectURL = URL.createObjectURL(new Blob([func]))
 	let worker: Worker = new Worker(objectURL)
 	worker.postMessage(events)

@@ -1,18 +1,25 @@
-import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT } from "../constants"
+import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT, Grid, Ratio, Milliseconds } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
 
 export class Props {
+	grid: Grid
+	rowCount: number
+	pointsInTime = []
+	intervals = []
+	from: Milliseconds
+	to: Milliseconds
+	time: Milliseconds
 
 	init(config: Config) {
-		this.edges = config
+		// this.edges = config
 		this.dimensions = config.rootElement
 	}
 
-	private _center: number = .5
+	private _center: Ratio = .5
 	/** Current center of the timeline by ratio [0, 1] */
 	get center() { return this._center }
-	set center(n: number) {
+	set center(n: Ratio) {
 		if ((this._center === 0 && n < 0) || (this._center === 1 && n > 1)) return
 		else if (n < 0) this._center = 0
 		else if (n > 1) this._center = 1
@@ -22,32 +29,32 @@ export class Props {
 		this.centerChangeDone()
 	}
 
-	private _from: Date
-	private _to: Date
-	/** Lowest date on the timeline */
-	get from() { return this._from }
-	/** Highest date on the timeline */
-	get to() { return this._to }
-	set edges(config: Config) {
-		const edges = []
-		if (config.domains.some(d => d.type === 'EVENTS') && config.events.length > 1) {
-			edges.push(new Date(config.events[0].date))
-			edges.push(new Date(config.events[config.events.length - 1].date))
-		}
-		if (config.domains.some(d => d.type === 'SPARKLINE') && config.aggregate.length > 1) {
-			edges.push(new Date(config.aggregate[0].year, 0, 1))
-			edges.push(new Date(config.aggregate[config.aggregate.length - 1].year, 0, 1))
-		}
-		if (edges.length < 2) throw Error('Cannot draw Timeline with this config')
+	// private _from: Date
+	// private _to: Date
+	// /** Lowest date on the timeline */
+	// get from() { return this._from }
+	// /** Highest date on the timeline */
+	// get to() { return this._to }
+	// set edges(config: Config) {
+	// 	const edges = []
+	// 	if (config.domains.some(d => d.type === 'EVENTS') && config.events.length > 1) {
+	// 		edges.push(new Date(config.events[0].date))
+	// 		edges.push(new Date(config.events[config.events.length - 1].date))
+	// 	}
+	// 	if (config.domains.some(d => d.type === 'SPARKLINE') && config.aggregate.length > 1) {
+	// 		edges.push(new Date(config.aggregate[0].year, 0, 1))
+	// 		edges.push(new Date(config.aggregate[config.aggregate.length - 1].year, 0, 1))
+	// 	}
+	// 	if (edges.length < 2) throw Error('Cannot draw Timeline with this config')
 
-		this._from = new Date(Math.min(...edges))
-		this._to = new Date(Math.max(...edges))
-		this._time = this._to.getTime() - this._from.getTime()
-	}
+	// 	this._from = new Date(Math.min(...edges))
+	// 	this._to = new Date(Math.max(...edges))
+	// 	this._time = this._to.getTime() - this._from.getTime()
+	// }
 
-	private _time: number
-	/** Total time (ms) of the timeline */
-	get time() { return this._time }
+	// private _time: Milliseconds
+	// /** Total time (ms) of the timeline */
+	// get time() { return this._time }
 
 	private _viewportWidth: number
 	private _viewportHeight: number
@@ -71,7 +78,7 @@ export class Props {
 		this._viewportHeight = nextHeight
 	}
 
-	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 300)
+	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 1000)
 }
 
 export default new Props()

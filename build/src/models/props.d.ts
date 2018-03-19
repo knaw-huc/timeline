@@ -1,15 +1,16 @@
+import { Grid, Ratio, Milliseconds } from "../constants";
 import Config from "./config";
 export declare class Props {
+    grid: Grid;
+    rowCount: number;
+    pointsInTime: any[];
+    intervals: any[];
+    from: Milliseconds;
+    to: Milliseconds;
+    time: Milliseconds;
     init(config: Config): void;
     private _center;
-    center: number;
-    private _from;
-    private _to;
-    readonly from: Date;
-    readonly to: Date;
-    edges: Config;
-    private _time;
-    readonly time: number;
+    center: Ratio;
     private _viewportWidth;
     private _viewportHeight;
     readonly viewportWidth: number;

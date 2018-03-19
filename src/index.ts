@@ -1,12 +1,14 @@
 import props from './models/props'
+import Config from './models/config'
+import Band from './views/band'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
-// import eventsWorker from './utils/events.worker'
 import { debounce } from './utils/index'
-import Config from './models/config'
-import Band from './views/band';
-import Domain from './models/domain';
+import eventsWorker from './utils/events.worker'
+import { EVENT_MIN_SPACE } from './constants'
 
+// TODO Add pit's
+// TODO Add rows with domain knowledge
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)
 // TODO Add open ranges (ie: people still alive)
@@ -22,12 +24,29 @@ export default class Timeline {
 		this.config = new Config(config)
 		props.init(this.config)
 
-		this.config.rootElement.appendChild(this.render())
+		eventsWorker(
+			{
+				events: this.config.events,
+				eventMinSpace: EVENT_MIN_SPACE
+			},
+			([from, to, intervals, pointsInTime, grid, rowCount]) => {
+				props.from = from
+				props.to = to
+				props.time = to - from
+				props.grid = grid
+				props.rowCount = rowCount
+				props.intervals = intervals
+				props.pointsInTime = pointsInTime
+
+				this.config.rootElement.appendChild(this.render())
+			}
+		)
+
 
 		window.addEventListener('resize', this.debouncedRefresh)
 	}
 
-	public remove() {
+	remove() {
 		window.removeEventListener('resize', this.debouncedRefresh)
 		this.config.rootElement.removeChild(this.wrapper)
 		this.wrapper.remove()
@@ -35,10 +54,10 @@ export default class Timeline {
 		this.wrapper = null
 	}
 
-	public refresh = (config: Partial<Config> = {}) => {
+	refresh = (config: Partial<Config> = {}) => {
 		this.config.refresh(config)
 		this.remove()
-		this.config.rootElement.appendChild(this.render())
+		// this.config.rootElement.appendChild(this.render())
 		window.addEventListener('resize', this.debouncedRefresh)
 	}
 	private debouncedRefresh = debounce(this.refresh, 1000)
@@ -59,15 +78,14 @@ export default class Timeline {
 		)
 			
 		this.renderBands()
+		this.renderIndicators()
 
 		return this.wrapper
 	}
 
 	private renderBands(): void {
-		this.bands = this.config.domains.map(d => new Band(d, this.config.events, this.config.aggregate))
+		this.bands = this.config.domains.map(d => new Band(d, this.config.aggregate))
 		this.bands.forEach(b => this.appendToWrapper(b))
-
-		this.renderIndicators()
 	}
 
 	private renderIndicators(): void {

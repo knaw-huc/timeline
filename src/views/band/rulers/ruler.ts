@@ -38,7 +38,7 @@ export default class Ruler {
 
 	public render() {
 		const li = createElement(
-			'li',
+			'div',
 			'ruler',
 			[
 				'border-left: 1px solid #EEE',

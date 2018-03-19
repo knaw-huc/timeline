@@ -2,38 +2,26 @@ import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
 import Segment from './segment'
 import Domain from '../../../models/domain'
-import eventsWorker from '../../../utils/events.worker';
-import { RawEv3nt } from '../../../models/config';
-
-// const partition = (arr, filterFunc): [any, any] => {
-// 	const matched = []
-// 	const unmatched = []
-
-// 	for (let i = 0; i < arr.length; i++) {
-// 		const bool = filterFunc.call(arr, arr[i], i)
-// 		if (bool) matched.push(arr[i])
-// 		else unmatched.push(arr[i])
-// 	}
-
-// 	return [matched, unmatched];
-// };
-
+import segmentsWorker from '../../../utils/segments.worker'
+import { findClosestRulerDate } from '../rulers';
+import Ruler from '../rulers/ruler';
+import { DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT } from '../../../constants';
 
 export default class Events {
 	private segments: Segment[]
 
-	constructor(private domain: Domain, private events: RawEv3nt[]) {
-		// this.segments = this.createSegments()
-	}
+	constructor(private domain: Domain) {}
 
-	public render() {
+	render() {
+		const eventsBand = createElement('div', 'events-band')
+
 		const segmentsWrap = createElement(
-			'ul',
-			'events-wrap',
+			'div',
+			'segments',
 			[
-				'list-style: none',
-				'margin: 0',
-				'padding: 0',
+				`bottom: ${DATE_BAR_HEIGHT}px`,
+				`height: ${(props.rowCount * EVENT_ROW_HEIGHT) + DATE_BAR_HEIGHT}px`,
+				'position: absolute',
 				'width: 100%',
 			],
 			[
@@ -41,101 +29,68 @@ export default class Events {
 			]
 		)
 
-		eventsWorker(
-			[
-				this.events,
-				props.center,
-				this.domain.config.visibleRatio,
-				props.from.getTime(),
-				props.time
-			],
+		segmentsWorker(
+			{
+				events: props.intervals.concat(props.pointsInTime),
+				center: props.center,
+				visibleRatio: this.domain.config.visibleRatio,
+				from: new Date(props.from).getTime(),
+				time: props.time
+			},
 			(segments) => {
-				this.segments = segments
-				this.segments.forEach(s => {
+				this.segments = segments.map(s => {
 					const segment = new Segment(this.domain, s)
 					segmentsWrap.appendChild(segment.render())
+					return segment
 				})
-
 				this.renderChildren()
-
+				eventsBand.appendChild(segmentsWrap)
 			}
 		)
 
-		return segmentsWrap
+		// TODO lazy load rulers
+		// const rulers = this.renderRulers()
+		// eventsBand.appendChild(rulers)
+
+		return eventsBand
 	}
 
-	public renderChildren() {
+	renderChildren() {
 		// Find the index of the visible segment, which is located at props.center
 		let index = Math.floor((this.segments.length - 1) * props.center)
-		const segment = this.segments[index]
 
 		// Render the visible segment first
-		segment.renderChildren()
+		this.segments[index].renderChildren()
 
 		// Render the subsequent segments
 		for (let i = index - 2; i <= index + 2; i++) {
-			if (i >= 0 && i < this.segments.length && i !== index) segment.renderChildren()
+			const segment = this.segments[i]
+			if (i >= 0 && i < this.segments.length) {
+				if (i !== index) segment.renderChildren()
+				// this.renderRulers(segment)
+			} 
 		}
 	}
 
-	// private createSegments(): Segment[] {
-	// 	const segments = []
-	// 	const ratios = []
-	// 	let lower = props.center
-	// 	let upper = props.center
-	// 	let i = 0
+	private renderRulers = () => {
+		const rulers = createElement(
+			'div',
+			'rulers',
+			[
+				'width: 100%',
+			],
+			[
+				`height: ${this.domain.height}px`,
+			]
+		)
 
-	// 	let prevLower
-	// 	let prevUpper
-
-	// 	while (lower > 0) {
-	// 		if (i === 0) {
-	// 			lower = props.center - this.domain.config.visibleRatio * 1.5
-	// 			upper = props.center + this.domain.config.visibleRatio * 1.5
-	// 			ratios.push([lower, upper])
-	// 		}
-	// 		else {
-	// 			lower -= this.domain.config.visibleRatio
-	// 			upper += this.domain.config.visibleRatio
-
-	// 			if (lower > 0) ratios.push([lower, prevLower])
-	// 			else if (lower <= 0 && prevLower > 0) ratios.push([0, prevLower])
-	// 			if (upper < 1) ratios.push([prevUpper, upper])
-	// 			else if (upper >= 1 && prevUpper < 1) ratios.push([prevUpper, 1])
-	// 		}
-
-	// 		prevLower = lower
-	// 		prevUpper = upper
-
-	// 		i++
-	// 	}
-
-	// 	let evs = this.events
-	// 	for(let j = 0; j < ratios.length; j++) {
-	// 		const [lower, upper] = ratios[j]
-	// 		const part = partition(evs, (e) => {
-	// 			const curr = this.domain.proportionAtDate(e.date)
-	// 			if (curr >= lower && curr <= upper) return true				//      [  |--]----|
-	// 			else if (e.endDate != null) {
-	// 				const currEnd = this.domain.proportionAtDate(e.endDate)
-	// 				if (
-	// 					(currEnd >= lower && currEnd <= upper) ||			// |----[--|  ]
-	// 					(curr < lower && currEnd > upper)					// |----[-----]----|
-	// 				) return true
-	// 				else return false
-	// 			}
-	// 			return false	
-	// 		})	
-	// 		segments.push(new Segment(this.domain, part[0], lower, upper))
-	// 		evs = part[1]
-	// 	}
-
-	// 	segments.sort((a, b) => {
-	// 		if (a.fromRatio < b.fromRatio) return -1
-	// 		if (a.fromRatio > b.fromRatio) return 1
-	// 		return 0
-	// 	})
-
-	// 	return segments
-	// }
+		let date = findClosestRulerDate(new Date(props.from), this.domain.granularity)
+		const to = props.to
+		while(date.getTime() < to) {
+			rulers.appendChild(new Ruler(date, this.domain).render())
+			date = this.domain.nextDate(date)
+		}
+		
+		return rulers
+	}
 }

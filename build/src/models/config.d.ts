@@ -1,16 +1,12 @@
 import DomainConfig from "./domain.config";
+import { RawEv3nt, Ratio } from "../constants";
 export declare class AggregateEntry {
     count: number;
     year: number;
 }
-export declare class RawEv3nt {
-    title: string;
-    date: string;
-    endDate: string;
-}
 export default class Config {
     aggregate: AggregateEntry[];
-    center: number;
+    center: Ratio;
     domains: DomainConfig[];
     events: RawEv3nt[];
     rootElement: HTMLElement;

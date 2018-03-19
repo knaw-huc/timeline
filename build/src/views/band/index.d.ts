@@ -1,5 +1,5 @@
 import Domain from '../../models/domain';
-import { AggregateEntry, RawEv3nt } from '../../models/config';
+import { AggregateEntry } from '../../models/config';
 import DomainConfig from '../../models/domain.config';
 export default class Band {
     private aggregate;
@@ -7,9 +7,8 @@ export default class Band {
     private dragStart;
     private dragOffset;
     private rootElement;
-    private events;
     private eventsBand;
-    constructor(domainConfig: DomainConfig, events: RawEv3nt[], aggregate: AggregateEntry[]);
+    constructor(domainConfig: DomainConfig, aggregate: AggregateEntry[]);
     remove(): void;
     render(): HTMLElement;
     private updateLeft;
