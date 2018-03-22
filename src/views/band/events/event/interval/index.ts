@@ -12,11 +12,9 @@ export default class PointInTime {
 			'li',
 			'interval-wrap',
 			[
-				// 'border: 1px solid black',
 				'box-sizing: border-box',
 				'font-size: 0.8em',
 				`height: ${EVENT_ROW_HEIGHT - 6}px`,
-				'margin-bottom: 4px',
 				'position: absolute',
 				'white-space: nowrap',
 			],

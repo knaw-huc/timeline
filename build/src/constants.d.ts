@@ -8,6 +8,12 @@ export declare const CENTER_CHANGE_DONE_EVENT = "CENTER_CHANGE_EVENT_DONE";
 export declare const DIMENSIONS_CHANGE_EVENT = "DIMENSIONS_CHANGE_EVENT";
 export declare type Milliseconds = number;
 export declare type Grid = [Milliseconds, Milliseconds][][];
+export declare enum ComponentType {
+    Events = "EVENTS",
+    MiniMap = "MINIMAP",
+    Rulers = "RULERS",
+    Sparkline = "SPARKLINE",
+}
 export declare type Ratio = number;
 export declare type Pixels = number;
 export declare class RawEv3nt {

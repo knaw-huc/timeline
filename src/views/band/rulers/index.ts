@@ -2,8 +2,8 @@ import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import Ruler from './ruler'
 import { getStep } from '../../../utils/dates'
-import { Granularity } from '../../../utils/dates';
-import props from '../../../models/props';
+import { Granularity } from '../../../utils/dates'
+import props from '../../../models/props'
 
 export function findClosestRulerDate(date: Date, granularity: Granularity) {
 	let year = date.getFullYear()

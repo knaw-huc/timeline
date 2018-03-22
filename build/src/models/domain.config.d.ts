@@ -1,16 +1,12 @@
-import { Ratio } from "../constants";
-export declare enum DomainType {
-    Events = "EVENTS",
-    Sparkline = "SPARKLINE",
-}
+import { Ratio, ComponentType } from "../constants";
 export default class DomainConfig {
+    components: Set<ComponentType>;
     hasEvents: boolean;
     hasIndicatorFor: number;
     heightRatio: Ratio;
     hasRulers: boolean;
     hasSparkline: boolean;
     topOffsetRatio: Ratio;
-    type: DomainType;
     visibleRatio: Ratio;
     constructor(props: any);
 }

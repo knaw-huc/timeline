@@ -49,8 +49,7 @@ export default class Events {
 		)
 
 		// TODO lazy load rulers
-		// const rulers = this.renderRulers()
-		// eventsBand.appendChild(rulers)
+		// eventsBand.appendChild(this.renderRulers())
 
 		return eventsBand
 	}

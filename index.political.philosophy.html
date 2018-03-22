@@ -13,26 +13,23 @@
 <script src="build/bundle.js"></script>
 <script>
 	async function go() {
-		const response = await fetch('./my-data.json')
+		const response = await fetch('./data/political-philosophy.json')
 		const events = await response.json()
 		const t = new Timeline.default({
 			domains: [
 				{
-					hasSparkline: false,
+					components: ["EVENTS", "RULERS"],
 					heightRatio: .5,
-					type: "EVENTS",
 					visibleRatio: 1,
 				},
 				{
-					hasEvents: false,
-					hasIndicatorFor: 0,
+					components: ["MINIMAP", "RULERS"],
 					heightRatio: .25,
 					topOffsetRatio: .5,
-					type: "SPARKLINE",
-					visibleRatio: .25
+					type: "MINIMAP",
 				},
 				{	
-					hasEvents: false,
+					components: ["RULERS", "SPARKLINE"],
 					hasIndicatorFor: 0,
 					heightRatio: .25,
 					topOffsetRatio: .75,

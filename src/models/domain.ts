@@ -16,7 +16,6 @@ class Domain {
 	width: number
 	height: number
 
-
 	private _left: Pixels
 	get left() { return this._left }
 	set left(left) { 

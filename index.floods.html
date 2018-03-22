@@ -13,14 +13,14 @@
 <script src="build/bundle.js"></script>
 <script>
 	async function go() {
-		const response = await fetch('./data.json')
+		const response = await fetch('./data/floods.json')
 		const events = await response.json()
 		const t = new Timeline.default({
 			domains: [
 				{
 					components: ["EVENTS", "RULERS"],
 					heightRatio: .75,
-					visibleRatio: .005,
+					visibleRatio: .1,
 				},
 				{
 					components: ["MINIMAP", "RULERS"],
