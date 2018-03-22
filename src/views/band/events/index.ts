@@ -1,28 +1,38 @@
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
-import Segment from './segment'
+import EventSegment from './event-segment'
+import RulerSegment from './ruler-segment'
 import Domain from '../../../models/domain'
 import segmentsWorker from '../../../utils/segments.worker'
-import { findClosestRulerDate } from '../rulers';
-import Ruler from '../rulers/ruler';
-import { DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT } from '../../../constants';
+import { DATE_BAR_HEIGHT } from '../../../constants';
 
 export default class Events {
-	private segments: Segment[]
+	private eventSegments: EventSegment[] = []
+	private rulerSegments: RulerSegment[] = []
 
 	constructor(private domain: Domain) {}
 
 	render() {
 		const eventsBand = createElement('div', 'events-band')
 
-		const segmentsWrap = createElement(
+		const rulerSegmentsWrap = createElement(
 			'div',
-			'segments',
+			'ruler-segments',
 			[
 				`bottom: ${DATE_BAR_HEIGHT}px`,
-				`height: ${(props.rowCount * EVENT_ROW_HEIGHT) + DATE_BAR_HEIGHT}px`,
 				'position: absolute',
-				'width: 100%',
+			],
+			[
+				`height: ${this.domain.height}px`,
+			]
+		)
+
+		const eventSegmentsWrap = createElement(
+			'div',
+			'event-segments',
+			[
+				`bottom: ${DATE_BAR_HEIGHT}px`,
+				'position: absolute',
 			],
 			[
 				`height: ${this.domain.height}px`,
@@ -38,58 +48,43 @@ export default class Events {
 				time: props.time
 			},
 			(segments) => {
-				this.segments = segments.map(s => {
-					const segment = new Segment(this.domain, s)
-					segmentsWrap.appendChild(segment.render())
-					return segment
+				segments.forEach(s => {
+					const eventSegment = new EventSegment(this.domain, s)
+					this.eventSegments.push(eventSegment)
+					eventSegmentsWrap.appendChild(eventSegment.render())
+
+					const rulerSegment = new RulerSegment(this.domain, s)
+					this.rulerSegments.push(rulerSegment)
+					rulerSegmentsWrap.appendChild(rulerSegment.render())
 				})
 				this.renderChildren()
-				eventsBand.appendChild(segmentsWrap)
+
+				eventsBand.appendChild(eventSegmentsWrap)
+				eventsBand.appendChild(rulerSegmentsWrap)
 			}
 		)
-
-		// TODO lazy load rulers
-		// eventsBand.appendChild(this.renderRulers())
 
 		return eventsBand
 	}
 
 	renderChildren() {
 		// Find the index of the visible segment, which is located at props.center
-		let index = Math.floor((this.segments.length - 1) * props.center)
+		let index = Math.floor((this.eventSegments.length - 1) * props.center)
 
 		// Render the visible segment first
-		this.segments[index].renderChildren()
+		this.eventSegments[index].renderChildren()
+		this.rulerSegments[index].renderChildren()
 
 		// Render the subsequent segments
 		for (let i = index - 2; i <= index + 2; i++) {
-			const segment = this.segments[i]
-			if (i >= 0 && i < this.segments.length) {
-				if (i !== index) segment.renderChildren()
-				// this.renderRulers(segment)
+			const eventSegment = this.eventSegments[i]
+			const rulerSegment = this.rulerSegments[i]
+			if (i >= 0 && i < this.eventSegments.length) {
+				if (i !== index) {
+					eventSegment.renderChildren()
+					rulerSegment.renderChildren()
+				}
 			} 
 		}
-	}
-
-	private renderRulers = () => {
-		const rulers = createElement(
-			'div',
-			'rulers',
-			[
-				'width: 100%',
-			],
-			[
-				`height: ${this.domain.height}px`,
-			]
-		)
-
-		let date = findClosestRulerDate(new Date(props.from), this.domain.granularity)
-		const to = props.to
-		while(date.getTime() < to) {
-			rulers.appendChild(new Ruler(date, this.domain).render())
-			date = this.domain.nextDate(date)
-		}
-		
-		return rulers
 	}
 }

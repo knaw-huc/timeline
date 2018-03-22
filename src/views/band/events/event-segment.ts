@@ -3,19 +3,16 @@ import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
 import Interval from './event/interval'
 import Domain from '../../../models/domain'
-import props from '../../../models/props';
-import { RawEv3nt, RawSegment, Milliseconds } from '../../../constants';
+import props from '../../../models/props'
+import { RawEv3nt, RawSegment, Milliseconds } from '../../../constants'
 
 export default class Segment {
-	private _rendered: boolean = false
-	get rendered() { return this._rendered }
-	set rendered(rendered) { this._rendered = rendered }
+	rendered = false
 
 	private rootElement: HTMLElement
 	private left: number
 	private rawEvents: RawEv3nt[]
 	private from: Milliseconds
-	// private to: Milliseconds
 
 	constructor(
 		private domain: Domain,
@@ -23,8 +20,7 @@ export default class Segment {
 	) {
 		this.rawEvents = segmentData.events
 		this.from = segmentData.from
-		// this.to = segmentData.to
-		this.left = ((props.from - this.from) / props.time) * this.domain.width // TODO fix LEFT, this.from should be a ratio
+		this.left = ((props.from - this.from) / props.time) * this.domain.width
 	}
 
 	render() {
@@ -50,7 +46,7 @@ export default class Segment {
 	}
 
 	renderChildren() {
-		if (this._rendered) return
+		if (this.rendered) return
 
 		const ul = createElement('ul', 'events', [
 			'list-style: none',
@@ -67,6 +63,6 @@ export default class Segment {
 
 		this.rootElement.appendChild(ul)
 
-		this._rendered = true
+		this.rendered = true
 	}
 }
