@@ -1,6 +1,6 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element' 
-import { DATE_BAR_HEIGHT } from '../../../constants'
+import { DATE_BAR_HEIGHT, Milliseconds } from '../../../constants'
 import { Granularity } from '../../../utils/dates';
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -14,19 +14,20 @@ const getWeekNumber = (date: Date) => {
   return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7)
 };
 
-const labelBody = (d: Date, granularity: Granularity) => {
+const labelBody = (d: Milliseconds, granularity: Granularity) => {
+	const date = new Date(d)
 	if (granularity >= Granularity.YEAR) {
-		return d.getFullYear().toString()
+		return date.getFullYear().toString()
 	} else if (granularity === Granularity.MONTH) {
-		let body = months[d.getMonth()]
-		if (d.getMonth() === 0) body = `${d.getFullYear().toString()}, ${body}`
+		let body = months[date.getMonth()]
+		if (date.getMonth() === 0) body = `${date.getFullYear().toString()}, ${body}`
 		return body
 	} else if (granularity === Granularity.WEEK) {
-		return `${months[d.getMonth()]}<br />week ${getWeekNumber(d)}`
+		return `${months[date.getMonth()]}<br />week ${getWeekNumber(date)}`
 	} else if (granularity === Granularity.DAY) {
-		let body = days[d.getDay()]
-		body = `${body}<br />${months[d.getMonth()]} ${d.getDate()}`
-		if (d.getMonth() === 0 && d.getDate() === 1) body = `${body}, ${d.getFullYear().toString()}`
+		let body = days[date.getDay()]
+		body = `${body}<br />${months[date.getMonth()]} ${date.getDate()}`
+		if (date.getMonth() === 0 && date.getDate() === 1) body = `${body}, ${date.getFullYear().toString()}`
 		return body
 	} else if (granularity === Granularity.HOUR) {
 		return 'NOT IMPLEMENTED'
@@ -34,7 +35,7 @@ const labelBody = (d: Date, granularity: Granularity) => {
 }
 
 export default class Ruler {
-	constructor(private date: Date, private domain: Domain, private offset: number = 0) {}
+	constructor(private date: Milliseconds, private domain: Domain, private offset: number = 0) {}
 
 	public render() {
 		const li = createElement(

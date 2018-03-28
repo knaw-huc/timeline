@@ -22,7 +22,7 @@ export default class PointInTime {
 				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 			]
 		)
-		li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}`)
+		// li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}`)
 
 		const title = createElement(
 			'div',

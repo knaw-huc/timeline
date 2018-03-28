@@ -1,8 +1,9 @@
 import Domain from '../../../models/domain';
+import { Milliseconds } from '../../../constants';
 export default class Ruler {
     private date;
     private domain;
     private offset;
-    constructor(date: Date, domain: Domain, offset?: number);
+    constructor(date: Milliseconds, domain: Domain, offset?: number);
     render(): any;
 }

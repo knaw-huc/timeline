@@ -1,22 +1,24 @@
-import { countDays } from '../utils/dates'
+// import { countDays } from '../utils/dates'
 // import { EVENT_MIN_SPACE } from '../constants';
 import Domain from './domain'
-import { RawEv3nt, Pixels } from '../constants';
+import { RawEv3nt, Pixels, Milliseconds } from '../constants';
 
 class Event {
-	date: Date
-	endDate: Date
+	date: Milliseconds
+	endDate: Milliseconds
 	left: Pixels
 	row: number
 	title: string
 	width: Pixels
 
 	constructor(rawEvent: RawEv3nt, domain: Domain) {
-		this.date = new Date(rawEvent.date)
-		if (rawEvent.endDate != null) this.endDate = new Date(rawEvent.endDate)
+		this.date = rawEvent.date
+		if (rawEvent.endDate != null) this.endDate = rawEvent.endDate
 		this.title = rawEvent.title
 		this.left = domain.positionAtDate(this.date)
-		this.width = this.countDays() * domain.pixelsPerDay
+		this.width = this.isInterval() ?
+			(this.endDate - this.date) * domain.pixelsPerMillisecond :
+			0
 		this.row = rawEvent.row
 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
 	}
@@ -32,11 +34,11 @@ class Event {
 	// 	return [this.left, width];
 	// }
 
-	// TODO remove
-	countDays(): number {
-		if (!this.isInterval()) return 0
-		return countDays(this.date.getTime(), this.endDate.getTime())
-	}
+	// // TODO remove
+	// countDays(): number {
+	// 	if (!this.isInterval()) return 0
+	// 	return countDays(this.date.getTime(), this.endDate.getTime())
+	// }
 
 	isInterval(): boolean {
 		return this.endDate != null

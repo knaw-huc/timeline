@@ -12,6 +12,7 @@
     "watch": "webpack -w --mode development"
   },
   "devDependencies": {
+    "pg": "^7.4.1",
     "ts-loader": "^4.0.1",
     "typescript": "^2.7.2",
     "webpack": "^4.1.1",

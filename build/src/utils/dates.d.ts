@@ -1,3 +1,4 @@
+import { Milliseconds } from "../constants";
 export declare const enum Granularity {
     HOUR = 0,
     DAY = 1,
@@ -9,9 +10,8 @@ export declare const enum Granularity {
     CENTURY = 7,
     MILLENIUM = 8,
 }
-export declare const countDays: (from: number, to: number) => number;
 export declare const isEqual: (date1: Date, date2: Date) => boolean;
 export declare const format: (date: Date, granularity: Granularity) => string;
 export declare const getGranularity: (from: number, to: number, visibleRatio: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
-export declare function subsequentDate(granularity: Granularity): ((Date) => Date);
+export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);

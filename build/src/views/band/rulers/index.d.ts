@@ -1,6 +1,7 @@
 import Domain from '../../../models/domain';
 import { Granularity } from '../../../utils/dates';
-export declare function findClosestRulerDate(date: Date, granularity: Granularity): Date;
+import { Milliseconds } from '../../../constants';
+export declare function findClosestRulerDate(d: Milliseconds, granularity: Granularity): Milliseconds;
 export default class Rulers {
     private domain;
     private ul;

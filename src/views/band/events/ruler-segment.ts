@@ -59,8 +59,8 @@ export default class Segment {
 			]
 		)
 
-		let date = findClosestRulerDate(new Date(this.from), this.domain.granularity)
-		while(date.getTime() < this.to) {
+		let date = findClosestRulerDate(this.from, this.domain.granularity)
+		while(date < this.to) {
 			rulers.appendChild(new Ruler(date, this.domain, this.left).render())
 			date = this.domain.nextDate(date)
 		}
