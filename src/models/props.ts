@@ -29,33 +29,6 @@ export class Props {
 		this.centerChangeDone()
 	}
 
-	// private _from: Date
-	// private _to: Date
-	// /** Lowest date on the timeline */
-	// get from() { return this._from }
-	// /** Highest date on the timeline */
-	// get to() { return this._to }
-	// set edges(config: Config) {
-	// 	const edges = []
-	// 	if (config.domains.some(d => d.type === 'EVENTS') && config.events.length > 1) {
-	// 		edges.push(new Date(config.events[0].date))
-	// 		edges.push(new Date(config.events[config.events.length - 1].date))
-	// 	}
-	// 	if (config.domains.some(d => d.type === 'SPARKLINE') && config.aggregate.length > 1) {
-	// 		edges.push(new Date(config.aggregate[0].year, 0, 1))
-	// 		edges.push(new Date(config.aggregate[config.aggregate.length - 1].year, 0, 1))
-	// 	}
-	// 	if (edges.length < 2) throw Error('Cannot draw Timeline with this config')
-
-	// 	this._from = new Date(Math.min(...edges))
-	// 	this._to = new Date(Math.max(...edges))
-	// 	this._time = this._to.getTime() - this._from.getTime()
-	// }
-
-	// private _time: Milliseconds
-	// /** Total time (ms) of the timeline */
-	// get time() { return this._time }
-
 	private _viewportWidth: number
 	private _viewportHeight: number
 	/** Width of the timeline's viewport */
@@ -78,7 +51,7 @@ export class Props {
 		this._viewportHeight = nextHeight
 	}
 
-	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 1000)
+	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 300)
 }
 
 export default new Props()

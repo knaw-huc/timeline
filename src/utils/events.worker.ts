@@ -1,8 +1,8 @@
-import { Milliseconds, Grid, RawEv3nt } from "../constants"
+import { Milliseconds, Grid } from "../constants"
+import { RawEv3nt } from "../models/event";
 
-function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
-	// const rawEvents: RawEv3nt[] = e.data.events
-
+export type SortFuncReturn = [Milliseconds, Milliseconds, RawEv3nt[], RawEv3nt[], Grid, number]
+export function sortEvents(rawEvents: RawEv3nt[]): SortFuncReturn { 
 	/** Keep a count the number of rows. It's returned to the main thread to construct the events bar and indicators */
 	let rowCount: number = 0
 
@@ -27,12 +27,12 @@ function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
 			let hasSpace = true
 
 			while (hasSpace && cellIterator < rows.length) {
-				hasSpace = (event.endDate < rows[cellIterator][0] || event.date > rows[cellIterator][1])
+				hasSpace = (event.end_date < rows[cellIterator][0] || event.date > rows[cellIterator][1])
 				cellIterator++
 			}
 
 			if (hasSpace) {
-				rows.push([event.date, event.endDate])
+				rows.push([event.date, event.end_date])
 				row = rowIterator
 			}	
 
@@ -41,7 +41,7 @@ function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
 
 		// If row is undefined, it means there is no space in the current grid and
 		// we need to add an extra row to the grid
-		if (row == null) row = grid.push([[event.date, event.endDate]]) - 1
+		if (row == null) row = grid.push([[event.date, event.end_date]]) - 1
 
 		// Increment the row count if necessary
 		if (row > rowCount) rowCount = row
@@ -65,15 +65,15 @@ function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
 		return [matched, unmatched];
 	}
 
-	const [intervals, pointsInTime] = partition(e.data.events, (e) => e.endDate != null)
+	const [intervals, pointsInTime] = partition(rawEvents, (e: RawEv3nt) => e.end_date != null)
 
 	const events = intervals
 		.sort((a, b) => {
 			if (a.date < b.date) return -1
 			if (a.date > b.date) return 1
 
-			if (a.endDate < b.endDate) return -1
-			if (a.endDate > b.endDate) return 1
+			if (a.end_date < b.end_date) return -1
+			if (a.end_date > b.end_date) return 1
 
 			return 0
 		})
@@ -81,19 +81,24 @@ function eventsWorker(e: { data: { events: RawEv3nt[] } }) {
 
 	const from: Milliseconds = events[0].date
 	const lastEvent = events[events.length - 1]
-	const to: Milliseconds = lastEvent.hasOwnProperty('endDate') ? lastEvent.endDate : lastEvent.date
+	const to: Milliseconds = lastEvent.hasOwnProperty('end_date') ? lastEvent.end_date : lastEvent.date
 
-	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
-	postMessage([from, to, events, pointsInTime, grid, rowCount])
+	return [from, to, intervals, pointsInTime, grid, rowCount]
 }
 
-const func = `onmessage = ${eventsWorker.toString()}`
+export function eventsWorker(e: { data: { events: RawEv3nt[], sortFuncURL: string } }) {
+	importScripts(e.data.sortFuncURL)
+	
+	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
+	postMessage(sortEvents(e.data.events))
+}
 
-
-export default (events, done: (response: [Milliseconds, Milliseconds, RawEv3nt[], RawEv3nt[], Grid, number]) => void) => {
+export default (events: RawEv3nt[], done: (response: SortFuncReturn) => void) => {
+	const sortFuncURL = URL.createObjectURL(new Blob([sortEvents]))
+	const func = `onmessage = ${eventsWorker.toString()}`
 	const objectURL = URL.createObjectURL(new Blob([func]))
 	let worker: Worker = new Worker(objectURL)
-	worker.postMessage(events)
+	worker.postMessage({ events, sortFuncURL })
 	worker.onmessage = (e) => {
 		URL.revokeObjectURL(objectURL)
 		worker.terminate()

@@ -1,9 +1,9 @@
-import Ev3nt from "../../../../../models/event"
+import DomainEvent from "../../../../../models/event"
 import createElement from '../../../../../utils/create-element'
 import { EVENT_ROW_HEIGHT } from "../../../../../constants"
 
 export default class PointInTime {
-	 constructor(private event: Ev3nt, private segmentOffset: number) {}
+	 constructor(private event: DomainEvent, private segmentOffset: number) {}
 
 	public render() {
 		const backgroundColor = this.event.row % 2 === 0 ? 'rgb(235, 235, 255)' : 'rgb(215, 215, 255)'
@@ -38,7 +38,7 @@ export default class PointInTime {
 				'text-overflow: ellipsis',
 			]
 		)
-		title.textContent = this.event.title
+		title.textContent = this.event.label
 
 		li.appendChild(title)
 

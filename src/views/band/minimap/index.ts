@@ -1,7 +1,7 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
-import Ev3nt from '../../../models/event'
+import DomainEvent from '../../../models/event'
 import { DATE_BAR_HEIGHT } from '../../../constants';
 
 export default class MiniMap {
@@ -21,7 +21,7 @@ export default class MiniMap {
 
 		const events = props.intervals.concat(props.pointsInTime)
 		for (let i = 0; i < events.length; i++) {
-			const event = new Ev3nt(events[i], this.domain)
+			const event = new DomainEvent(events[i], this.domain)
 			const y = maxHeight - ((event.row + 1) * height)
 			const width = event.width < 1 ? 1 : event.width
 			context.fillRect(event.left, y, width, height)

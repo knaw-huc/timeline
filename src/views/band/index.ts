@@ -1,7 +1,7 @@
 import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
-import { CENTER_CHANGE_EVENT, ComponentType } from '../../constants'
+import { CENTER_CHANGE_EVENT } from '../../constants'
 import Sparkline from './sparkline'
 import Rulers from './rulers'
 import MiniMap from './minimap'
@@ -44,21 +44,21 @@ export default class Band {
 			]
 		)
 
-		if (this.domain.config.components.has(ComponentType.Sparkline)) {
+		if (this.domain.config.components.has('SPARKLINE')) {
 			const sparkline = new Sparkline(this.domain, this.aggregate)
 			this.rootElement.appendChild(sparkline.render())
 		}
-		
-		if (this.domain.config.components.has(ComponentType.Rulers) && !this.domain.config.components.has(ComponentType.Events)) {
+
+		if (this.domain.config.components.has('RULERS') && !this.domain.config.components.has('EVENTS')) {
 			this.rootElement.appendChild(new Rulers(this.domain).render())
 		}
 
-		if (this.domain.config.components.has(ComponentType.MiniMap)) {
+		if (this.domain.config.components.has('MINIMAP')) {
 			const minimap = new MiniMap(this.domain)
 			this.rootElement.appendChild(minimap.render())
 		}
 
-		if (this.domain.config.components.has(ComponentType.Events)) {
+		if (this.domain.config.components.has('EVENTS')) {
 			this.eventsBand = new EventsBand(this.domain)
 			this.rootElement.appendChild(this.eventsBand.render())
 		}

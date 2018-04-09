@@ -1,5 +1,6 @@
 import DomainConfig from "./domain.config";
-import { RawEv3nt, Ratio } from "../constants";
+import { Ratio } from "../constants";
+import { RawEv3nt } from "./event";
 export declare class AggregateEntry {
     count: number;
     year: number;

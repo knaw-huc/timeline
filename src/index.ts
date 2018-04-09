@@ -4,9 +4,13 @@ import Band from './views/band'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
-import eventsWorker from './utils/events.worker'
-import { EVENT_MIN_SPACE } from './constants'
+import eventsWorker, { sortEvents } from './utils/events.worker'
+import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants';
 
+export { sortEvents }
+
+export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
+export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
 // TODO Add pit's
 // TODO Add rows with domain knowledge
 // TODO Add resize event
@@ -25,10 +29,7 @@ export default class Timeline {
 		props.init(this.config)
 
 		eventsWorker(
-			{
-				events: this.config.events,
-				eventMinSpace: EVENT_MIN_SPACE
-			},
+			this.config.events,
 			([from, to, intervals, pointsInTime, grid, rowCount]) => {
 				props.from = from
 				props.to = to
@@ -62,6 +63,19 @@ export default class Timeline {
 	}
 	private debouncedRefresh = debounce(this.refresh, 1000)
 
+	change(onChange: OnChangeFunction) {
+		document.addEventListener(CENTER_CHANGE_DONE_EVENT, (ev) => {
+			const [from, to] = this.bands[0].domain.fromTo
+
+			onChange({
+				center: props.center,
+				visibleFrom: from,
+				visibleTo: to,
+			},
+			ev)
+		})
+	}
+
 	private render() {
 		this.wrapper = createElement(
 			'div',
@@ -85,7 +99,7 @@ export default class Timeline {
 
 	private renderBands(): void {
 		this.bands = this.config.domains.map(d => new Band(d, this.config.aggregate))
-		this.bands.forEach(b => this.appendToWrapper(b))
+		this.bands.forEach(this.appendToWrapper)
 	}
 
 	private renderIndicators(): void {

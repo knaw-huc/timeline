@@ -8,9 +8,12 @@ export const createSvg = (name: string, style?: string[], attrs = {}) => {
 	return el
 }
 
-const element = document.createElement('style')
-document.head.appendChild(element)
-const sheet = <CSSStyleSheet>element.sheet
+let sheet: CSSStyleSheet
+if (typeof window !== 'undefined')  {
+	const element = document.createElement('style')
+	document.head.appendChild(element)
+	sheet = <CSSStyleSheet>element.sheet
+}
 
 const rules = {}
 export default (name: string, className?: string, style?: string[], dynamicStyle?: string[]) => {

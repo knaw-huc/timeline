@@ -46,6 +46,17 @@ class Domain {
 	proportionAtPosition(position: Pixels): Ratio {
 		return position / this.width
 	}
+
+	dateAtProportion(proportion: Ratio): Milliseconds {
+		return props.from + (props.time * proportion)
+	}
+
+	get fromTo(): [Milliseconds, Milliseconds] {
+		const visibleTime = this.config.visibleRatio * props.time
+		const from = props.from + (props.center * (props.time - visibleTime))
+		const to = props.from + (props.center * (props.time - visibleTime)) + visibleTime
+		return [from, to]
+	}
 }
 
 export default Domain

@@ -6,7 +6,8 @@ module.exports = {
 		filename: "[name].js",
 		library: "Timeline",
 		libraryTarget: "umd",
-		path: __dirname + "/build"
+		path: __dirname + "/build",
+		globalObject: 'this',
 	},
 	resolve: {
 		// Add '.ts' and '.tsx' as resolvable extensions.

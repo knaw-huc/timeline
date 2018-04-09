@@ -1,4 +1,5 @@
-import { RawSegment, RawEv3nt, Milliseconds, Ratio } from "../constants"
+import { RawSegment, Milliseconds, Ratio } from "../constants"
+import { RawEv3nt } from "../models/event";
 
 function segmentsWorker(e) {
 	const center: Ratio = e.data.center
@@ -37,10 +38,10 @@ function segmentsWorker(e) {
 		function filterFunc(e: RawEv3nt) {
 			// const curr = proportionAtDate(e.date)
 			if (e.date >= segment.from && e.date <= segment.to) return true				//      [  |--]----|
-			if (e.endDate != null) {
+			if (e.end_date != null) {
 				if (
-					(e.endDate >= segment.from && e.endDate <= segment.to) ||			// |----[--|  ]
-					(e.date < segment.from && e.endDate > segment.to)					// |----[-----]----|
+					(e.end_date >= segment.from && e.end_date <= segment.to) ||			// |----[--|  ]
+					(e.date < segment.from && e.end_date > segment.to)					// |----[-----]----|
 				) return true
 				else return false
 			}

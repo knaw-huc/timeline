@@ -1,6 +1,7 @@
 import props from "./props"
 import DomainConfig from "./domain.config"
-import { RawEv3nt, Ratio } from "../constants";
+import { Ratio } from "../constants";
+import { RawEv3nt } from "./event";
 
 export class AggregateEntry {
 	count: number

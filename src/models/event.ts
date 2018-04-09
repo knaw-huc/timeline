@@ -1,23 +1,38 @@
 // import { countDays } from '../utils/dates'
 // import { EVENT_MIN_SPACE } from '../constants';
 import Domain from './domain'
-import { RawEv3nt, Pixels, Milliseconds } from '../constants';
+import { Pixels, Milliseconds } from '../constants';
+import { Granularity } from '../utils/dates';
 
-class Event {
+export class RawEv3nt {
 	date: Milliseconds
-	endDate: Milliseconds
-	left: Pixels
+	date_granularity: Granularity
+	date_min: Milliseconds
+	date_min_granularity: Granularity
+	description: string
+	end_date: Milliseconds
+	end_date_granularity: Granularity
+	end_date_max: Milliseconds
+	end_date_max_granularity: Granularity
+	id: number
+	label: string
 	row: number
-	title: string
+	wikidata_identifier: string
+}
+
+class DomainEvent extends RawEv3nt {
+	description: string
+	left: Pixels
 	width: Pixels
 
 	constructor(rawEvent: RawEv3nt, domain: Domain) {
-		this.date = rawEvent.date
-		if (rawEvent.endDate != null) this.endDate = rawEvent.endDate
-		this.title = rawEvent.title
+		super()
+		// this.date = rawEvent.date
+		// if (rawEvent.end_date != null) this.endDate = rawEvent.end_date
+		// this.label = rawEvent.label
 		this.left = domain.positionAtDate(this.date)
 		this.width = this.isInterval() ?
-			(this.endDate - this.date) * domain.pixelsPerMillisecond :
+			(this.end_date - this.date) * domain.pixelsPerMillisecond :
 			0
 		this.row = rawEvent.row
 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
@@ -41,8 +56,8 @@ class Event {
 	// }
 
 	isInterval(): boolean {
-		return this.endDate != null
+		return this.end_date != null
 	}
 }
 
-export default Event;
+export default DomainEvent;

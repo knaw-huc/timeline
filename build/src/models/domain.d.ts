@@ -14,5 +14,7 @@ declare class Domain {
     updateLeft(): Pixels;
     positionAtDate(date: Milliseconds): Pixels;
     proportionAtPosition(position: Pixels): Ratio;
+    dateAtProportion(proportion: Ratio): Milliseconds;
+    readonly fromTo: [Milliseconds, Milliseconds];
 }
 export default Domain;

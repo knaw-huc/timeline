@@ -3,7 +3,7 @@ import { createSvg } from '../../../utils/create-element'
 import aggregateWorker from '../../../utils/aggregate.worker'
 import { AggregateEntry } from '../../../models/config'
 import props from '../../../models/props'
-import { RawEv3nt } from '../../../constants';
+import { RawEv3nt } from '../../../models/event';
 
 export default class Sparkline {
 	private svg: SVGElement

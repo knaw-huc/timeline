@@ -1,10 +1,10 @@
-import Ev3nt from '../../../models/event'
+import DomainEvent, { RawEv3nt } from '../../../models/event'
 import createElement from '../../../utils/create-element'
 import PointInTime from './event/point-in-time'
 import Interval from './event/interval'
 import Domain from '../../../models/domain'
 import props from '../../../models/props'
-import { RawEv3nt, RawSegment, Milliseconds } from '../../../constants'
+import { RawSegment, Milliseconds } from '../../../constants'
 
 export default class Segment {
 	rendered = false
@@ -55,7 +55,7 @@ export default class Segment {
 		])
 
 		for (let i = 0; i < this.rawEvents.length; i++) {
-			const event = new Ev3nt(this.rawEvents[i], this.domain)
+			const event = new DomainEvent(this.rawEvents[i], this.domain)
 			const EventClass = event.isInterval() ? Interval : PointInTime
 			const view = new EventClass(event, this.left)
 			ul.appendChild(view.render())

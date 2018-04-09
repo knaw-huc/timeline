@@ -1,9 +1,9 @@
-import Ev3nt from "../../../../../models/event"
+import DomainEvent from "../../../../../models/event"
 import { EVENT_MIN_SPACE, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 
 export default class PointInTime {
-	 constructor(private event: Ev3nt, private segmentOffset: number) {}
+	 constructor(private event: DomainEvent, private segmentOffset: number) {}
 
 	public render() {
 		const li = createElement(
@@ -37,7 +37,7 @@ export default class PointInTime {
 				'text-overflow: ellipsis',
 			]
 		)
-		title.textContent = this.event.title
+		title.textContent = this.event.label
 
 		const point = createElement(
 			'div',
