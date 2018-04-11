@@ -34,6 +34,7 @@ export default class Band {
 			'band-wrap',
 			[
 				'background-color: white',
+				'box-shadow: inset 0 6px 20px #eee',
 				'position: absolute',
 			],
 			[
