@@ -4,13 +4,14 @@ import Band from './views/band'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
-import eventsWorker, { sortEvents } from './utils/events.worker'
+import eventsWorker, { orderEvents } from './utils/events.worker'
 import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants';
 
-export { sortEvents }
+export { orderEvents }
 
 export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
 export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
+
 // TODO Add pit's
 // TODO Add rows with domain knowledge
 // TODO Add resize event
@@ -30,19 +31,16 @@ export default class Timeline {
 
 		eventsWorker(
 			this.config.events,
-			([from, to, intervals, pointsInTime, grid, rowCount]) => {
+			([events, from, to, grid, rowCount]) => {
 				props.from = from
 				props.to = to
 				props.time = to - from
 				props.grid = grid
 				props.rowCount = rowCount
-				props.intervals = intervals
-				props.pointsInTime = pointsInTime
-
+				props.events = events
 				this.config.rootElement.appendChild(this.render())
 			}
 		)
-
 
 		window.addEventListener('resize', this.debouncedRefresh)
 	}

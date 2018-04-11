@@ -41,7 +41,7 @@ export default class Events {
 
 		segmentsWorker(
 			{
-				events: props.intervals.concat(props.pointsInTime),
+				events: props.events,
 				center: props.center,
 				visibleRatio: this.domain.config.visibleRatio,
 				from: new Date(props.from).getTime(),

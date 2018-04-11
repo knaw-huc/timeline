@@ -1,7 +1,7 @@
 import Config from './models/config';
-import { sortEvents } from './utils/events.worker';
+import { orderEvents } from './utils/events.worker';
 import { Milliseconds, Ratio } from './constants';
-export { sortEvents };
+export { orderEvents };
 export interface OnChangeFunctionProps {
     center: Ratio;
     visibleFrom: Milliseconds;

@@ -9,14 +9,37 @@
   "scripts": {
     "prebuild": "rm -rf build",
     "build": "webpack --mode production",
+    "test": "jest",
     "prewatch": "rm -rf build",
     "watch": "webpack -w --mode development"
   },
   "devDependencies": {
+    "@types/jest": "^22.2.2",
+    "jest": "^22.4.3",
     "pg": "^7.4.1",
+    "ts-jest": "^22.4.2",
     "ts-loader": "^4.1.0",
     "typescript": "^2.8.1",
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true
+      }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

@@ -2,16 +2,12 @@ import Domain from '../../../models/domain'
 import { createSvg } from '../../../utils/create-element'
 import aggregateWorker from '../../../utils/aggregate.worker'
 import { AggregateEntry } from '../../../models/config'
-import props from '../../../models/props'
-import { RawEv3nt } from '../../../models/event';
+import props from '../../../models/props';
 
 export default class Sparkline {
 	private svg: SVGElement
-	private events: RawEv3nt[]
 
-	constructor(private domain: Domain, private aggregate: AggregateEntry[]) {
-		this.events = props.intervals.concat(props.pointsInTime)
-	}
+	constructor(private domain: Domain, private aggregate: AggregateEntry[]) {}
 
 	render() {
 		this.svg = createSvg('svg', null, {
@@ -24,8 +20,8 @@ export default class Sparkline {
 		if (this.aggregate.length) {
 			this.renderPath()
 		}
-		else if (this.events.length) {
-			aggregateWorker(this.events, (aggregate) => {
+		else if (props.events.length) {
+			aggregateWorker(props.events, (aggregate) => {
 				this.aggregate = aggregate
 				this.renderPath()
 			})

@@ -1,12 +1,12 @@
 import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT, Grid, Ratio, Milliseconds } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
+import { RawEv3nt } from "./event";
 
 export class Props {
 	grid: Grid
 	rowCount: number
-	pointsInTime = []
-	intervals = []
+	events: RawEv3nt[] = []
 	from: Milliseconds
 	to: Milliseconds
 	time: Milliseconds

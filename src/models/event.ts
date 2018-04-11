@@ -6,18 +6,18 @@ import { Granularity } from '../utils/dates';
 
 export class RawEv3nt {
 	date: Milliseconds
-	date_granularity: Granularity
-	date_min: Milliseconds
-	date_min_granularity: Granularity
-	description: string
-	end_date: Milliseconds
-	end_date_granularity: Granularity
-	end_date_max: Milliseconds
-	end_date_max_granularity: Granularity
-	id: number
-	label: string
-	row: number
-	wikidata_identifier: string
+	date_granularity?: Granularity = Granularity.DAY
+	date_min?: Milliseconds
+	date_min_granularity?: Granularity
+	description?: string
+	end_date?: Milliseconds
+	end_date_granularity?: Granularity
+	end_date_max?: Milliseconds
+	end_date_max_granularity?: Granularity
+	id?: string
+	label?: string
+	row?: number
+	wikidata_identifier?: string
 }
 
 class DomainEvent extends RawEv3nt {
@@ -27,6 +27,8 @@ class DomainEvent extends RawEv3nt {
 
 	constructor(rawEvent: RawEv3nt, domain: Domain) {
 		super()
+
+		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
 		// this.date = rawEvent.date
 		// if (rawEvent.end_date != null) this.endDate = rawEvent.end_date
 		// this.label = rawEvent.label

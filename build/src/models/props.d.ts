@@ -1,10 +1,10 @@
 import { Grid, Ratio, Milliseconds } from "../constants";
 import Config from "./config";
+import { RawEv3nt } from "./event";
 export declare class Props {
     grid: Grid;
     rowCount: number;
-    pointsInTime: any[];
-    intervals: any[];
+    events: RawEv3nt[];
     from: Milliseconds;
     to: Milliseconds;
     time: Milliseconds;

@@ -19,9 +19,8 @@ export default class MiniMap {
 		const maxHeight = this.domain.height - DATE_BAR_HEIGHT
 		const height = maxHeight / props.rowCount
 
-		const events = props.intervals.concat(props.pointsInTime)
-		for (let i = 0; i < events.length; i++) {
-			const event = new DomainEvent(events[i], this.domain)
+		for (let i = 0; i < props.events.length; i++) {
+			const event = new DomainEvent(props.events[i], this.domain)
 			const y = maxHeight - ((event.row + 1) * height)
 			const width = event.width < 1 ? 1 : event.width
 			context.fillRect(event.left, y, width, height)
