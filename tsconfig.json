@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "jsx": "react",
     "module": "commonjs",
     "noUnusedLocals": true,
-    "outDir": "./build",
     "removeComments": true,
     "target": "es6"
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "./src"
-  ]
+  "exclude": ["node_modules"],
+  "files": ["src/index.ts"]
 }

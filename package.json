@@ -1,30 +1,45 @@
 {
   "name": "timeline",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "",
-  "main": "build/index.js",
-  "author": "",
+  "main": "build/bundle.js",
+  "types": "build/src/index.d.ts",
+  "author": "Gijsjan Brouwer",
   "license": "ISC",
   "scripts": {
-    "build": "tsc",
-    "build-storybook": "build-storybook -c .storybook -o docs",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "watch": "tsc -w"
+    "prebuild": "rm -rf build",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "prewatch": "rm -rf build",
+    "watch": "webpack -w --mode development"
   },
   "devDependencies": {
-    "@storybook/react": "3.3.6",
-    "@types/react": "^16.0.34",
-    "awesome-typescript-loader": "^3.4.1",
-    "babel-core": "^6.26.0",
-    "react-dom": "^16.2.0",
-    "typescript": "^2.6.2"
+    "@types/jest": "^22.2.2",
+    "jest": "^22.4.3",
+    "pg": "^7.4.1",
+    "ts-jest": "^22.4.2",
+    "ts-loader": "^4.1.0",
+    "typescript": "^2.8.1",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
   },
-  "dependencies": {
-    "classnames": "^2.2.5",
-    "lodash.debounce": "^4.0.8",
-    "react": "^16.2.0",
-    "redux": "^4.0.0-beta.1",
-    "styled-components": "^2.4.0"
-  },
-  "typings": "build/index.d.ts"
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true
+      }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
 }

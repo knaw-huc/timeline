@@ -1,21 +1,43 @@
-import BaseEvent from './base-event';
-import * as Constants from '../constants';
-import Domain from './domain';
+// import { countDays } from '../utils/dates'
+// import { EVENT_MIN_SPACE } from '../constants';
+import Domain from './domain'
+import { Pixels, Milliseconds } from '../constants';
+import { Granularity } from '../utils/dates';
 
-class Event extends BaseEvent {
-	// public flip: boolean
-	public left: number
-	public top: number
-	public width: number
+export class RawEv3nt {
+	date: Milliseconds
+	date_granularity?: Granularity = Granularity.DAY
+	date_min?: Milliseconds
+	date_min_granularity?: Granularity
+	description?: string
+	end_date?: Milliseconds
+	end_date_granularity?: Granularity
+	end_date_max?: Milliseconds
+	end_date_max_granularity?: Granularity
+	id?: string
+	label?: string
+	row?: number
+	wikidata_identifier?: string
+}
 
-	constructor(data, domain: Domain) {
-		super(data)
+class DomainEvent extends RawEv3nt {
+	description: string
+	left: Pixels
+	width: Pixels
 
-		this.left = domain.positionAtDate(this.from)
+	constructor(rawEvent: RawEv3nt, domain: Domain) {
+		super()
+
+		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
+		// this.date = rawEvent.date
+		// if (rawEvent.end_date != null) this.endDate = rawEvent.end_date
+		// this.label = rawEvent.label
+		this.left = domain.positionAtDate(this.date)
+		this.width = this.isInterval() ?
+			(this.end_date - this.date) * domain.pixelsPerMillisecond :
+			0
+		this.row = rawEvent.row
 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
-
-		const width = this.countDays() * domain.pixelsPerDay
-		this.width = (width > 0 && width < 12) ? 12 : width
 	}
 
 	/**
@@ -24,13 +46,20 @@ class Event extends BaseEvent {
 	 *
 	 * @returns {[number, number]} The first element is the left position, the second element the width.
 	 */
-	public space(): [number, number] {
-		const minWidth = (w) => (w === 0 || w < Constants.EVENT_MIN_SPACE) ? Constants.EVENT_MIN_SPACE : w;
-		const width = minWidth(this.width);
-		// const left = (this.flip) ? this.left - width : this.left;
-		const left = this.left
-		return [left, width];
+	// space(): [number, number] {
+	// 	const width = (this.width < EVENT_MIN_SPACE) ? EVENT_MIN_SPACE : this.width
+	// 	return [this.left, width];
+	// }
+
+	// // TODO remove
+	// countDays(): number {
+	// 	if (!this.isInterval()) return 0
+	// 	return countDays(this.date.getTime(), this.endDate.getTime())
+	// }
+
+	isInterval(): boolean {
+		return this.end_date != null
 	}
 }
 
-export default Event;
+export default DomainEvent;
