@@ -1,4 +1,5 @@
 import { Milliseconds } from "../constants";
+import { RawEv3nt } from "../models/event";
 export declare const enum Granularity {
     HOUR = 0,
     DAY = 1,
@@ -15,3 +16,4 @@ export declare const format: (date: Date, granularity: Granularity) => string;
 export declare const getGranularity: (from: number, to: number, visibleRatio: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
 export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);
+export declare function byDate(a: RawEv3nt, b: RawEv3nt): 0 | 1 | -1;

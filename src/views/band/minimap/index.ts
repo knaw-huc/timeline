@@ -17,10 +17,10 @@ export default class MiniMap {
 		context.fillStyle = 'rgba(180, 180, 255, .5)'
 
 		const maxHeight = this.domain.height - DATE_BAR_HEIGHT
-		const height = maxHeight / props.rowCount
+		const height = maxHeight / props.config.rowCount
 
-		for (let i = 0; i < props.events.length; i++) {
-			const event = new DomainEvent(props.events[i], this.domain)
+		for (let i = 0; i < props.config.events.length; i++) {
+			const event = new DomainEvent(props.config.events[i], this.domain)
 			const y = maxHeight - ((event.row + 1) * height)
 			const width = event.width < 1 ? 1 : event.width
 			context.fillRect(event.left, y, width, height)

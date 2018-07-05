@@ -10,7 +10,7 @@ declare class Domain {
     private _left;
     left: number;
     nextDate: (d: Milliseconds) => Milliseconds;
-    constructor(config: DomainConfig);
+    constructor(configProps: any);
     updateLeft(): Pixels;
     positionAtDate(date: Milliseconds): Pixels;
     proportionAtPosition(position: Pixels): Ratio;

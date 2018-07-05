@@ -4,7 +4,7 @@ import Band from './views/band'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
-import eventsWorker, { orderEvents } from './utils/events.worker'
+import { orderEvents } from './utils/events.worker'
 import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants';
 
 export { orderEvents }
@@ -21,40 +21,38 @@ export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
 // TODO flip PiT when on edge of timeline
 // TODO Scroll vertical when events higher than viewportHeight
 export default class Timeline {
-	private config: Config
 	private bands:Band[] = []
 	private wrapper: HTMLElement
 
-	constructor(config: Partial<Config>) {
-		this.config = new Config(config)
-		props.init(this.config)
+	constructor(config: Config) {
+		// this.config = new Config(config)
+		props.init(config)
+		// props.time = config.to - config.from
 
-		eventsWorker(
-			this.config.events,
-			([events, from, to, grid, rowCount]) => {
-				props.from = from
-				props.to = to
-				props.time = to - from
-				props.grid = grid
-				props.rowCount = rowCount
-				props.events = events
-				this.config.rootElement.appendChild(this.render())
-			}
-		)
-
+		config.rootElement.appendChild(this.render())
 		window.addEventListener('resize', this.debouncedRefresh)
+		// eventsWorker(
+		// 	this.config.events,
+		// 	([events, from, to, grid, rowCount]) => {
+		// 		// props.from = from
+		// 		// props.to = to
+		// 		// props.grid = grid
+		// 		// props.rowCount = rowCount
+		// 		// props.events = events
+		// 	}
+		// )
 	}
 
 	remove() {
 		window.removeEventListener('resize', this.debouncedRefresh)
-		this.config.rootElement.removeChild(this.wrapper)
+		props.config.rootElement.removeChild(this.wrapper)
 		this.wrapper.remove()
 		this.wrapper.innerHTML = ''
 		this.wrapper = null
 	}
 
 	refresh = (config: Partial<Config> = {}) => {
-		this.config.refresh(config)
+		// this.config.refresh(config)
 		this.remove()
 		// this.config.rootElement.appendChild(this.render())
 		window.addEventListener('resize', this.debouncedRefresh)
@@ -65,12 +63,14 @@ export default class Timeline {
 		document.addEventListener(CENTER_CHANGE_DONE_EVENT, (ev) => {
 			const [from, to] = this.bands[0].domain.fromTo
 
-			onChange({
-				center: props.center,
-				visibleFrom: from,
-				visibleTo: to,
-			},
-			ev)
+			onChange(
+				{
+					center: props.center,
+					visibleFrom: from,
+					visibleTo: to,
+				},
+				ev
+			)
 		})
 	}
 
@@ -96,7 +96,8 @@ export default class Timeline {
 	}
 
 	private renderBands(): void {
-		this.bands = this.config.domains.map(d => new Band(d, this.config.aggregate))
+		// TODO remove second param: props is global
+		this.bands = props.domains.map(d => new Band(d, props.config.aggregate))
 		this.bands.forEach(this.appendToWrapper)
 	}
 

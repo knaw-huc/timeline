@@ -19,7 +19,6 @@ export default class Events {
 			'div',
 			'ruler-segments',
 			[
-				`bottom: ${DATE_BAR_HEIGHT}px`,
 				'position: absolute',
 			],
 			[
@@ -41,10 +40,10 @@ export default class Events {
 
 		segmentsWorker(
 			{
-				events: props.events,
+				events: props.config.events,
 				center: props.center,
 				visibleRatio: this.domain.config.visibleRatio,
-				from: new Date(props.from).getTime(),
+				from: new Date(props.config.from).getTime(),
 				time: props.time
 			},
 			(segments) => {

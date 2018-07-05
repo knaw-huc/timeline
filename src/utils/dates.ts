@@ -1,4 +1,5 @@
 import { Milliseconds, Ratio } from "../constants"
+import { RawEv3nt } from "../models/event";
 
 export const enum Granularity {
 	HOUR,
@@ -103,4 +104,18 @@ export function subsequentDate(granularity: Granularity): ((date: Milliseconds) 
 			return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + 1)
 		}
 	}
+}
+
+export function byDate(a: RawEv3nt, b: RawEv3nt) {
+	const aFrom = a.date_min != null ? a.date_min : a.date
+	const bFrom = b.date_min != null ? b.date_min : b.date
+	if (aFrom < bFrom) return -1
+	if (aFrom > bFrom) return 1
+
+	const aTo = a.end_date_max != null ? a.end_date_max : a.end_date
+	const bTo = b.end_date_max != null ? b.end_date_max : b.end_date
+	if (aTo < bTo) return -1
+	if (aTo > bTo) return 1
+
+	return 0
 }

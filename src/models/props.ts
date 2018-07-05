@@ -1,23 +1,26 @@
-import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT, Grid, Ratio, Milliseconds } from "../constants"
+import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT, Ratio, Milliseconds } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
-import { RawEv3nt } from "./event";
+// import { RawEv3nt } from "./event"
+import Domain from "./domain"
 
 export class Props {
-	grid: Grid
-	rowCount: number
-	events: RawEv3nt[] = []
-	from: Milliseconds
-	to: Milliseconds
+	config: Config
+	domains: Domain[]
+	// events: RawEv3nt[] = []
 	time: Milliseconds
+	viewportHeight: number
+	viewportWidth: number
 
 	init(config: Config) {
-		// this.edges = config
+		this.config = config
+		this.time = config.to - config.from
 		this.dimensions = config.rootElement
+		this.domains = config.domains.map(d => new Domain(d))
 	}
 
-	private _center: Ratio = .5
 	/** Current center of the timeline by ratio [0, 1] */
+	private _center: Ratio = .5
 	get center() { return this._center }
 	set center(n: Ratio) {
 		if ((this._center === 0 && n < 0) || (this._center === 1 && n > 1)) return
@@ -29,26 +32,20 @@ export class Props {
 		this.centerChangeDone()
 	}
 
-	private _viewportWidth: number
-	private _viewportHeight: number
-	/** Width of the timeline's viewport */
-	get viewportWidth() { return this._viewportWidth }
-	/** Height of the timeline's viewport */
-	get viewportHeight() { return this._viewportHeight }
 	set dimensions(rootElement: HTMLElement) {
 		const style = getComputedStyle(rootElement)
 		const nextWidth = parseInt(style.getPropertyValue('width'), 10)
 		const nextHeight = parseInt(style.getPropertyValue('height'), 10)
 
 		if (
-			(this._viewportWidth != null && this._viewportWidth !== nextWidth) ||
-			(this._viewportHeight != null && this._viewportHeight !== nextHeight)
+			(this.viewportWidth != null && this.viewportWidth !== nextWidth) ||
+			(this.viewportHeight != null && this.viewportHeight !== nextHeight)
 		) {
 			document.dispatchEvent(new CustomEvent(DIMENSIONS_CHANGE_EVENT))
 		}
 
-		this._viewportWidth = nextWidth
-		this._viewportHeight = nextHeight
+		this.viewportWidth = nextWidth
+		this.viewportHeight = nextHeight
 	}
 
 	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 300)

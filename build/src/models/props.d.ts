@@ -1,20 +1,15 @@
-import { Grid, Ratio, Milliseconds } from "../constants";
+import { Ratio, Milliseconds } from "../constants";
 import Config from "./config";
-import { RawEv3nt } from "./event";
+import Domain from "./domain";
 export declare class Props {
-    grid: Grid;
-    rowCount: number;
-    events: RawEv3nt[];
-    from: Milliseconds;
-    to: Milliseconds;
+    config: Config;
+    domains: Domain[];
     time: Milliseconds;
+    viewportHeight: number;
+    viewportWidth: number;
     init(config: Config): void;
     private _center;
     center: Ratio;
-    private _viewportWidth;
-    private _viewportHeight;
-    readonly viewportWidth: number;
-    readonly viewportHeight: number;
     dimensions: HTMLElement;
     private centerChangeDone;
 }

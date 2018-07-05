@@ -1,6 +1,7 @@
 import DomainEvent from "../../../../../models/event"
 import { EVENT_MIN_SPACE, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
+import props from "../../../../../models/props";
 
 export default class PointInTime {
 	 constructor(private event: DomainEvent, private segmentOffset: number) {}
@@ -31,13 +32,15 @@ export default class PointInTime {
 				'background-color: rgba(255,255,255,.75)',
 				'display: inline-block',
 				`line-height: ${EVENT_HEIGHT}px`,
-				`max-width: calc(${EVENT_MIN_SPACE}px - ${EVENT_HEIGHT}px)`,
+				// `max-width: calc(${EVENT_MIN_SPACE}px - ${EVENT_HEIGHT}px)`,
+				`max-width: ${props.viewportWidth/10}px`,
 				'overflow: hidden',
 				'padding: .25em',
 				'text-overflow: ellipsis',
 			]
 		)
 		title.textContent = this.event.label
+		title.title = this.event.label
 
 		const point = createElement(
 			'div',

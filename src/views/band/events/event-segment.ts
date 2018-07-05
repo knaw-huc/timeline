@@ -20,7 +20,7 @@ export default class Segment {
 	) {
 		this.rawEvents = segmentData.events
 		this.from = segmentData.from
-		this.left = ((props.from - this.from) / props.time) * this.domain.width
+		this.left = ((props.config.from - this.from) / props.time) * this.domain.width
 	}
 
 	render() {

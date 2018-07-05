@@ -7,17 +7,14 @@ import Rulers from './rulers'
 import MiniMap from './minimap'
 import EventsBand from './events'
 import { AggregateEntry } from '../../models/config'
-import DomainConfig from '../../models/domain.config'
 
 export default class Band {
-	domain: Domain
 	private dragStart: number
 	private dragOffset: number
 	private rootElement: HTMLElement
 	private eventsBand: EventsBand
 
-	constructor(domainConfig: DomainConfig, private aggregate: AggregateEntry[]) {
-		this.domain = new Domain(domainConfig)
+	constructor(public domain: Domain, private aggregate: AggregateEntry[]) {
 		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
 	}
 

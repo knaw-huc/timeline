@@ -20,8 +20,8 @@ export default class Sparkline {
 		if (this.aggregate.length) {
 			this.renderPath()
 		}
-		else if (props.events.length) {
-			aggregateWorker(props.events, (aggregate) => {
+		else if (props.config.events.length) {
+			aggregateWorker(props.config.events, (aggregate) => {
 				this.aggregate = aggregate
 				this.renderPath()
 			})

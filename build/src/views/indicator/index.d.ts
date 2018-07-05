@@ -5,7 +5,6 @@ export default class Indicator {
     private leftOfIndicator;
     private rightOfIndicator;
     private width;
-    private height;
     private leftWidth;
     private rightWidth;
     private offset;

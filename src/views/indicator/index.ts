@@ -7,7 +7,6 @@ export default class Indicator {
 	private leftOfIndicator: HTMLElement
 	private rightOfIndicator: HTMLElement
 	private width: Pixels
-	private height: Pixels
 	private leftWidth: Pixels
 	private rightWidth: Pixels
 	private offset: Pixels
@@ -16,9 +15,9 @@ export default class Indicator {
 		this.width = this.hostDomain.width / this.targetDomain.width * props.viewportWidth
 		if (this.width < 2) this.width = 2
 
-		let heightRatio = (this.targetDomain.height - DATE_BAR_HEIGHT) / (props.rowCount * EVENT_ROW_HEIGHT)
+		let heightRatio = (this.targetDomain.height - DATE_BAR_HEIGHT) / (props.config.rowCount * EVENT_ROW_HEIGHT)
 		if (heightRatio > 1) heightRatio = 1
-		this.height = (this.hostDomain.height) * heightRatio
+		// this.height = (this.hostDomain.height) * heightRatio
 
 		this.offset = props.viewportWidth - this.width
 
@@ -58,10 +57,10 @@ export default class Indicator {
 				`bottom: ${0}px`,
 				'cursor: -webkit-grab',
 				'background-color: rgba(0, 0, 0, .1)',
+				`height: ${this.hostDomain.height}px`,
 				'z-index: 3',
 			],
 			[
-				`height: ${this.height}px`,
 				'left: 0',
 				'transform-origin: left',
 				`width: ${this.leftWidth}px`,
@@ -73,7 +72,6 @@ export default class Indicator {
 			'indicator',
 			[],
 			[
-				`height: ${this.height}px`,
 				'right: 0',
 				'transform-origin: right',
 				`width: ${this.rightWidth}px`,
