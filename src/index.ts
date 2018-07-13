@@ -5,14 +5,13 @@ import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
 import { orderEvents } from './utils/events.worker'
-import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants';
+import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants'
 
 export { orderEvents }
 
 export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
 export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
 
-// TODO Add pit's
 // TODO Add rows with domain knowledge
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)
