@@ -7,9 +7,10 @@ export declare const enum Granularity {
     MONTH = 3,
     YEAR = 4,
     DECADE = 5,
-    YEARS_50 = 6,
+    DECADE_5 = 6,
     CENTURY = 7,
-    MILLENIUM = 8,
+    CENTURY_5 = 8,
+    MILLENIUM = 9,
 }
 export declare const isEqual: (date1: Date, date2: Date) => boolean;
 export declare const format: (date: Date, granularity: Granularity) => string;
