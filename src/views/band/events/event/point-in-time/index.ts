@@ -17,6 +17,7 @@ export default class PointInTime {
 				'position: absolute',
 				'white-space: nowrap',
 				`max-width: ${EVENT_MIN_SPACE}px`,
+				`z-index: 1`,
 			],
 			[
 				`left: ${this.event.left - this.segmentOffset}px`,
