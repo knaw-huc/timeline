@@ -11,12 +11,14 @@ export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event)
 export default class Timeline {
     private bands;
     private wrapper;
+    private animator;
     constructor(config: Config);
     refresh: (config?: Partial<Config>) => void;
     private debouncedRefresh;
     init(onInit: OnChangeFunction): void;
     change(onChange: OnChangeFunction): void;
     private render();
+    private renderControls();
     private renderBands();
     private renderIndicators();
     private appendToWrapper;
