@@ -14,10 +14,11 @@ export default class MiniMap {
 		canvas.width = this.domain.width
 		canvas.height = this.domain.height
 		const context = canvas.getContext('2d')
-		context.fillStyle = 'rgba(180, 180, 255, .5)'
+		context.fillStyle = 'rgba(180, 180, 255, 1)'
 
 		const maxHeight = this.domain.height - DATE_BAR_HEIGHT
-		const height = maxHeight / props.config.rowCount
+		let height = maxHeight / props.config.rowCount
+		if (height < 1) height = 1
 
 		for (let i = 0; i < props.config.events.length; i++) {
 			const event = new DomainEvent(props.config.events[i], this.domain)

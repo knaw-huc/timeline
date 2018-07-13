@@ -5,14 +5,13 @@ import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
 import { orderEvents } from './utils/events.worker'
-import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants';
+import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants'
 
 export { orderEvents }
 
 export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
 export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
 
-// TODO Add pit's
 // TODO Add rows with domain knowledge
 // TODO Add resize event
 // TODO Add clean up method (remove dom nodes and event listeners)
@@ -25,22 +24,10 @@ export default class Timeline {
 	private wrapper: HTMLElement
 
 	constructor(config: Config) {
-		// this.config = new Config(config)
 		props.init(config)
-		// props.time = config.to - config.from
 
 		config.rootElement.appendChild(this.render())
 		window.addEventListener('resize', this.debouncedRefresh)
-		// eventsWorker(
-		// 	this.config.events,
-		// 	([events, from, to, grid, rowCount]) => {
-		// 		// props.from = from
-		// 		// props.to = to
-		// 		// props.grid = grid
-		// 		// props.rowCount = rowCount
-		// 		// props.events = events
-		// 	}
-		// )
 	}
 
 	remove() {
@@ -52,10 +39,8 @@ export default class Timeline {
 	}
 
 	refresh = (config: Partial<Config> = {}) => {
-		// this.config.refresh(config)
-		this.remove()
-		// this.config.rootElement.appendChild(this.render())
-		window.addEventListener('resize', this.debouncedRefresh)
+		// this.remove()
+		// window.addEventListener('resize', this.debouncedRefresh)
 	}
 	private debouncedRefresh = debounce(this.refresh, 1000)
 
