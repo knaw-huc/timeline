@@ -42,7 +42,6 @@ export const format = (date: Date, granularity: Granularity): string => {
 
 export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRatio: Ratio): Granularity => {
 	const days =  visibleRatio * ((to - from) / 86400000) // 1000ms * 60s * 60m * 24h
-	console.log(days, days / 365)
 	if (days < 1) return Granularity.HOUR
 	if (days < 15) return Granularity.DAY
 	if (days < 45) return Granularity.WEEK

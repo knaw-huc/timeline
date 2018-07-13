@@ -18,27 +18,27 @@
 		const t = new Timeline.default({
 			domains: [
 				{
-					components: ["EVENTS", "RULERS"],
+					components: new Set(["EVENTS", "RULERS"]),
 					heightRatio: .75,
 					visibleRatio: .1,
 				},
-				{
-					components: ["MINIMAP", "RULERS"],
-					hasIndicatorFor: 0,
-					heightRatio: .125,
-					topOffsetRatio: .75,
-					visibleRatio: .25
-				},
-				{	
-					components: ["MINIMAP", "RULERS"],
-					hasIndicatorFor: 0,
-					heightRatio: .125,
-					topOffsetRatio: .875,
-				},
+		// 		{
+		// 			components: new Set(["MINIMAP", "RULERS"]),
+		// 			hasIndicatorFor: 0,
+		// 			heightRatio: .125,
+		// 			topOffsetRatio: .75,
+		// 			visibleRatio: .25
+		// 		},
+		// 		{	
+		// 			components: new Set(["MINIMAP", "RULERS"]),
+		// 			hasIndicatorFor: 0,
+		// 			heightRatio: .125,
+		// 			topOffsetRatio: .875,
+		// 		},
 			],
 			events,
 			rootElement: document.getElementById('timeline'),
-			sortEvents: true,
+		// 	sortEvents: true,
 		})
 	}
 	go()

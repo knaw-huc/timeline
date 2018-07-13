@@ -10,7 +10,7 @@ import { CENTER_CHANGE_DONE_EVENT, Milliseconds, Ratio } from './constants'
 export { orderEvents }
 
 export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
-export type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void
+export type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void
 
 // TODO Add rows with domain knowledge
 // TODO Add resize event
@@ -30,19 +30,30 @@ export default class Timeline {
 		window.addEventListener('resize', this.debouncedRefresh)
 	}
 
-	remove() {
-		window.removeEventListener('resize', this.debouncedRefresh)
-		props.config.rootElement.removeChild(this.wrapper)
-		this.wrapper.remove()
-		this.wrapper.innerHTML = ''
-		this.wrapper = null
-	}
+	// private remove() {
+	// 	window.removeEventListener('resize', this.debouncedRefresh)
+	// 	props.config.rootElement.removeChild(this.wrapper)
+	// 	this.wrapper.remove()
+	// 	this.wrapper.innerHTML = ''
+	// 	this.wrapper = null
+	// }
 
 	refresh = (config: Partial<Config> = {}) => {
 		// this.remove()
 		// window.addEventListener('resize', this.debouncedRefresh)
 	}
 	private debouncedRefresh = debounce(this.refresh, 1000)
+
+	init(onInit: OnChangeFunction) {
+		const [from, to] = this.bands[0].domain.fromTo
+		onInit(
+			{
+				center: props.center,
+				visibleFrom: from,
+				visibleTo: to,
+			}
+		)
+	}
 
 	change(onChange: OnChangeFunction) {
 		document.addEventListener(CENTER_CHANGE_DONE_EVENT, (ev) => {

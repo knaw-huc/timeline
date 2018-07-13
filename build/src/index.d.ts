@@ -7,14 +7,14 @@ export interface OnChangeFunctionProps {
     visibleFrom: Milliseconds;
     visibleTo: Milliseconds;
 }
-export declare type OnChangeFunction = (props: OnChangeFunctionProps, e: Event) => void;
+export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void;
 export default class Timeline {
     private bands;
     private wrapper;
     constructor(config: Config);
-    remove(): void;
     refresh: (config?: Partial<Config>) => void;
     private debouncedRefresh;
+    init(onInit: OnChangeFunction): void;
     change(onChange: OnChangeFunction): void;
     private render();
     private renderBands();

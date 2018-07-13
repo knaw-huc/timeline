@@ -4,12 +4,12 @@ import { RawEv3nt } from "./models/event";
 // than the width of the event, to accommodate the label.
 export const EVENT_MIN_SPACE = 160 
 
-export const EVENT_HEIGHT = 12
+export const EVENT_HEIGHT = 14
 
 // The height (in px) of a row of events.
 export const EVENT_ROW_HEIGHT = 20
 
-export const DATE_BAR_HEIGHT = 2 * EVENT_ROW_HEIGHT 
+export const DATE_BAR_HEIGHT = EVENT_ROW_HEIGHT 
 export const RULER_LABELS_HEIGHT = 60
 
 export const CENTER_CHANGE_EVENT = 'CENTER_CHANGE_EVENT'

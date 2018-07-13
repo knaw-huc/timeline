@@ -13,6 +13,7 @@ export default class PointInTime {
 			[
 				'box-sizing: border-box',
 				'font-size: 0.8em',
+				`height: ${EVENT_HEIGHT}px`,
 				`margin-left: -${EVENT_HEIGHT/2}px`,
 				'position: absolute',
 				'white-space: nowrap',
@@ -24,7 +25,6 @@ export default class PointInTime {
 				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 			]
 		)
-		// li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}`)
 
 		const title = createElement(
 			'div',
@@ -33,10 +33,9 @@ export default class PointInTime {
 				'background-color: rgba(255,255,255,.75)',
 				'display: inline-block',
 				`line-height: ${EVENT_HEIGHT}px`,
-				// `max-width: calc(${EVENT_MIN_SPACE}px - ${EVENT_HEIGHT}px)`,
 				`max-width: ${props.viewportWidth/10}px`,
 				'overflow: hidden',
-				'padding: .25em',
+				'padding: 0 .25em',
 				'text-overflow: ellipsis',
 			]
 		)
@@ -50,7 +49,6 @@ export default class PointInTime {
 				'background-image: radial-gradient(white 20%, black 100%)',
 				`border-radius: ${EVENT_HEIGHT/2}px`,
 				'display: inline-block',
-				'margin: .25em 0',
 				`width: ${EVENT_HEIGHT}px`,
 				`height: ${EVENT_HEIGHT}px`,
 			]

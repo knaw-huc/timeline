@@ -59,7 +59,7 @@ export default class Ruler {
 			'ruler-label',
 			[
 				'alignItems: flex-end',
-				'bottom: 10px',
+				'bottom: 2px',
 				'color: #888',
 				'display: flex',
 				'font-size: .75em',

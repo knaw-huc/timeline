@@ -14,6 +14,7 @@ export class Props {
 
 	init(config: Config) {
 		this.config = config
+		if (config.center != null) this.center = config.center
 		this.time = config.to - config.from
 		this.dimensions = config.rootElement
 		this.domains = config.domains.map(d => new Domain(d))
