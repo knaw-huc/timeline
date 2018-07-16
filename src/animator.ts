@@ -39,8 +39,9 @@ export default class Animator {
 	}
 
 	speed(multiplier: string) {
-		if (this.multipliers.indexOf(multiplier as any) === -1) return
-		this.multiplier = multiplier as any
+		const multiplier2: any = parseInt(multiplier, 10)
+		if (this.multipliers.indexOf(multiplier2) === -1) return
+		this.multiplier = multiplier2
 	}
 
 	isPlaying() {
