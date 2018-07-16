@@ -6,7 +6,6 @@ function aggregateWorker(e) {
 		.reduce((prev, curr, index, array) => {
 			// Worker receives the raw Ev3nt Object, not the Ev3nt class,
 			// so getters and setters are not available, hence curr._date
-			// TODO pass instantiated Date
 			const year = new Date(curr.date).getFullYear()
 			if (prev.hasOwnProperty(year)) {
 				prev[year]++

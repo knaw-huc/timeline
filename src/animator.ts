@@ -1,8 +1,7 @@
 import props from "./models/props";
 import { CENTER_CHANGE_DONE_EVENT } from "./constants";
 
-type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
-const multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
+export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 
 export default class Animator {
 	private interval = .00001
@@ -10,6 +9,7 @@ export default class Animator {
 	private animating = false
 	private direction: -1 | 1 = 1
 	private prevTimestamp: number
+	multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
 
 	private animate = (timestamp) => {
 		// TODO find out why timestamp can be 0
@@ -25,17 +25,22 @@ export default class Animator {
 	}
 
 	accelerate(): number {
-		const index = multipliers.indexOf(this.multiplier)
-		if (index === multipliers.length - 1) return multipliers[multipliers.length - 1]
-		this.multiplier = multipliers[index + 1]
+		const index = this.multipliers.indexOf(this.multiplier)
+		if (index === this.multipliers.length - 1) return this.multipliers[this.multipliers.length - 1]
+		this.multiplier = this.multipliers[index + 1]
 		return this.multiplier
 	}
 
 	decelerate(): number {
-		const index = multipliers.indexOf(this.multiplier)
-		if (index === 0) return multipliers[0]
-		this.multiplier = multipliers[index - 1]
+		const index = this.multipliers.indexOf(this.multiplier)
+		if (index === 0) return this.multipliers[0]
+		this.multiplier = this.multipliers[index - 1]
 		return this.multiplier
+	}
+
+	speed(multiplier: string) {
+		if (this.multipliers.indexOf(multiplier as any) === -1) return
+		this.multiplier = multiplier as any
 	}
 
 	isPlaying() {
