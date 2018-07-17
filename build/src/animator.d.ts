@@ -4,7 +4,6 @@ export default class Animator {
     private readonly interval;
     readonly multipliers: Multiplier[];
     private multiplier;
-    private animating;
     private direction;
     private prevTimestamp;
     private elapsedTimeTotal;

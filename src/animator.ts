@@ -2,6 +2,11 @@ import props from "./models/props";
 import { CENTER_CHANGE, Milliseconds, CENTER_CHANGE_DONE } from "./constants";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
+enum Direction {
+	Backward = -1,
+	Stop = 0,
+	Forward = 1,
+}
 
 export default class Animator {
 	private readonly elapsedTimeThreshold: Milliseconds = 2000
@@ -9,8 +14,8 @@ export default class Animator {
 	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
 
 	private multiplier: Multiplier = 1
-	private animating = false
-	private direction: -1 | 1 = 1
+	// Animation direction, -1 is backward, 0 is pause, 1 is forward
+	private direction: Direction = Direction.Stop
 	// Timestamp of the prev animation frame
 	private prevTimestamp: Milliseconds = 0
 	// A counter to throttle the CENTER_CHANGE_DONE event
@@ -29,7 +34,7 @@ export default class Animator {
 		this.elapsedTimeTotal += elapsedTime
 		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.resetElapsedTimeTotal()
 
-		if (this.animating && props.center > 0 && props.center < 1) {
+		if (this.isPlaying() && props.center > 0 && props.center < 1) {
 			this.prevTimestamp = timestamp
 			requestAnimationFrame(this.animate)
 		}
@@ -61,37 +66,36 @@ export default class Animator {
 	}
 
 	isPlaying() {
-		return this.animating
+		return this.direction !== Direction.Stop
 	}
 
 	isPlayingForward() {
-		return this.animating && this.direction === 1
+		return this.direction === Direction.Forward
 	}
 
 	isPlayingBackward() {
-		return this.animating && this.direction === -1
+		return this.direction === Direction.Backward
 	}
 
 	play() {
-		this.animating = true
 		requestAnimationFrame(this.animate)
 	}
 
 	playForward() {
-		this.direction = 1
+		this.direction = Direction.Forward
 		this.play()
 	}
 
 	playBackward() {
-		this.direction = -1
+		this.direction = Direction.Backward
 		this.play()
 	}
 
 	stop() {
-		this.animating = false
+		this.direction = Direction.Stop
 	}
 
 	toggle() {
-		this.animating ? this.stop() : this.play()
+		this.isPlaying() ? this.stop() : this.play()
 	}
 }
