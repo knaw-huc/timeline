@@ -17,7 +17,6 @@ export declare class RawEv3nt {
     wikidata_identifier?: string;
 }
 declare class DomainEvent extends RawEv3nt {
-    description: string;
     left: Pixels;
     width: Pixels;
     constructor(rawEvent: RawEv3nt, domain: Domain);

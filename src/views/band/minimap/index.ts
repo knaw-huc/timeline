@@ -1,32 +1,65 @@
 import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
-import DomainEvent from '../../../models/event'
-import { DATE_BAR_HEIGHT } from '../../../constants';
+import DomainEvent, { RawEv3nt } from '../../../models/event'
+import { DATE_BAR_HEIGHT, CENTER_CHANGE_DONE } from '../../../constants';
 
+const onVisible = (from, to) => (e: RawEv3nt) => {
+	const eventFrom = e.date_min || e.date
+	let eventTo = e.end_date_max || e.end_date
+	if (eventTo == null) eventTo = eventFrom
+	if (eventFrom == null && eventTo == null) return false
+	return !(eventTo < from || eventFrom > to)
+}
+
+/**
+ * The MiniMap is an abstract representation of the events on a band.
+ * It gives an overview of densely (and scarcely) populated areas
+ */
 export default class MiniMap {
-	constructor(private domain: Domain) {}
+	private canvas: HTMLCanvasElement
+	private context: CanvasRenderingContext2D
+	private maxHeight: number
+	private eventHeight: number
+
+	constructor(private domain: Domain) {
+		this.maxHeight = this.domain.height - DATE_BAR_HEIGHT
+		this.eventHeight = this.maxHeight / props.config.rowCount
+		if (this.eventHeight < 1) this.eventHeight = 1
+		if (this.domain.config.visibleRatio < 1) {
+			document.addEventListener(CENTER_CHANGE_DONE, () => this.drawEvents())
+		}
+	}
 
 	render() {
-		const canvas = createElement('canvas', 'minimap', [
+		this.canvas = createElement('canvas', 'minimap', [
 			'position: absolute',
 		])
-		canvas.width = this.domain.width
-		canvas.height = this.domain.height
-		const context = canvas.getContext('2d')
-		context.fillStyle = 'rgba(180, 180, 255, 1)'
 
-		const maxHeight = this.domain.height - DATE_BAR_HEIGHT
-		let height = maxHeight / props.config.rowCount
-		if (height < 1) height = 1
+		this.canvas.width = props.viewportWidth
+		this.canvas.height = this.domain.height
+		this.context = this.canvas.getContext('2d')
+		this.context.fillStyle = 'rgba(180, 180, 255, 1)'
 
-		for (let i = 0; i < props.config.events.length; i++) {
-			const event = new DomainEvent(props.config.events[i], this.domain)
-			const y = maxHeight - ((event.row + 1) * height)
+		this.drawEvents()
+
+		return this.canvas
+	}
+
+	private drawEvents() {
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+		const left = this.domain.positionAtDate(this.domain.fromTo[0])
+		this.canvas.style.left = `${left}px`
+
+		const [from, to] = this.domain.fromTo
+		const visibleEvents = props.config.events.filter(onVisible(from, to))
+		for (let i = 0; i < visibleEvents.length; i++) {
+			const event = new DomainEvent(visibleEvents[i], this.domain)
+			const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
 			const width = event.width < 1 ? 1 : event.width
-			context.fillRect(event.left, y, width, height)
+			this.context.fillRect(event.left - left, y, width, this.eventHeight)
 		}
 
-		return canvas
 	}
 }

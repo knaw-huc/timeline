@@ -1,6 +1,6 @@
 import Animator from './animator'
 import Config from './models/config';
-import { CENTER_CHANGE_DONE_EVENT, Ratio, Milliseconds } from './constants'
+import { CENTER_CHANGE_DONE, Ratio, Milliseconds } from './constants'
 import Band from './views/band';
 import props from './models/props';
 
@@ -28,7 +28,7 @@ export default class Api {
 	}
 
 	change(onChange: OnChangeFunction) {
-		document.addEventListener(CENTER_CHANGE_DONE_EVENT, (ev) => {
+		document.addEventListener(CENTER_CHANGE_DONE, (ev) => {
 			const [from, to] = this.bands[0].domain.fromTo
 
 			onChange(

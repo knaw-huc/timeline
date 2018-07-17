@@ -19,7 +19,6 @@ export class RawEv3nt {
 }
 
 class DomainEvent extends RawEv3nt {
-	description: string
 	left: Pixels
 	width: Pixels
 

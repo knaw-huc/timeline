@@ -1,12 +1,15 @@
 export declare type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16;
 export default class Animator {
-    private interval;
+    private readonly elapsedTimeThreshold;
+    private readonly interval;
+    readonly multipliers: Multiplier[];
     private multiplier;
     private animating;
     private direction;
     private prevTimestamp;
-    multipliers: Multiplier[];
+    private elapsedTimeTotal;
     private animate;
+    private resetElapsedTimeTotal();
     accelerate(): number;
     decelerate(): number;
     speed(multiplier: string): void;

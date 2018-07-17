@@ -1,27 +1,43 @@
 import props from "./models/props";
-import { CENTER_CHANGE_DONE_EVENT } from "./constants";
+import { CENTER_CHANGE, Milliseconds, CENTER_CHANGE_DONE } from "./constants";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 
 export default class Animator {
-	private interval = .00001
+	private readonly elapsedTimeThreshold: Milliseconds = 2000
+	private readonly interval: number = .00001
+	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
+
 	private multiplier: Multiplier = 1
 	private animating = false
 	private direction: -1 | 1 = 1
-	private prevTimestamp: number
-	multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
+	// Timestamp of the prev animation frame
+	private prevTimestamp: Milliseconds = 0
+	// A counter to throttle the CENTER_CHANGE_DONE event
+	private elapsedTimeTotal: Milliseconds = 0
 
 	private animate = (timestamp) => {
+		// time elapsed since previous frame
+		const elapsedTime = timestamp - this.prevTimestamp
+
 		// TODO find out why timestamp can be 0
-		if (timestamp - this.prevTimestamp > 0) {
+		if (elapsedTime > 0) {
 			props.center = props.center + (this.interval * this.multiplier * this.direction)
-			document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT))
+			document.dispatchEvent(new CustomEvent(CENTER_CHANGE))
 		}
+
+		this.elapsedTimeTotal += elapsedTime
+		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.resetElapsedTimeTotal()
 
 		if (this.animating && props.center > 0 && props.center < 1) {
 			this.prevTimestamp = timestamp
 			requestAnimationFrame(this.animate)
 		}
+	}
+
+	private resetElapsedTimeTotal() {
+		this.elapsedTimeTotal = 0
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
 	}
 
 	accelerate(): number {

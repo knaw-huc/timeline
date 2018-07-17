@@ -1,4 +1,4 @@
-import { CENTER_CHANGE_EVENT, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE_EVENT, Ratio, Milliseconds } from "../constants"
+import { CENTER_CHANGE, DIMENSIONS_CHANGE_EVENT, CENTER_CHANGE_DONE, Ratio, Milliseconds } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
 // import { RawEv3nt } from "./event"
@@ -29,7 +29,7 @@ export class Props {
 		else if (n > 1) this._center = 1
 		else this._center = n
 
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_EVENT, { detail: n }))
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE, { detail: n }))
 		this.centerChangeDone()
 	}
 
@@ -49,7 +49,7 @@ export class Props {
 		this.viewportHeight = nextHeight
 	}
 
-	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE_EVENT)), 300)
+	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE)), 300)
 }
 
 export default new Props()

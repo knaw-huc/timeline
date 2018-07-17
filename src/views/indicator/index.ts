@@ -1,6 +1,6 @@
 import createElement from '../../utils/create-element'
 import Domain from '../../models/domain'
-import { CENTER_CHANGE_EVENT, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT, Pixels } from '../../constants'
+import { CENTER_CHANGE, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT, Pixels } from '../../constants'
 import props from '../../models/props'
 
 export default class Indicator {
@@ -24,11 +24,11 @@ export default class Indicator {
 		this.leftWidth = this.nextLeftWidth()
 		this.rightWidth = this.nextRightWidth()
 
-		document.addEventListener(CENTER_CHANGE_EVENT, this.handleCenterChange)
+		document.addEventListener(CENTER_CHANGE, this.handleCenterChange)
 	}
 
 	public remove() {
-		document.removeEventListener(CENTER_CHANGE_EVENT, this.handleCenterChange)
+		document.removeEventListener(CENTER_CHANGE, this.handleCenterChange)
 	}
 
 	public render() {

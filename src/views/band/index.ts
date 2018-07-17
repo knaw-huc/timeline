@@ -1,7 +1,7 @@
 import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
-import { CENTER_CHANGE_EVENT } from '../../constants'
+import { CENTER_CHANGE } from '../../constants'
 import Sparkline from './sparkline'
 import Rulers from './rulers'
 import MiniMap from './minimap'
@@ -15,11 +15,11 @@ export default class Band {
 	private eventsBand: EventsBand
 
 	constructor(public domain: Domain, private aggregate: AggregateEntry[]) {
-		document.addEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
+		document.addEventListener(CENTER_CHANGE, this.updateLeft)
 	}
 
 	remove() {
-		document.removeEventListener(CENTER_CHANGE_EVENT, this.updateLeft)
+		document.removeEventListener(CENTER_CHANGE, this.updateLeft)
 		this.rootElement.removeEventListener('mousedown', this.onMouseDown)
 		this.rootElement.removeEventListener('mousemove', this.onMouseMove)
 		this.rootElement.removeEventListener('dblclick', this.onDblClick)
