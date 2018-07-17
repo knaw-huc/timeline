@@ -90,19 +90,6 @@ export default class Band {
 
 	private onMouseUp = (ev) => {
 		document.removeEventListener('mouseup', this.onMouseUp)
-		// const shift = ev.clientX - this.dragOffset
-		// let left = this.dragStart - (this.dragOffset - ev.clientX)
-		// if (Math.abs(shift) > 300) {
-		// 	let t = 0
-		// 	const intervalId = setInterval(() => {
-		// 		t += 50
-		// 		if (t === 1000 || props.center === 0 || props.center === 1) return clearInterval(intervalId)
-
-		// 		left += (shift / 100) * (-t/1000 + 1)
-		// 		props.center = left / (this.domain.viewportWidth - this.domain.width)
-		// 		console.log(t, -t/1000 + 1, left, props.center)
-		// 	}, 50)
-		// }
 		this.dragOffset = null
 	}
 

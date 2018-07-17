@@ -37,11 +37,11 @@ function segmentsWorker(e) {
 
 		function filterFunc(e: RawEv3nt) {
 			// const curr = proportionAtDate(e.date)
-			if (e.date >= segment.from && e.date <= segment.to) return true				//      [  |--]----|
+			if (e.date >= segment.from && e.date <= segment.to) return true				//      [  |--]----|	Start of event visible
 			if (e.end_date != null) {
 				if (
-					(e.end_date >= segment.from && e.end_date <= segment.to) ||			// |----[--|  ]
-					(e.date < segment.from && e.end_date > segment.to)					// |----[-----]----|
+					(e.end_date >= segment.from && e.end_date <= segment.to) ||			// |----[--|  ]			End of event visible
+					(e.date < segment.from && e.end_date > segment.to)					// |----[-----]----|	Event overlaps visible area
 				) return true
 				else return false
 			}
