@@ -56,8 +56,7 @@ export default class Timeline extends Api {
 	}
 
 	private renderBands(): void {
-		// TODO remove second param: props is global
-		this.bands = props.domains.map(d => new Band(d, props.config.aggregate))
+		this.bands = props.domains.map(d => new Band(d))
 		this.bands.forEach(this.appendToWrapper)
 	}
 

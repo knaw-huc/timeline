@@ -1,13 +1,11 @@
 import Domain from '../../models/domain';
-import { AggregateEntry } from '../../models/config';
 export default class Band {
     domain: Domain;
-    private aggregate;
     private dragStart;
     private dragOffset;
     private rootElement;
     private eventsBand;
-    constructor(domain: Domain, aggregate: AggregateEntry[]);
+    constructor(domain: Domain);
     remove(): void;
     render(): HTMLElement;
     private updateLeft;

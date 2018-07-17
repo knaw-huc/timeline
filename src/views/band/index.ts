@@ -6,7 +6,6 @@ import Sparkline from './sparkline'
 import Rulers from './rulers'
 import MiniMap from './minimap'
 import EventsBand from './events'
-import { AggregateEntry } from '../../models/config'
 
 export default class Band {
 	private dragStart: number
@@ -14,7 +13,7 @@ export default class Band {
 	private rootElement: HTMLElement
 	private eventsBand: EventsBand
 
-	constructor(public domain: Domain, private aggregate: AggregateEntry[]) {
+	constructor(public domain: Domain) {
 		document.addEventListener(CENTER_CHANGE, this.updateLeft)
 	}
 
@@ -43,7 +42,7 @@ export default class Band {
 		)
 
 		if (this.domain.config.components.has('SPARKLINE')) {
-			const sparkline = new Sparkline(this.domain, this.aggregate)
+			const sparkline = new Sparkline(this.domain, props.config.aggregate)
 			this.rootElement.appendChild(sparkline.render())
 		}
 
