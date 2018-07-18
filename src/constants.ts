@@ -14,8 +14,6 @@ export const RULER_LABELS_HEIGHT = 60
 
 export const CENTER_CHANGE = 'CENTER_CHANGE'
 export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
-export const RELOAD = 'RELOAD'
-export const PROPS_UPDATED = 'PROPS_UPDATED'
 
 export type Milliseconds = number
 export type Grid = [Milliseconds, Milliseconds][][]

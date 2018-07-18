@@ -1,7 +1,7 @@
 import { Milliseconds, Grid, Pixels, Ratio } from "../constants";
 import { RawEv3nt } from "../models/event";
-export declare type OrderEventsReturn = [RawEv3nt[], Milliseconds, Milliseconds, Grid, number];
-export declare function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderEventsReturn;
+export declare type OrderedEvents = [RawEv3nt[], Milliseconds, Milliseconds, Grid, number];
+export declare function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderedEvents;
 export declare function eventsWorker(e: {
     data: {
         events: RawEv3nt[];

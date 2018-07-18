@@ -13,6 +13,5 @@ export default class Config {
     from: Milliseconds;
     rootElement: HTMLElement;
     rowCount: number;
-    sortEvents?: boolean;
     to: Milliseconds;
 }

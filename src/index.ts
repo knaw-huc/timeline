@@ -7,9 +7,8 @@ import { debounce } from './utils/index'
 import { orderEvents } from './utils/events.worker'
 import Api from './api'
 import eventBus from './event-bus'
-import { RELOAD, PROPS_UPDATED } from './constants';
 
-export { orderEvents }
+export { orderEvents, Config as TimelineConfig }
 
 // TODO add zoom func
 // TODO Add open ranges (ie: people still alive)
@@ -17,6 +16,7 @@ export { orderEvents }
 // TODO flip PiT when on edge of timeline
 // TODO Scroll vertical when events higher than viewportHeight
 // TODO Make the timeline standalone, so it does not need the server
+// TODO make multiple bands with seperate events possible
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
@@ -27,9 +27,6 @@ export default class Timeline extends Api {
 
 		config.rootElement.appendChild(this.render())
 
-		document.addEventListener(PROPS_UPDATED, () => {
-			this.renderBands()
-		})
 		window.addEventListener('resize', () => {
 			this.removeChildren()
 			this.debouncedReload()
@@ -45,12 +42,14 @@ export default class Timeline extends Api {
 
 	}
 
-	public reload = () => {
+	public reload = (config?: Config) => {
+		config = config != null ? config : props.config
+		props.init(config)
+
 		this.removeChildren()
-		this.dispatchReloadEvent()	
+		this.renderBands()
 	}
-	private dispatchReloadEvent = () => document.dispatchEvent(new CustomEvent(RELOAD))
-	private debouncedReload = debounce(this.dispatchReloadEvent, 600)
+	private debouncedReload = debounce(this.reload, 600)
 
 	private render() {
 		this.wrapper = createElement(

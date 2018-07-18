@@ -24,9 +24,5 @@ export default class Config {
 
 	rowCount: number
 
-	// The events should be sorted when passed to Timeline, because a data store will likely be faster
-	// at sorting than the client. If that is in some way not possible, the lib can sort the events.
-	sortEvents?: boolean = false
-
 	to: Milliseconds
 }

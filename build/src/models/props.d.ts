@@ -2,6 +2,7 @@ import { Ratio, Milliseconds } from "../constants";
 import Config from "./config";
 import Domain from "./domain";
 export declare class Props {
+    private readonly defaultCenter;
     config: Config;
     domains: Domain[];
     time: Milliseconds;

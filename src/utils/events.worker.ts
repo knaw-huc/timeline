@@ -1,8 +1,8 @@
 import { Milliseconds, Grid, Pixels, Ratio } from "../constants"
 import { RawEv3nt } from "../models/event";
 
-export type OrderEventsReturn = [RawEv3nt[], Milliseconds, Milliseconds, Grid, number]
-export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderEventsReturn { 
+export type OrderedEvents = [RawEv3nt[], Milliseconds, Milliseconds, Grid, number]
+export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderedEvents { 
 	if (!events.length) return [[], null, null, [], null]
 	/** Keep a count the number of rows. It's returned to the main thread to construct the events bar and indicators */
 	let rowCount: number = 0
@@ -75,7 +75,7 @@ export function eventsWorker(e: { data: { events: RawEv3nt[], orderEventsURL: st
 	postMessage(orderEvents(e.data.events))
 }
 
-export default (events: RawEv3nt[], done: (response: OrderEventsReturn) => void) => {
+export default (events: RawEv3nt[], done: (response: OrderedEvents) => void) => {
 	const orderEventsURL = URL.createObjectURL(new Blob([orderEvents]))
 	const func = `onmessage = ${eventsWorker.toString()}`
 	const objectURL = URL.createObjectURL(new Blob([func]))

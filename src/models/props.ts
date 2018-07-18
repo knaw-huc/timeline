@@ -1,13 +1,12 @@
-import { CENTER_CHANGE, CENTER_CHANGE_DONE, Ratio, Milliseconds, RELOAD, PROPS_UPDATED } from "../constants"
+import { CENTER_CHANGE, CENTER_CHANGE_DONE, Ratio, Milliseconds } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
-// import { RawEv3nt } from "./event"
 import Domain from "./domain"
 
 export class Props {
+	private readonly defaultCenter = .5
 	config: Config
 	domains: Domain[]
-	// events: RawEv3nt[] = []
 	time: Milliseconds
 	viewportHeight: number
 	viewportWidth: number
@@ -18,16 +17,10 @@ export class Props {
 		this.time = config.to - config.from
 		this.dimensions = config.rootElement
 		this.domains = config.domains.map(d => new Domain(d))
-
-		document.addEventListener(RELOAD, () => {
-			this.dimensions = config.rootElement
-			this.domains = config.domains.map(d => new Domain(d))
-			document.dispatchEvent(new CustomEvent(PROPS_UPDATED))
-		})
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */
-	private _center: Ratio = .5
+	private _center: Ratio = this.defaultCenter
 	get center() { return this._center }
 	set center(n: Ratio) {
 		if ((this._center === 0 && n < 0) || (this._center === 1 && n > 1)) return
