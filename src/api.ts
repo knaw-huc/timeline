@@ -1,5 +1,4 @@
 import Animator from './animator'
-import Config from './models/config';
 import { CENTER_CHANGE_DONE, Ratio, Milliseconds } from './constants'
 import Band from './views/band';
 import props from './models/props';
@@ -10,11 +9,6 @@ export type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void
 export default class Api {
 	protected bands:Band[] = []
 	animator: Animator = new Animator()
-
-	constructor(config: Config) {
-		props.init(config)
-
-	}
 
 	init(onInit: OnChangeFunction) {
 		const [from, to] = this.bands[0].domain.fromTo
@@ -28,18 +22,20 @@ export default class Api {
 	}
 
 	change(onChange: OnChangeFunction) {
-		document.addEventListener(CENTER_CHANGE_DONE, (ev) => {
-			const [from, to] = this.bands[0].domain.fromTo
+		document.addEventListener(CENTER_CHANGE_DONE, this.handleChange(onChange))
+	}
 
-			onChange(
-				{
-					center: props.center,
-					visibleFrom: from,
-					visibleTo: to,
-				},
-				ev
-			)
-		})
+	private handleChange = (onChange: OnChangeFunction) => (ev) => {
+		const [from, to] = this.bands[0].domain.fromTo
+
+		onChange(
+			{
+				center: props.center,
+				visibleFrom: from,
+				visibleTo: to,
+			},
+			ev
+		)
 	}
 
 }

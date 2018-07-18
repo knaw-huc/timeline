@@ -6,33 +6,51 @@ import createElement from './utils/create-element'
 import { debounce } from './utils/index'
 import { orderEvents } from './utils/events.worker'
 import Api from './api'
+import eventBus from './event-bus'
+import { RELOAD, PROPS_UPDATED } from './constants';
 
 export { orderEvents }
 
-// TODO Add resize event
-// TODO Add clean up method (remove dom nodes and event listeners)
+// TODO add zoom func
 // TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline
 // TODO Scroll vertical when events higher than viewportHeight
-// TODO max size of canvas is 32676px, so the current minimap does not work on big screens and large timelines
-//		create a prev, curr, next canvas, te size of the viewport width and move and update them on center change
-// TODO Move controls outside timeline and add an API to the timeline
 // TODO Make the timeline standalone, so it does not need the server
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
 	constructor(config: Config) {
-		super(config)
+		super()
+
+		props.init(config)
 
 		config.rootElement.appendChild(this.render())
-		window.addEventListener('resize', this.debouncedRefresh)
+
+		document.addEventListener(PROPS_UPDATED, () => {
+			this.renderBands()
+		})
+		window.addEventListener('resize', () => {
+			this.removeChildren()
+			this.debouncedReload()
+		})
 	}
 
-	private refresh = (config: Partial<Config> = {}) => {
-		console.error('Resize event not implemented!!')
+	private removeChildren() {
+		eventBus.flush()
+
+		Array
+			.from(this.wrapper.children)
+			.forEach(child => this.wrapper.removeChild(child))
+
 	}
-	private debouncedRefresh = debounce(this.refresh, 1000)
+
+	public reload = () => {
+		this.removeChildren()
+		this.dispatchReloadEvent()	
+	}
+	private dispatchReloadEvent = () => document.dispatchEvent(new CustomEvent(RELOAD))
+	private debouncedReload = debounce(this.dispatchReloadEvent, 600)
 
 	private render() {
 		this.wrapper = createElement(
@@ -50,7 +68,6 @@ export default class Timeline extends Api {
 		)
 
 		this.renderBands()
-		this.renderIndicators()
 
 		return this.wrapper
 	}
@@ -58,6 +75,8 @@ export default class Timeline extends Api {
 	private renderBands(): void {
 		this.bands = props.domains.map(d => new Band(d))
 		this.bands.forEach(this.appendToWrapper)
+
+		this.renderIndicators()
 	}
 
 	private renderIndicators(): void {

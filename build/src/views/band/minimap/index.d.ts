@@ -7,5 +7,5 @@ export default class MiniMap {
     private eventHeight;
     constructor(domain: Domain);
     render(): HTMLCanvasElement;
-    private drawEvents();
+    private drawEvents;
 }

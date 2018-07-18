@@ -3,6 +3,7 @@ import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
 import DomainEvent, { RawEv3nt } from '../../../models/event'
 import { DATE_BAR_HEIGHT, CENTER_CHANGE_DONE } from '../../../constants';
+import eventBus from '../../../event-bus';
 
 const onVisible = (from, to) => (e: RawEv3nt) => {
 	const eventFrom = e.date_min || e.date
@@ -27,7 +28,7 @@ export default class MiniMap {
 		this.eventHeight = this.maxHeight / props.config.rowCount
 		if (this.eventHeight < 1) this.eventHeight = 1
 		if (this.domain.config.visibleRatio < 1) {
-			document.addEventListener(CENTER_CHANGE_DONE, () => this.drawEvents())
+			eventBus.register(CENTER_CHANGE_DONE, this.drawEvents)
 		}
 	}
 
@@ -46,7 +47,7 @@ export default class MiniMap {
 		return this.canvas
 	}
 
-	private drawEvents() {
+	private drawEvents = () => {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
 		const left = this.domain.positionAtDate(this.domain.fromTo[0])

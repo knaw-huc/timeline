@@ -2,6 +2,7 @@ import createElement from '../../utils/create-element'
 import Domain from '../../models/domain'
 import { CENTER_CHANGE, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT, Pixels } from '../../constants'
 import props from '../../models/props'
+import eventBus from '../../event-bus';
 
 export default class Indicator {
 	private leftOfIndicator: HTMLElement
@@ -24,15 +25,10 @@ export default class Indicator {
 		this.leftWidth = this.nextLeftWidth()
 		this.rightWidth = this.nextRightWidth()
 
-		document.addEventListener(CENTER_CHANGE, this.handleCenterChange)
-	}
-
-	public remove() {
-		document.removeEventListener(CENTER_CHANGE, this.handleCenterChange)
+		eventBus.register(CENTER_CHANGE, this.handleCenterChange)
 	}
 
 	public render() {
-
 		const wrapper = createElement(
 			'div',
 			'indicator-wrap',
@@ -57,10 +53,10 @@ export default class Indicator {
 				`bottom: ${0}px`,
 				'cursor: -webkit-grab',
 				'background-color: rgba(0, 0, 0, .1)',
-				`height: ${this.hostDomain.height}px`,
 				'z-index: 3',
 			],
 			[
+				`height: ${this.hostDomain.height}px`,
 				'left: 0',
 				'transform-origin: left',
 				`width: ${this.leftWidth}px`,
@@ -72,6 +68,7 @@ export default class Indicator {
 			'indicator',
 			[],
 			[
+				`height: ${this.hostDomain.height}px`,
 				'right: 0',
 				'transform-origin: right',
 				`width: ${this.rightWidth}px`,

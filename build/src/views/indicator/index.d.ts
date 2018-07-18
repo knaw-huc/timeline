@@ -9,7 +9,6 @@ export default class Indicator {
     private rightWidth;
     private offset;
     constructor(hostDomain: Domain, targetDomain: Domain);
-    remove(): void;
     render(): any;
     private handleCenterChange;
     private nextLeftWidth();

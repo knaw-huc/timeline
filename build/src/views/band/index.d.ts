@@ -6,7 +6,6 @@ export default class Band {
     private rootElement;
     private eventsBand;
     constructor(domain: Domain);
-    remove(): void;
     render(): HTMLElement;
     private updateLeft;
     private onMouseDown;

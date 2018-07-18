@@ -5,8 +5,10 @@ export { orderEvents };
 export default class Timeline extends Api {
     private wrapper;
     constructor(config: Config);
-    private refresh;
-    private debouncedRefresh;
+    private removeChildren();
+    reload: () => void;
+    private dispatchReloadEvent;
+    private debouncedReload;
     private render();
     private renderBands();
     private renderIndicators();

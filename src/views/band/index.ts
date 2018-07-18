@@ -6,6 +6,7 @@ import Sparkline from './sparkline'
 import Rulers from './rulers'
 import MiniMap from './minimap'
 import EventsBand from './events'
+import eventBus from '../../event-bus';
 
 export default class Band {
 	private dragStart: number
@@ -14,14 +15,7 @@ export default class Band {
 	private eventsBand: EventsBand
 
 	constructor(public domain: Domain) {
-		document.addEventListener(CENTER_CHANGE, this.updateLeft)
-	}
-
-	remove() {
-		document.removeEventListener(CENTER_CHANGE, this.updateLeft)
-		this.rootElement.removeEventListener('mousedown', this.onMouseDown)
-		this.rootElement.removeEventListener('mousemove', this.onMouseMove)
-		this.rootElement.removeEventListener('dblclick', this.onDblClick)
+		eventBus.register(CENTER_CHANGE, this.updateLeft)
 	}
 
 	render() {
@@ -61,10 +55,10 @@ export default class Band {
 		}
 
 		if (this.domain.config.visibleRatio < 1) {
-			this.rootElement.addEventListener('mousedown', this.onMouseDown)
-			this.rootElement.addEventListener('mousemove', this.onMouseMove)
+			eventBus.register('mousedown', this.onMouseDown, this.rootElement)
+			eventBus.register('mousemove', this.onMouseMove, this.rootElement)
 		}
-		this.rootElement.addEventListener('dblclick', this.onDblClick)
+		eventBus.register('dblclick', this.onDblClick, this.rootElement)
 
 		return this.rootElement
 	}
