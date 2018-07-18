@@ -1,1 +1,57 @@
-[{"title":"Michiel de Ruyter","date":-11448086400000,"endDate":-9267436800000},{"title":"Maarten Tromp","date":-11729491200000,"endDate":-9984384000000},{"title":"Cornelis Tromp","date":-10739692800000,"endDate":-8791545600000},{"title":"Piet Pieterszoon Hein","date":-12373516800000,"endDate":-10746345600000},{"title":"Witte Corneleszoon de With","date":-11700201600000,"endDate":-9818841600000},{"title":"Jacob van Wassenear Obdam","date":-11360476800000,"endDate":-9610704000000},{"title":"Johan van Galen","date":-11549865600000,"endDate":-9996480000000},{"title":"Johan Evertsen","date":-11673417600000,"endDate":-9574588800000},{"title":"Jacob van Heemskerk","date":-12712204800000,"endDate":-11445321600000},{"title":"Jan van Brakel","date":-10476864000000,"endDate":-8819452800000},{"title":"Philips van Almonde","date":-10256198400000,"endDate":-8172835200000}]
+[
+	{
+		"title": "Michiel de Ruyter",
+		"date": -11448086400000,
+		"end_date": -9267436800000
+	},
+	{
+		"title": "Maarten Tromp",
+		"date": -11729491200000,
+		"end_date": -9984384000000
+	},
+	{
+		"title": "Cornelis Tromp",
+		"date": -10739692800000,
+		"end_date": -8791545600000
+	},
+	{
+		"title": "Piet Pieterszoon Hein",
+		"date": -12373516800000,
+		"end_date": -10746345600000
+	},
+	{
+		"title": "Witte Corneleszoon de With",
+		"date": -11700201600000,
+		"end_date": -9818841600000
+	},
+	{
+		"title": "Jacob van Wassenear Obdam",
+		"date": -11360476800000,
+		"end_date": -9610704000000
+	},
+	{
+		"title": "Johan van Galen",
+		"date": -11549865600000,
+		"end_date": -9996480000000
+	},
+	{
+		"title": "Johan Evertsen",
+		"date": -11673417600000,
+		"end_date": -9574588800000
+	},
+	{
+		"title": "Jacob van Heemskerk",
+		"date": -12712204800000,
+		"end_date": -11445321600000
+	},
+	{
+		"title": "Jan van Brakel",
+		"date": -10476864000000,
+		"end_date": -8819452800000
+	},
+	{
+		"title": "Philips van Almonde",
+		"date": -10256198400000,
+		"end_date": -8172835200000
+	}
+]

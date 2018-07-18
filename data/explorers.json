@@ -1,1 +1,47 @@
-[{"title":"Abel Tasman","date":-11581401600000,"endDate":-9789811200000},{"title":"Ferdinand Magellan","date":-15460070400000,"endDate":-14159059200000},{"title":"Christopher Columbus","date":-16351891200000,"endDate":-14630457600000},{"title":"Vasco da Gama","date":-16094073600000,"endDate":-14043542400000},{"title":"Bartolomeu Dias","date":-16409606400000,"endDate":-14818982400000},{"title":"Amerigo Vespucci","date":-16277587200000,"endDate":-14448672000000},{"title":"Meriwether Lewis","date":-6165331200000,"endDate":-5056214400000},{"title":"William Clark","date":-6293030400000,"endDate":-4144521600000},{"title":"Jacob Roggeveen","date":-9811497600000,"endDate":-7602595200000}]
+[
+	{
+		"title": "Abel Tasman",
+		"date": -11581401600000,
+		"end_date": -9789811200000
+	},
+	{
+		"title": "Ferdinand Magellan",
+		"date": -15460070400000,
+		"end_date": -14159059200000
+	},
+	{
+		"title": "Christopher Columbus",
+		"date": -16351891200000,
+		"end_date": -14630457600000
+	},
+	{
+		"title": "Vasco da Gama",
+		"date": -16094073600000,
+		"end_date": -14043542400000
+	},
+	{
+		"title": "Bartolomeu Dias",
+		"date": -16409606400000,
+		"end_date": -14818982400000
+	},
+	{
+		"title": "Amerigo Vespucci",
+		"date": -16277587200000,
+		"end_date": -14448672000000
+	},
+	{
+		"title": "Meriwether Lewis",
+		"date": -6165331200000,
+		"end_date": -5056214400000
+	},
+	{
+		"title": "William Clark",
+		"date": -6293030400000,
+		"end_date": -4144521600000
+	},
+	{
+		"title": "Jacob Roggeveen",
+		"date": -9811497600000,
+		"end_date": -7602595200000
+	}
+]
