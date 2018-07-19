@@ -4,19 +4,21 @@ import Band from './views/band'
 import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
-import { orderEvents } from './utils/events.worker'
+import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import eventBus from './event-bus'
 
-export { orderEvents, Config as TimelineConfig }
+export { Config as TimelineConfig, orderEvents, OrderedEvents }
 
 // TODO add zoom func
 // TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline
 // TODO Scroll vertical when events higher than viewportHeight
-// TODO Make the timeline standalone, so it does not need the server
-// TODO make multiple bands with seperate events possible
+// TODO keep the labels visible when the event is still visible but the label outside the viewport
+// TODO remove topOffsetRatio
+// TODO make it possible to have only minimap bands (see index.floods.html)
+// TODO add check if `type` prop is present in config
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
@@ -56,7 +58,6 @@ export default class Timeline extends Api {
 			'div',
 			'wrapper',
 			[
-				'background-color: teal',
 				'box-sizing: border-box',
 				'height: 100%',
 				'overflow: hidden',
@@ -75,14 +76,38 @@ export default class Timeline extends Api {
 		this.bands = props.domains.map(d => new Band(d))
 		this.bands.forEach(this.appendToWrapper)
 
+		this.renderLabels()
 		this.renderIndicators()
 	}
 
 	private renderIndicators(): void {
 		this.bands
-			.filter(band => band.domain.config.hasIndicatorFor != null)
-			.map(band => new Indicator(band.domain, this.bands[band.domain.config.hasIndicatorFor].domain))
+			.filter(band => band.domain.config.targets != null)
+			.map(band => new Indicator(band.domain))
 			.forEach(this.appendToWrapper)
+	}
+
+	private renderLabels() {
+		props.domains
+			.filter(d => d.config.label != null)
+			.map(d => {
+				const eventsLabel: HTMLDivElement = createElement('div', 'events-label',
+					[
+						'border-bottom-right-radius: 4px',
+						'color: #444',
+						'font-size: .8em',
+						'font-family: sans-serif',
+						'padding: 2px 4px',
+						'position: absolute',
+					],
+					[
+						`top: ${d.config.topOffsetRatio * 100}%`
+					]
+				)
+				eventsLabel.innerText = d.config.label
+				this.wrapper.appendChild(eventsLabel)
+			})
+
 	}
 
 	private appendToWrapper = (child) => this.wrapper.appendChild(child.render())

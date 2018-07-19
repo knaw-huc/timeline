@@ -1,22 +1,82 @@
-import { CENTER_CHANGE, CENTER_CHANGE_DONE, Ratio, Milliseconds } from "../constants"
+import { CENTER_CHANGE, CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels, colors } from "../constants"
 import Config from "./config"
 import { debounce } from "../utils"
 import Domain from "./domain"
+import DomainConfig from "./domain.config";
+
+/**
+ * Create a range from 0 up to, but not including n
+ * ie: 3 => [0, 1, 2]
+ * ie: 6 => [0, 1, 2, 3, 4, 5]
+ */
+function createRange(n: number) {
+	return Array.apply(null, {length: n}).map(Number.call, Number)
+}
+
+/**
+ * Random select an given amount from a set
+ * ['a', 'b', 'c', 'd'], 2 => ['d', 'a']
+ * [1, 2, 3, 4, 5, 6, 7, 8], 4 => [2, 1, 8, 4]
+ */
+function selectRandom(set: (string | number)[], amount: number) {
+	const selected = []
+
+	while(selected.length < amount) {
+		const randomIndex = Math.floor(Math.random() * set.length)
+		const nextItem = set[randomIndex]	
+		if (selected.indexOf(nextItem) === -1 || set.length < amount) selected.push(nextItem)
+	}
+
+	return selected
+}
 
 export class Props {
 	private readonly defaultCenter = .5
 	config: Config
 	domains: Domain[]
+
+	// Timestamp of the start date of the timeline
+	from: Milliseconds
+
+	// Total time of the timeline
 	time: Milliseconds
-	viewportHeight: number
-	viewportWidth: number
+
+	// Timestamp of the end date of the timeline
+	to: Milliseconds
+
+	viewportHeight: Pixels
+	viewportWidth: Pixels
 
 	init(config: Config) {
-		this.config = config
-		if (config.center != null) this.center = config.center
-		this.time = config.to - config.from
 		this.dimensions = config.rootElement
-		this.domains = config.domains.map(d => new Domain(d))
+
+		this.config = {
+			...config,
+			domains: config.domains.map(d => new DomainConfig(d, this.viewportWidth))
+		}
+
+		const dates: number[] = this.config.domains
+			.filter(d => d.type === 'events')
+			.reduce((prev, curr) => {
+				const { events } = curr.orderedEvents
+				const firstEvent = events[0]
+				const lastEvent = events[events.length - 1]
+				prev.push(firstEvent.date_min, firstEvent.date, firstEvent.end_date, firstEvent.end_date_max)	
+				prev.push(lastEvent.date_min, lastEvent.date, lastEvent.end_date, lastEvent.end_date_max)	
+				return prev
+			}, [])
+			.filter(d => d != null)
+
+		this.from = Math.min(...dates)
+		this.to = Math.max(...dates)
+		this.time = this.to - this.from
+
+		if (config.center != null) this.center = config.center
+
+		// Last, but not least, initiate the Domains. This depends on almost all the data
+		// in this class, so keep it last (after viewport size, from, to, time, etc are set)
+		const indices = selectRandom(createRange(colors.length), this.config.domains.filter(d => d.type === 'events').length)
+		this.domains = this.config.domains.map((d, i) => new Domain(d, colors[indices[i]]))
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */

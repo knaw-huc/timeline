@@ -1,13 +1,15 @@
-import { Ratio, Milliseconds } from "../constants";
+import { Ratio, Milliseconds, Pixels } from "../constants";
 import Config from "./config";
 import Domain from "./domain";
 export declare class Props {
     private readonly defaultCenter;
     config: Config;
     domains: Domain[];
+    from: Milliseconds;
     time: Milliseconds;
-    viewportHeight: number;
-    viewportWidth: number;
+    to: Milliseconds;
+    viewportHeight: Pixels;
+    viewportWidth: Pixels;
     init(config: Config): void;
     private _center;
     center: Ratio;

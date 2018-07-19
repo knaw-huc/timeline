@@ -2,11 +2,10 @@ import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import { CENTER_CHANGE } from '../../constants'
-import Sparkline from './sparkline'
-import Rulers from './rulers'
 import MiniMap from './minimap'
 import EventsBand from './events'
 import eventBus from '../../event-bus';
+import Rulers from './rulers';
 
 export default class Band {
 	private dragStart: number
@@ -24,10 +23,10 @@ export default class Band {
 			'band-wrap',
 			[
 				'background-color: white',
-				'box-shadow: inset 0 6px 20px #eee',
 				'position: absolute',
 			],
 			[
+				`box-shadow: inset 0 6px 20px ${this.domain.color != null ? this.domain.color(.1) : '#eee'}`,
 				`height: ${this.domain.config.heightRatio * 100}%`,
 				`top: ${this.domain.config.topOffsetRatio * 100}%`,
 				`transform: translate3d(${this.domain.left}px, 0, 0)`,
@@ -35,21 +34,16 @@ export default class Band {
 			]
 		)
 
-		if (this.domain.config.components.has('SPARKLINE')) {
-			const sparkline = new Sparkline(this.domain, props.config.aggregate)
-			this.rootElement.appendChild(sparkline.render())
-		}
+		if (this.domain.config.type === 'minimap') {
+			if (this.domain.config.rulers) {
+				this.rootElement.appendChild(new Rulers(this.domain).render())
+			}
 
-		if (this.domain.config.components.has('RULERS') && !this.domain.config.components.has('EVENTS')) {
-			this.rootElement.appendChild(new Rulers(this.domain).render())
-		}
-
-		if (this.domain.config.components.has('MINIMAP')) {
 			const minimap = new MiniMap(this.domain)
 			this.rootElement.appendChild(minimap.render())
 		}
 
-		if (this.domain.config.components.has('EVENTS')) {
+		if (this.domain.config.type === 'events') {
 			this.eventsBand = new EventsBand(this.domain)
 			this.rootElement.appendChild(this.eventsBand.render())
 		}

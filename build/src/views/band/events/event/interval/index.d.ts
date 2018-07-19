@@ -1,7 +1,9 @@
 import DomainEvent from "../../../../../models/event";
-export default class PointInTime {
+import Domain from "../../../../../models/domain";
+export default class Interval {
+    private domain;
     private event;
     private segmentOffset;
-    constructor(event: DomainEvent, segmentOffset: number);
+    constructor(domain: Domain, event: DomainEvent, segmentOffset: number);
     render(): any;
 }

@@ -20,7 +20,7 @@ export default class Segment {
 	) {
 		this.rawEvents = segmentData.events
 		this.from = segmentData.from
-		this.left = ((props.config.from - this.from) / props.time) * this.domain.width
+		this.left = ((props.from - this.from) / props.time) * this.domain.width
 	}
 
 	render() {
@@ -57,7 +57,7 @@ export default class Segment {
 		for (let i = 0; i < this.rawEvents.length; i++) {
 			const event = new DomainEvent(this.rawEvents[i], this.domain)
 			const EventClass = event.isInterval() ? Interval : PointInTime
-			const view = new EventClass(event, this.left)
+			const view = new EventClass(this.domain, event, this.left)
 			ul.appendChild(view.render())
 		}
 

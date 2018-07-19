@@ -2,19 +2,21 @@ import { getGranularity, Granularity } from '../utils/dates'
 import { subsequentDate } from '../utils/dates'
 import props from './props'
 import DomainConfig from './domain.config'
-import { Pixels, Milliseconds, Ratio } from '../constants';
+import { Pixels, Milliseconds, Ratio, Color } from '../constants';
 
 class Domain {
-	config: DomainConfig
 	// Level of detail (ie century, year, month, week, day, etc)
 	granularity: Granularity
+
+	// Total height of the domain
+	height: number
 
 	// The amount of pixels taken by one day. Metric used for calculating 
 	// the x-position of an event or ruler on the timeline.
 	pixelsPerMillisecond: number
 
+	// Total width of the domain
 	width: number
-	height: number
 
 	private _left: Pixels
 	get left() { return this._left }
@@ -26,11 +28,10 @@ class Domain {
 
 	nextDate: (d: Milliseconds) => Milliseconds
 
-	constructor(configProps) {
-		this.config = new DomainConfig(configProps)
+	constructor(public config: DomainConfig, public color: Color) {
 		this.height = props.viewportHeight * this.config.heightRatio
 		this.width = props.viewportWidth / this.config.visibleRatio
-		this.granularity = getGranularity(props.config.from, props.config.to, this.config.visibleRatio)
+		this.granularity = getGranularity(props.from, props.to, this.config.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
 		this.pixelsPerMillisecond = this.width / props.time
 		this.updateLeft()
@@ -42,7 +43,7 @@ class Domain {
 	}
 
 	positionAtDate(date: Milliseconds): Pixels {
-		return (date - props.config.from) * this.pixelsPerMillisecond
+		return (date - props.from) * this.pixelsPerMillisecond
 	}
 
 	proportionAtPosition(position: Pixels): Ratio {
@@ -50,13 +51,13 @@ class Domain {
 	}
 
 	dateAtProportion(proportion: Ratio): Milliseconds {
-		return props.config.from + (props.time * proportion)
+		return props.from + (props.time * proportion)
 	}
 
 	get fromTo(): [Milliseconds, Milliseconds] {
 		const visibleTime = this.config.visibleRatio * props.time
-		const from = props.config.from + (props.center * (props.time - visibleTime))
-		const to = props.config.from + (props.center * (props.time - visibleTime)) + visibleTime
+		const from = props.from + (props.center * (props.time - visibleTime))
+		const to = props.from + (props.center * (props.time - visibleTime)) + visibleTime
 		return [from, to]
 	}
 }

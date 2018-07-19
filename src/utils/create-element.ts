@@ -16,6 +16,7 @@ if (typeof window !== 'undefined')  {
 }
 
 const rules = {}
+// TODO add return type
 export default (name: string, className?: string, style?: string[], dynamicStyle?: string[]) => {
 	if (!className) return document.createElement(name)
 

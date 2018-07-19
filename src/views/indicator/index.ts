@@ -1,6 +1,6 @@
 import createElement from '../../utils/create-element'
 import Domain from '../../models/domain'
-import { CENTER_CHANGE, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT, Pixels } from '../../constants'
+import { CENTER_CHANGE, Pixels } from '../../constants'
 import props from '../../models/props'
 import eventBus from '../../event-bus';
 
@@ -12,13 +12,9 @@ export default class Indicator {
 	private rightWidth: Pixels
 	private offset: Pixels
 
-	constructor(private hostDomain: Domain, private targetDomain: Domain) {
-		this.width = this.hostDomain.width / this.targetDomain.width * props.viewportWidth
+	constructor(private hostDomain: Domain) {
+		this.width = this.hostDomain.width / props.domains[this.hostDomain.config.targets[0]].width * props.viewportWidth
 		if (this.width < 2) this.width = 2
-
-		let heightRatio = (this.targetDomain.height - DATE_BAR_HEIGHT) / (props.config.rowCount * EVENT_ROW_HEIGHT)
-		if (heightRatio > 1) heightRatio = 1
-		// this.height = (this.hostDomain.height) * heightRatio
 
 		this.offset = props.viewportWidth - this.width
 

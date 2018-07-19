@@ -1,28 +1,25 @@
-import { Ratio, Milliseconds } from "../constants"
-import { RawEv3nt } from "./event"
+import { Ratio } from "../constants"
 import DomainConfig from "./domain.config"
 
-export class AggregateEntry {
-	count: number
-	year: number 
-}
+// export class AggregateEntry {
+// 	count: number
+// 	year: number 
+// }
 
 export default class Config {
-	aggregate?: AggregateEntry[] = []
+	// aggregate?: AggregateEntry[] = []
 
 	center?: Ratio = .5
 
-	domains: DomainConfig[] = []
+	domains?: DomainConfig[] = []
 
-	events: RawEv3nt[] = []
-
-	from: Milliseconds
+	// from: Milliseconds
 
 	// The HTML element where the Timeline will be attached to. The element should be a
 	// block element with a width and height.
-	rootElement: HTMLElement = null
+	rootElement?: HTMLElement = null
 
-	rowCount: number
+	// rowCount: number
 
-	to: Milliseconds
+	// to: Milliseconds
 }

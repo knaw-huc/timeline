@@ -25,11 +25,13 @@ export default class MiniMap {
 
 	constructor(private domain: Domain) {
 		this.maxHeight = this.domain.height - DATE_BAR_HEIGHT
-		this.eventHeight = this.maxHeight / props.config.rowCount
+		const rowCounts = this.domain.config.targets.map(index => props.domains[index].config.orderedEvents.rowCount)
+		this.eventHeight = this.maxHeight / Math.max(...rowCounts)
 		if (this.eventHeight < 1) this.eventHeight = 1
 		if (this.domain.config.visibleRatio < 1) {
 			eventBus.register(CENTER_CHANGE_DONE, this.drawEvents)
 		}
+
 	}
 
 	render() {
@@ -40,7 +42,6 @@ export default class MiniMap {
 		this.canvas.width = props.viewportWidth
 		this.canvas.height = this.domain.height
 		this.context = this.canvas.getContext('2d')
-		this.context.fillStyle = 'rgba(180, 180, 255, 1)'
 
 		this.drawEvents()
 
@@ -50,17 +51,23 @@ export default class MiniMap {
 	private drawEvents = () => {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-		const left = this.domain.positionAtDate(this.domain.fromTo[0])
+		const [from, to] = this.domain.fromTo
+		const left = this.domain.positionAtDate(from)
 		this.canvas.style.left = `${left}px`
 
-		const [from, to] = this.domain.fromTo
-		const visibleEvents = props.config.events.filter(onVisible(from, to))
-		for (let i = 0; i < visibleEvents.length; i++) {
-			const event = new DomainEvent(visibleEvents[i], this.domain)
-			const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
-			const width = event.width < 1 ? 1 : event.width
-			this.context.fillRect(event.left - left, y, width, this.eventHeight)
-		}
+		this.domain.config.targets.forEach(targetIndex => {
+			const domain = props.domains[targetIndex]
+			const { events } = domain.config.orderedEvents
+			this.context.fillStyle = domain.color(.5)
 
+			const visibleEvents = events.filter(onVisible(from, to))
+			for (let i = 0; i < visibleEvents.length; i++) {
+				const event = new DomainEvent(visibleEvents[i], this.domain)
+				const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
+				const width = event.width < 1 ? 1 : event.width
+				this.context.fillRect(event.left - left, y, width, this.eventHeight)
+			}
+
+		})
 	}
 }

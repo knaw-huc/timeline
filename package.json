@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "",
   "main": "build/bundle.js",
   "types": "build/src/index.d.ts",
@@ -11,10 +11,12 @@
     "build": "webpack --mode production",
     "test": "jest",
     "prewatch": "rm -rf build",
+    "server:dev": "browser-sync start -s --no-open -f \"build\" \"index.html\"",
     "watch": "webpack -w --mode development"
   },
   "devDependencies": {
     "@types/jest": "^22.2.2",
+    "browser-sync": "^2.24.5",
     "jest": "^22.4.3",
     "pg": "^7.4.1",
     "ts-jest": "^22.4.2",

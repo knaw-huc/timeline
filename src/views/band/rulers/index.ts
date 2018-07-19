@@ -6,8 +6,13 @@ import { Granularity } from '../../../utils/dates'
 import props from '../../../models/props'
 import { Milliseconds } from '../../../constants';
 
-export function findClosestRulerDate(d: Milliseconds, granularity: Granularity): Milliseconds {
-	const date = new Date(d)
+export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granularity): Milliseconds {
+	if (timestamp == null || isNaN(timestamp)) {
+		console.error('[findClosestRulerDate] start timestamp is not defined')
+		return 
+	}
+
+	const date = new Date(timestamp)
 	let year = date.getFullYear()
 
 	if (granularity >= Granularity.YEAR) {
@@ -21,7 +26,7 @@ export function findClosestRulerDate(d: Milliseconds, granularity: Granularity):
 		return Date.UTC(year, date.getMonth(), date.getDate() + 1)
 	}
 
-	return d
+	return timestamp
 }
 
 export default class Rulers {
@@ -46,8 +51,8 @@ export default class Rulers {
 			]
 		)
 
-		let date = findClosestRulerDate(props.config.from, this.domain.granularity)
-		while(date < props.config.to) {
+		let date = findClosestRulerDate(props.from, this.domain.granularity)
+		while(date < props.to) {
 			this.ul.appendChild(new Ruler(date, this.domain).render())
 			date = this.domain.nextDate(date)
 		}

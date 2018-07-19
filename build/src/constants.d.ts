@@ -8,7 +8,6 @@ export declare const CENTER_CHANGE = "CENTER_CHANGE";
 export declare const CENTER_CHANGE_DONE = "CENTER_CHANGE_DONE";
 export declare type Milliseconds = number;
 export declare type Grid = [Milliseconds, Milliseconds][][];
-export declare type ComponentType = 'EVENTS' | 'MINIMAP' | 'RULERS' | 'SPARKLINE';
 export declare type Ratio = number;
 export declare type Pixels = number;
 export declare class RawSegment {
@@ -16,3 +15,5 @@ export declare class RawSegment {
     from: Milliseconds;
     to: Milliseconds;
 }
+export declare type Color = (opacity: number) => string;
+export declare const colors: Color[];

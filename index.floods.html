@@ -9,37 +9,46 @@
 		width: 100%;
 	}
 </style>
+<body>
 <div id="timeline" style="width: 100%; height: 100%"></div>
 <script src="build/bundle.js"></script>
 <script>
 	async function go() {
 		const response = await fetch('./data/floods.json')
-		const events = await response.json()
+		let events = await response.json()
+		events = events
+			.reduce((prev, curr) => {
+				if (prev.hasOwnProperty(curr.label)) prev[curr.label].push(curr)
+				else prev[curr.label] = [curr]
+				return prev
+			}, {})
+		const allEvents = Object
+			.keys(events)
+			.map(key => events[key])
+			.sort((a, b) => {
+				if (a.length > b.length) return -1
+				if (a.length < b.length) return 1
+				return 0
+			})
+			.slice(0, 20)
+
+		const domains = allEvents.map((events, index) => {
+			const heightRatio = 1 / allEvents.length
+			return {
+				events,
+				type: 'events',
+				heightRatio,
+				topOffsetRatio: heightRatio * index
+			}
+		})
+
+		console.log(domains)
+
 		const t = new Timeline.default({
-			domains: [
-				{
-					components: new Set(["EVENTS", "RULERS"]),
-					heightRatio: .75,
-					visibleRatio: .1,
-				},
-		// 		{
-		// 			components: new Set(["MINIMAP", "RULERS"]),
-		// 			hasIndicatorFor: 0,
-		// 			heightRatio: .125,
-		// 			topOffsetRatio: .75,
-		// 			visibleRatio: .25
-		// 		},
-		// 		{	
-		// 			components: new Set(["MINIMAP", "RULERS"]),
-		// 			hasIndicatorFor: 0,
-		// 			heightRatio: .125,
-		// 			topOffsetRatio: .875,
-		// 		},
-			],
-			events,
+			domains,
 			rootElement: document.getElementById('timeline'),
-		// 	sortEvents: true,
 		})
 	}
 	go()
 </script>
+</body>

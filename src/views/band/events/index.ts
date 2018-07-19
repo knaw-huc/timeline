@@ -40,10 +40,10 @@ export default class Events {
 
 		segmentsWorker(
 			{
-				events: props.config.events,
+				events: this.domain.config.orderedEvents.events,
 				center: props.center,
 				visibleRatio: this.domain.config.visibleRatio,
-				from: new Date(props.config.from).getTime(),
+				from: new Date(props.from).getTime(),
 				time: props.time
 			},
 			(segments) => {

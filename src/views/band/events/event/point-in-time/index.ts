@@ -2,11 +2,14 @@ import DomainEvent from "../../../../../models/event"
 import { EVENT_MIN_SPACE, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from "../../../../../constants"
 import createElement from '../../../../../utils/create-element'
 import props from "../../../../../models/props";
+import Domain from "../../../../../models/domain";
 
 export default class PointInTime {
-	 constructor(private event: DomainEvent, private segmentOffset: number) {}
+	constructor(private domain: Domain, private event: DomainEvent, private segmentOffset: number) {}
 
 	public render() {
+		// TODO add _ before unused parameters in tsconfig
+		this.domain
 		const li = createElement(
 			'li',
 			'pit-wrap',

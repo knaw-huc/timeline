@@ -1,46 +1,46 @@
 [
 	{
-		"title": "Abel Tasman",
+		"label": "Abel Tasman",
 		"date": -11581401600000,
 		"end_date": -9789811200000
 	},
 	{
-		"title": "Ferdinand Magellan",
+		"label": "Ferdinand Magellan",
 		"date": -15460070400000,
 		"end_date": -14159059200000
 	},
 	{
-		"title": "Christopher Columbus",
+		"label": "Christopher Columbus",
 		"date": -16351891200000,
 		"end_date": -14630457600000
 	},
 	{
-		"title": "Vasco da Gama",
+		"label": "Vasco da Gama",
 		"date": -16094073600000,
 		"end_date": -14043542400000
 	},
 	{
-		"title": "Bartolomeu Dias",
+		"label": "Bartolomeu Dias",
 		"date": -16409606400000,
 		"end_date": -14818982400000
 	},
 	{
-		"title": "Amerigo Vespucci",
+		"label": "Amerigo Vespucci",
 		"date": -16277587200000,
 		"end_date": -14448672000000
 	},
 	{
-		"title": "Meriwether Lewis",
+		"label": "Meriwether Lewis",
 		"date": -6165331200000,
 		"end_date": -5056214400000
 	},
 	{
-		"title": "William Clark",
+		"label": "William Clark",
 		"date": -6293030400000,
 		"end_date": -4144521600000
 	},
 	{
-		"title": "Jacob Roggeveen",
+		"label": "Jacob Roggeveen",
 		"date": -9811497600000,
 		"end_date": -7602595200000
 	}

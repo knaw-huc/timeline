@@ -1,9 +1,16 @@
 import { Milliseconds, Grid, Pixels, Ratio } from "../constants"
 import { RawEv3nt } from "../models/event";
 
-export type OrderedEvents = [RawEv3nt[], Milliseconds, Milliseconds, Grid, number]
+export class OrderedEvents {
+	events: RawEv3nt[] = []
+	from: Milliseconds = null
+	to: Milliseconds = null
+	grid: Grid = []
+	rowCount: number = 0
+}
+
 export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderedEvents { 
-	if (!events.length) return [[], null, null, [], null]
+	if (!events.length) return new OrderedEvents()
 	/** Keep a count the number of rows. It's returned to the main thread to construct the events bar and indicators */
 	let rowCount: number = 0
 	/**
@@ -65,7 +72,13 @@ export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRa
 		return event
 	}
 
-	return [events.map(addRow), from, to, grid, rowCount]
+	return {
+		events: events.map(addRow),
+		from,
+		to,
+		grid,
+		rowCount
+	}
 }
 
 export function eventsWorker(e: { data: { events: RawEv3nt[], orderEventsURL: string } }) {

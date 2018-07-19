@@ -18,8 +18,6 @@ export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
 export type Milliseconds = number
 export type Grid = [Milliseconds, Milliseconds][][]
 
-export type ComponentType = 'EVENTS' | 'MINIMAP' | 'RULERS' | 'SPARKLINE'
-
 /** A Ratio is a number between 0 and 1 */
 export type Ratio = number
 
@@ -30,3 +28,11 @@ export class RawSegment {
 	from: Milliseconds
 	to: Milliseconds
 }
+
+export type Color = (opacity: number) => string
+export const colors: Color[] = [
+	'rgba(211,84,0',
+	'rgba(219,10,91',
+	'rgba(31,58,147',
+	'rgba(0,128,0'
+].map(color => (opacity: number = 1) => `${color},${opacity})`)
