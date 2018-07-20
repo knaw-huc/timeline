@@ -2,14 +2,12 @@ import DomainEvent from "../../../../../models/event"
 import createElement from '../../../../../utils/create-element'
 import { EVENT_ROW_HEIGHT } from "../../../../../constants"
 import props from "../../../../../models/props"
-import Domain from "../../../../../models/domain";
+import Domain from "../../../../../models/domain"
 
 export default class Interval {
 	 constructor(private domain: Domain, private event: DomainEvent, private segmentOffset: number) {}
 
 	public render() {
-		// const backgroundColor = this.event.row % 2 === 0 ? 'rgb(235, 235, 255)' : 'rgb(215, 215, 255)'
-
 		const li = createElement(
 			'li',
 			'interval-wrap',
@@ -28,7 +26,6 @@ export default class Interval {
 				`width: ${this.event.width}px`,
 			]
 		)
-		// li.setAttribute('title', `${this.event.title}\n${this.event.date.toDateString()}\n${this.event.endDate.toDateString()}`)
 
 		const title = createElement(
 			'div',

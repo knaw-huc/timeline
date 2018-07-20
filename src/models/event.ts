@@ -16,6 +16,7 @@ export class RawEv3nt {
 	label?: string
 	row?: number
 	wikidata_identifier?: string
+	// view?: any
 }
 
 class DomainEvent extends RawEv3nt {

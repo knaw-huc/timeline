@@ -55,7 +55,8 @@ export default class Segment {
 		])
 
 		for (let i = 0; i < this.rawEvents.length; i++) {
-			const event = new DomainEvent(this.rawEvents[i], this.domain)
+			const rawEvent = this.rawEvents[i]
+			const event = new DomainEvent(rawEvent, this.domain)
 			const EventClass = event.isInterval() ? Interval : PointInTime
 			const view = new EventClass(this.domain, event, this.left)
 			ul.appendChild(view.render())

@@ -1,6 +1,7 @@
 import { Ratio, Milliseconds, Pixels } from "../constants";
 import Config from "./config";
 import Domain from "./domain";
+import { RawEv3nt } from "./event";
 export declare class Props {
     private readonly defaultCenter;
     config: Config;
@@ -10,6 +11,7 @@ export declare class Props {
     to: Milliseconds;
     viewportHeight: Pixels;
     viewportWidth: Pixels;
+    visibleEvents: RawEv3nt[];
     init(config: Config): void;
     private _center;
     center: Ratio;

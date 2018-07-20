@@ -19,6 +19,9 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents }
 // TODO remove topOffsetRatio
 // TODO make it possible to have only minimap bands (see index.floods.html)
 // TODO add check if `type` prop is present in config
+// TODO make indicator draggable
+// TODO all visible from/to is the same for all domains with type === 'events', so move to props
+// TODO remove segments divs
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 

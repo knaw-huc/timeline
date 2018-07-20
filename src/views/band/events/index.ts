@@ -49,12 +49,12 @@ export default class Events {
 			(segments) => {
 				segments.forEach(s => {
 					const eventSegment = new EventSegment(this.domain, s)
-					this.eventSegments.push(eventSegment)
 					eventSegmentsWrap.appendChild(eventSegment.render())
+					this.eventSegments.push(eventSegment)
 
 					const rulerSegment = new RulerSegment(this.domain, s)
-					this.rulerSegments.push(rulerSegment)
 					rulerSegmentsWrap.appendChild(rulerSegment.render())
+					this.rulerSegments.push(rulerSegment)
 				})
 				this.renderChildren()
 

@@ -2,7 +2,7 @@ import { getGranularity, Granularity } from '../utils/dates'
 import { subsequentDate } from '../utils/dates'
 import props from './props'
 import DomainConfig from './domain.config'
-import { Pixels, Milliseconds, Ratio, Color } from '../constants';
+import { Pixels, Milliseconds, Ratio, Color } from '../constants'
 
 class Domain {
 	// Level of detail (ie century, year, month, week, day, etc)

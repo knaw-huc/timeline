@@ -5,7 +5,7 @@ import DomainEvent, { RawEv3nt } from '../../../models/event'
 import { DATE_BAR_HEIGHT, CENTER_CHANGE_DONE } from '../../../constants';
 import eventBus from '../../../event-bus';
 
-const onVisible = (from, to) => (e: RawEv3nt) => {
+export const onVisible = (from, to) => (e: RawEv3nt) => {
 	const eventFrom = e.date_min || e.date
 	let eventTo = e.end_date_max || e.end_date
 	if (eventTo == null) eventTo = eventFrom
@@ -56,9 +56,9 @@ export default class MiniMap {
 		this.canvas.style.left = `${left}px`
 
 		this.domain.config.targets.forEach(targetIndex => {
-			const domain = props.domains[targetIndex]
-			const { events } = domain.config.orderedEvents
-			this.context.fillStyle = domain.color(.5)
+			const targetDomain = props.domains[targetIndex]
+			const { events } = targetDomain.config.orderedEvents
+			this.context.fillStyle = targetDomain.color(.5)
 
 			const visibleEvents = events.filter(onVisible(from, to))
 			for (let i = 0; i < visibleEvents.length; i++) {
