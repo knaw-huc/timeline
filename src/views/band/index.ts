@@ -6,6 +6,7 @@ import MiniMap from './minimap'
 import EventsBand from './events'
 import eventBus from '../../event-bus';
 import Rulers from './rulers';
+import animator from '../../animator';
 
 export default class Band {
 	private dragStart: number
@@ -82,7 +83,8 @@ export default class Band {
 
 	private onDblClick = (ev) => {
 		const rootLeft = this.rootElement.getBoundingClientRect().left
-		const proportion = this.domain.proportionAtPosition(ev.clientX - rootLeft)
-		props.center = proportion
+		const nextCenter = this.domain.proportionAtPosition(ev.clientX - rootLeft)
+		animator.goTo(nextCenter)
+		// props.center = proportion
 	}
 }

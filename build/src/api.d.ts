@@ -1,4 +1,4 @@
-import Animator from './animator';
+import { Animator } from './animator';
 import { Ratio, Milliseconds } from './constants';
 import Band from './views/band';
 export interface OnChangeFunctionProps {
