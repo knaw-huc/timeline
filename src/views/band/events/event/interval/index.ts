@@ -5,7 +5,7 @@ import props from "../../../../../models/props"
 import Domain from "../../../../../models/domain"
 
 export default class Interval {
-	 constructor(private domain: Domain, private event: DomainEvent, private segmentOffset: number) {}
+	 constructor(private domain: Domain, private event: DomainEvent) {}
 
 	public render() {
 		const li = createElement(
@@ -21,7 +21,7 @@ export default class Interval {
 			],
 			[
 				`background-color: ${this.domain.color(.25)}`,
-				`left: ${this.event.left - this.segmentOffset}px`,
+				`left: ${this.event.left}px`,
 				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 				`width: ${this.event.width}px`,
 			]

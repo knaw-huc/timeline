@@ -2,12 +2,10 @@ import Domain from '../../../models/domain';
 import { RawSegment } from '../../../constants';
 export default class Segment {
     private domain;
-    rendered: boolean;
     private rootElement;
-    private left;
+    rendered: boolean;
     private from;
     private to;
-    constructor(domain: Domain, segmentData: RawSegment);
-    render(): HTMLElement;
+    constructor(domain: Domain, segmentData: RawSegment, rootElement: HTMLDivElement);
     renderChildren: () => void;
 }

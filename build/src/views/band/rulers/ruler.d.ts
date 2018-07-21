@@ -3,7 +3,6 @@ import { Milliseconds } from '../../../constants';
 export default class Ruler {
     private date;
     private domain;
-    private offset;
-    constructor(date: Milliseconds, domain: Domain, offset?: number);
+    constructor(date: Milliseconds, domain: Domain);
     render(): any;
 }

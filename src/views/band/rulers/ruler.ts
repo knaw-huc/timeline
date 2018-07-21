@@ -35,7 +35,7 @@ const labelBody = (d: Milliseconds, granularity: Granularity) => {
 }
 
 export default class Ruler {
-	constructor(private date: Milliseconds, private domain: Domain, private offset: number = 0) {}
+	constructor(private date: Milliseconds, private domain: Domain) {}
 
 	public render() {
 		const li = createElement(
@@ -50,7 +50,10 @@ export default class Ruler {
 				'transition: all 1s cubic-bezier(.25,.8,.25,1)',
 			],
 			[
-				`left: ${this.domain.positionAtDate(this.date) - this.offset}px`,
+				// TODO Optimize. We don't have to calc the position at date. Just calc the first one
+				// 		and the last one and interpolate everything in the middle
+				//		Plus. We don't have to calc per band. Just copy from other band.
+				`left: ${this.domain.positionAtDate(this.date)}px`,
 			]
 		)
 

@@ -4,7 +4,7 @@ import EventSegment from './event-segment'
 import RulerSegment from './ruler-segment'
 import Domain from '../../../models/domain'
 import segmentsWorker from '../../../utils/segments.worker'
-import { DATE_BAR_HEIGHT } from '../../../constants';
+import { DATE_BAR_HEIGHT } from '../../../constants'
 
 export default class Events {
 	private eventSegments: EventSegment[] = []
@@ -17,7 +17,7 @@ export default class Events {
 
 		const rulerSegmentsWrap = createElement(
 			'div',
-			'ruler-segments',
+			'rulers',
 			[
 				'position: absolute',
 			],
@@ -27,10 +27,11 @@ export default class Events {
 		)
 
 		const eventSegmentsWrap = createElement(
-			'div',
-			'event-segments',
+			'ul',
+			'events',
 			[
 				`bottom: ${DATE_BAR_HEIGHT}px`,
+				`list-style: none`,
 				'position: absolute',
 			],
 			[
@@ -48,12 +49,10 @@ export default class Events {
 			},
 			(segments) => {
 				segments.forEach(s => {
-					const eventSegment = new EventSegment(this.domain, s)
-					eventSegmentsWrap.appendChild(eventSegment.render())
+					const eventSegment = new EventSegment(this.domain, s, eventSegmentsWrap)
 					this.eventSegments.push(eventSegment)
 
-					const rulerSegment = new RulerSegment(this.domain, s)
-					rulerSegmentsWrap.appendChild(rulerSegment.render())
+					const rulerSegment = new RulerSegment(this.domain, s, rulerSegmentsWrap)
 					this.rulerSegments.push(rulerSegment)
 				})
 				this.renderChildren()

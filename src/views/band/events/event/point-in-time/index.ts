@@ -5,7 +5,7 @@ import props from "../../../../../models/props";
 import Domain from "../../../../../models/domain";
 
 export default class PointInTime {
-	constructor(private domain: Domain, private event: DomainEvent, private segmentOffset: number) {}
+	constructor(private domain: Domain, private event: DomainEvent) {}
 
 	public render() {
 		// TODO add _ before unused parameters in tsconfig
@@ -24,7 +24,7 @@ export default class PointInTime {
 				`z-index: 1`,
 			],
 			[
-				`left: ${this.event.left - this.segmentOffset}px`,
+				`left: ${this.event.left}px`,
 				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 			]
 		)
