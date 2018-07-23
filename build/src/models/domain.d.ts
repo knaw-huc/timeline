@@ -5,9 +5,9 @@ declare class Domain {
     config: DomainConfig;
     color: Color;
     granularity: Granularity;
-    height: number;
-    pixelsPerMillisecond: number;
-    width: number;
+    height: Pixels;
+    pixelsPerMillisecond: Pixels;
+    width: Pixels;
     private _left;
     left: number;
     nextDate: (d: Milliseconds) => Milliseconds;

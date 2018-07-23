@@ -9,14 +9,14 @@ class Domain {
 	granularity: Granularity
 
 	// Total height of the domain
-	height: number
+	height: Pixels
 
 	// The amount of pixels taken by one day. Metric used for calculating 
 	// the x-position of an event or ruler on the timeline.
-	pixelsPerMillisecond: number
+	pixelsPerMillisecond: Pixels
 
 	// Total width of the domain
-	width: number
+	width: Pixels
 
 	private _left: Pixels
 	get left() { return this._left }

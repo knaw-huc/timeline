@@ -1,7 +1,7 @@
 import props from './models/props'
 import Config from './models/config'
 import Band from './views/band'
-import Indicator from './views/indicator'
+// import Indicator from './views/indicator'
 import createElement from './utils/create-element'
 import { debounce } from './utils/index'
 import { orderEvents, OrderedEvents } from './utils/events.worker'
@@ -103,17 +103,13 @@ export default class Timeline extends Api {
 
 	private renderIndicators(): void {
 		this.bands
-			// .filter(band => band.domain.config.type === 'minimap' && band.domain.config.)
 			.map(band => new MiniMap(band.domain))
 			.forEach(this.appendToWrapper)
-		// const minimap = 
-		// this.appendToWrapper(minimap)
-		// this.rootElement.appendChild(minimap.render())
 
-		this.bands
-			.filter(band => band.domain.config.targets != null)
-			.map(band => new Indicator(band.domain))
-			.forEach(this.appendToWrapper)
+		// this.bands
+		// 	.filter(band => band.domain.config.targets != null)
+		// 	.map(band => new Indicator(band.domain))
+		// 	.forEach(this.appendToWrapper)
 	}
 
 	private renderLabels() {

@@ -57,6 +57,8 @@ export default class MiniMap extends Animatable {
 		this.ctx.beginPath()
 
 		if (this.domain.config.type === 'minimap') {
+			this.drawIndicators()
+
 			this.domain.config.targets.forEach(targetIndex => {
 				const targetDomain = props.domains[targetIndex]
 				this.ctx.fillStyle = targetDomain.color(.5)
@@ -72,7 +74,7 @@ export default class MiniMap extends Animatable {
 			})
 		}
 
-		this.ctx.strokeStyle = `rgb(235, 235, 235)`
+		this.ctx.strokeStyle = `rgb(200, 200, 200)`
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
 		let date = findClosestRulerDate(from, this.domain.granularity)
 		while(date < to) {
@@ -86,5 +88,16 @@ export default class MiniMap extends Animatable {
 		this.ctx.stroke()
 
 		this.ctx.closePath()
+	}
+
+	private drawIndicators() {
+		this.ctx.fillStyle = `rgba(0, 0, 0, .1)`
+		const [eventsFrom, eventsTo] = props.domains[this.domain.config.targets[0]].fromTo
+
+		const x1 = this.domain.positionAtDate(eventsFrom) + this.domain.left
+		this.ctx.fillRect(0, 0, x1, this.domain.height)
+
+		const x0 = this.domain.positionAtDate(eventsTo) + this.domain.left
+		this.ctx.fillRect(x0, 0, props.viewportWidth, this.domain.height)
 	}
 }
