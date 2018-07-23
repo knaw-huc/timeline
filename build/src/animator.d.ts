@@ -10,6 +10,8 @@ export declare class Animator {
     private direction;
     private prevTimestamp;
     private elapsedTimeTotal;
+    private updaters;
+    registerUpdate(update: any): void;
     private animate;
     private centerChangeDone();
     accelerate(): number;

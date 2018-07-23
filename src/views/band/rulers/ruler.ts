@@ -14,7 +14,7 @@ const getWeekNumber = (date: Date) => {
   return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7)
 };
 
-const labelBody = (d: Milliseconds, granularity: Granularity) => {
+export const labelBody = (d: Milliseconds, granularity: Granularity) => {
 	const date = new Date(d)
 	if (granularity >= Granularity.YEAR) {
 		return date.getFullYear().toString()

@@ -2,10 +2,8 @@ import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import { CENTER_CHANGE } from '../../constants'
-import MiniMap from './minimap'
 import EventsBand from './events'
 import eventBus from '../../event-bus';
-import Rulers from './rulers';
 import animator from '../../animator';
 
 export default class Band {
@@ -23,8 +21,8 @@ export default class Band {
 			'div',
 			'band-wrap',
 			[
-				'background-color: white',
 				'position: absolute',
+				'z-index: 1',
 			],
 			[
 				`box-shadow: inset 0 6px 20px ${this.domain.color != null ? this.domain.color(.1) : '#eee'}`,
@@ -35,14 +33,9 @@ export default class Band {
 			]
 		)
 
-		if (this.domain.config.type === 'minimap') {
-			if (this.domain.config.rulers) {
-				this.rootElement.appendChild(new Rulers(this.domain).render())
-			}
+		// if (this.domain.config.type === 'minimap') {
 
-			const minimap = new MiniMap(this.domain)
-			this.rootElement.appendChild(minimap.render())
-		}
+		// }
 
 		if (this.domain.config.type === 'events') {
 			this.eventsBand = new EventsBand(this.domain)

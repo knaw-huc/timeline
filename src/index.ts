@@ -8,6 +8,7 @@ import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import eventBus from './event-bus'
 import { CENTER_CHANGE_DONE } from './constants';
+import MiniMap from './views/band/minimap';
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents }
 
@@ -101,6 +102,14 @@ export default class Timeline extends Api {
 	}
 
 	private renderIndicators(): void {
+		this.bands
+			// .filter(band => band.domain.config.type === 'minimap' && band.domain.config.)
+			.map(band => new MiniMap(band.domain))
+			.forEach(this.appendToWrapper)
+		// const minimap = 
+		// this.appendToWrapper(minimap)
+		// this.rootElement.appendChild(minimap.render())
+
 		this.bands
 			.filter(band => band.domain.config.targets != null)
 			.map(band => new Indicator(band.domain))

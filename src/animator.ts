@@ -24,6 +24,12 @@ export class Animator {
 	// A counter to throttle the CENTER_CHANGE_DONE event
 	private elapsedTimeTotal: Milliseconds = 0
 
+	private updaters: any[] = []
+
+	registerUpdate(update) {
+		this.updaters.push(update)
+	}
+
 	private animate = (timestamp) => {
 		// time elapsed since previous frame
 		const elapsedTime = this.prevTimestamp == null ? 0 : timestamp - this.prevTimestamp
@@ -52,6 +58,7 @@ export class Animator {
 		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.centerChangeDone()
 
 		if (this.isPlaying() && props.center > 0 && props.center < 1) {
+			this.updaters.forEach(update => update())
 			this.prevTimestamp = timestamp
 			requestAnimationFrame(this.animate)
 		}
@@ -80,7 +87,6 @@ export class Animator {
 
 	goTo(nextCenter: Ratio) {
 		this.marker = nextCenter
-		this.multiplier = 16
 		if (nextCenter > props.center) this.playForward()
 		else this.playBackward()
 	}

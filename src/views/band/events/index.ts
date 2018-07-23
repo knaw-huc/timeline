@@ -1,30 +1,30 @@
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
 import EventSegment from './event-segment'
-import RulerSegment from './ruler-segment'
+// import RulerSegment from './ruler-segment'
 import Domain from '../../../models/domain'
 import segmentsWorker from '../../../utils/segments.worker'
 import { DATE_BAR_HEIGHT } from '../../../constants'
 
 export default class Events {
 	private eventSegments: EventSegment[] = []
-	private rulerSegments: RulerSegment[] = []
+	// private rulerSegments: RulerSegment[] = []
 
 	constructor(private domain: Domain) {}
 
 	render() {
 		const eventsBand = createElement('div', 'events-band')
 
-		const rulerSegmentsWrap = createElement(
-			'div',
-			'rulers',
-			[
-				'position: absolute',
-			],
-			[
-				`height: ${this.domain.height}px`,
-			]
-		)
+		// const rulerSegmentsWrap = createElement(
+		// 	'div',
+		// 	'rulers',
+		// 	[
+		// 		'position: absolute',
+		// 	],
+		// 	[
+		// 		`height: ${this.domain.height}px`,
+		// 	]
+		// )
 
 		const eventSegmentsWrap = createElement(
 			'ul',
@@ -52,13 +52,13 @@ export default class Events {
 					const eventSegment = new EventSegment(this.domain, s, eventSegmentsWrap)
 					this.eventSegments.push(eventSegment)
 
-					const rulerSegment = new RulerSegment(this.domain, s, rulerSegmentsWrap)
-					this.rulerSegments.push(rulerSegment)
+					// const rulerSegment = new RulerSegment(this.domain, s, rulerSegmentsWrap)
+					// this.rulerSegments.push(rulerSegment)
 				})
 				this.renderChildren()
 
 				eventsBand.appendChild(eventSegmentsWrap)
-				eventsBand.appendChild(rulerSegmentsWrap)
+				// eventsBand.appendChild(rulerSegmentsWrap)
 			}
 		)
 
@@ -71,16 +71,16 @@ export default class Events {
 
 		// Render the visible segment first
 		this.eventSegments[index].renderChildren()
-		this.rulerSegments[index].renderChildren()
+		// this.rulerSegments[index].renderChildren()
 
 		// Render the subsequent segments
 		for (let i = index - 2; i <= index + 2; i++) {
 			const eventSegment = this.eventSegments[i]
-			const rulerSegment = this.rulerSegments[i]
+			// const rulerSegment = this.rulerSegments[i]
 			if (i >= 0 && i < this.eventSegments.length) {
 				if (i !== index) {
 					eventSegment.renderChildren()
-					rulerSegment.renderChildren()
+					// rulerSegment.renderChildren()
 				}
 			} 
 		}

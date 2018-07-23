@@ -4,7 +4,7 @@ export declare const onVisible: (from: any, to: any) => (e: RawEv3nt) => boolean
 export default class MiniMap {
     private domain;
     private canvas;
-    private context;
+    private ctx;
     private maxHeight;
     private eventHeight;
     constructor(domain: Domain);
