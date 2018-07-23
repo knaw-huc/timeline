@@ -37,7 +37,7 @@ export class Animator {
 			} else {
 				const timeRemaining = this.goToDuration - this.elapsedTimeTotal
 				const centerDelta = Math.abs(this.marker - props.center) / (timeRemaining / elapsedTime)
-				if (timeRemaining < 10) {
+				if (timeRemaining < elapsedTime) {
 					props.center = this.marker
 					this.stop()
 					return
