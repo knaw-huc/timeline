@@ -1,5 +1,6 @@
 import Domain from '../../models/domain';
-export default class Indicator {
+import Animatable from '../animatable';
+export default class Indicator extends Animatable {
     private hostDomain;
     private leftOfIndicator;
     private rightOfIndicator;
@@ -9,7 +10,7 @@ export default class Indicator {
     private offset;
     constructor(hostDomain: Domain);
     render(): any;
-    private handleCenterChange;
+    update: () => void;
     private nextLeftWidth();
     private nextRightWidth();
     private leftWidthScale();

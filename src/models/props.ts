@@ -1,10 +1,11 @@
-import { CENTER_CHANGE, CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels, colors } from "../constants"
+import { CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels, colors } from "../constants"
 import Config from "./config"
-import { debounce } from "../utils"
+// import { debounce } from "../utils"
 import Domain from "./domain"
 import DomainConfig from "./domain.config";
 import { RawEv3nt } from "./event";
-import { onVisible } from "../views/band/minimap";
+// import { onVisible } from "../views/band/minimap";
+import { debounce, onVisible } from "../utils";
 
 /**
  * Create a range from 0 up to, but not including n
@@ -81,17 +82,6 @@ export class Props {
 		// in this class, so keep it last (after viewport size, from, to, time, etc are set)
 		const indices = selectRandom(createRange(colors.length), this.config.domains.filter(d => d.type === 'events').length)
 		this.domains = this.config.domains.map((d, i) => new Domain(d, colors[indices[i]]))
-
-		// Listen to center change event in order to set the visibleEvents
-		document.addEventListener(CENTER_CHANGE_DONE, () => {
-			this.visibleEvents = this.domains
-				.filter(d => d.config.type === 'events')
-				.reduce((prev, curr) => {
-					const [from, to] = curr.fromTo
-					return prev.concat(curr.config.orderedEvents.events.filter(onVisible(from, to)))
-				}, [])
-			// TODO update event label if not in view (but rest of the event is)
-		})
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */
@@ -102,8 +92,6 @@ export class Props {
 		else if (n < 0) this._center = 0
 		else if (n > 1) this._center = 1
 		else this._center = n
-
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE, { detail: n }))
 		this.centerChangeDone()
 	}
 
@@ -116,7 +104,20 @@ export class Props {
 		this.viewportHeight = nextHeight
 	}
 
-	private centerChangeDone = debounce(() => document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE)), 300)
+	// TODO update event label if not in view (but rest of the event is)
+	calculateVisibleEvents() {
+		const [from, to] = this.domains.find(d => d.config.type === 'events').fromTo
+		this.visibleEvents = this.domains
+			.filter(d => d.config.type === 'events')
+			.reduce((prev, curr) => {
+				return prev.concat(curr.config.orderedEvents.events.filter(onVisible(from, to)))
+			}, [])
+	}
+
+	private centerChangeDone = debounce(() => {
+		this.calculateVisibleEvents()
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
+	}, 300)
 }
 
 export default new Props()

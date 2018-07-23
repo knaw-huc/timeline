@@ -10,61 +10,61 @@
 	}
 </style>
 <body>
-<div id="timeline" style="width: 100%; height: 100%"></div>
-<script src="build/bundle.js"></script>
-<script>
-	async function go() {
-		const responseVOC = await fetch('./data.json')
-		const eventsVOC = await responseVOC.json()
+	<div id="timeline" style="width: 100%; height: 100%"></div>
+	<script src="build/bundle.js"></script>
+	<script>
+		async function go() {
+			const responseVOC = await fetch('./data.json')
+			const eventsVOC = await responseVOC.json()
 
-		const responsePhilosophy = await fetch('./data/political-philosophy.json')
-		const eventsPhilosophy = await responsePhilosophy.json()
+			const responsePhilosophy = await fetch('./data/political-philosophy.json')
+			const eventsPhilosophy = await responsePhilosophy.json()
 
-		const responseExplorers = await fetch('./data/explorers.json')
-		const eventsExplorers = await responseExplorers.json()
+			const responseExplorers = await fetch('./data/explorers.json')
+			const eventsExplorers = await responseExplorers.json()
 
-		const t = new Timeline.default({
-			domains: [
-				{
-					events: eventsVOC,
-					heightRatio: .30,
-					label: 'VOC voyages',
-					type: 'events',
-					visibleRatio: .005,
-				},
-				{
-					events: eventsPhilosophy,
-					heightRatio: .30,
-					label: 'political philosophers',
-					topOffsetRatio: .30,
-					type: 'events',
-					visibleRatio: .005,
-				},
-				{
-					events: eventsExplorers,
-					heightRatio: .30,
-					label: 'explorers',
-					topOffsetRatio: .60,
-					type: 'events',
-					visibleRatio: .005,
-				},
-				{
-					targets: [0, 1, 2],
-					heightRatio: .05,
-					topOffsetRatio: .90,
-					type: 'minimap',
-					visibleRatio: .25
-				},
-				{	
-					targets: [0, 1, 2],
-					heightRatio: .05,
-					topOffsetRatio: .95,
-					type: 'minimap'
-				},
-			],
-			rootElement: document.getElementById('timeline'),
-		})
-	}
-	go()
-</script>
+			const t = new Timeline.default({
+				domains: [
+					{
+						events: eventsVOC,
+						heightRatio: .30,
+						label: 'VOC voyages',
+						type: 'events',
+						visibleRatio: .005,
+					},
+					{
+						events: eventsPhilosophy,
+						heightRatio: .30,
+						label: 'political philosophers',
+						topOffsetRatio: .30,
+						type: 'events',
+						visibleRatio: .005,
+					},
+					{
+						events: eventsExplorers,
+						heightRatio: .30,
+						label: 'explorers',
+						topOffsetRatio: .60,
+						type: 'events',
+						visibleRatio: .005,
+					},
+					{
+						targets: [0, 1, 2],
+						heightRatio: .05,
+						topOffsetRatio: .90,
+						type: 'minimap',
+						visibleRatio: .25
+					},
+					{	
+						targets: [0, 1, 2],
+						heightRatio: .05,
+						topOffsetRatio: .95,
+						type: 'minimap'
+					},
+				],
+				rootElement: document.getElementById('timeline'),
+			})
+		}
+		go()
+	</script>
 </body>

@@ -1,10 +1,10 @@
 import createElement from '../../utils/create-element'
 import Domain from '../../models/domain'
-import { CENTER_CHANGE, Pixels } from '../../constants'
+import { Pixels } from '../../constants'
 import props from '../../models/props'
-import eventBus from '../../event-bus';
+import Animatable from '../animatable';
 
-export default class Indicator {
+export default class Indicator extends Animatable {
 	private leftOfIndicator: HTMLElement
 	private rightOfIndicator: HTMLElement
 	private width: Pixels
@@ -13,6 +13,9 @@ export default class Indicator {
 	private offset: Pixels
 
 	constructor(private hostDomain: Domain) {
+		super()
+		this.register()
+
 		this.width = this.hostDomain.width / props.domains[this.hostDomain.config.targets[0]].width * props.viewportWidth
 		if (this.width < 2) this.width = 2
 
@@ -20,11 +23,9 @@ export default class Indicator {
 
 		this.leftWidth = this.nextLeftWidth()
 		this.rightWidth = this.nextRightWidth()
-
-		eventBus.register(CENTER_CHANGE, this.handleCenterChange)
 	}
 
-	public render() {
+	render() {
 		const wrapper = createElement(
 			'div',
 			'indicator-wrap',
@@ -77,7 +78,7 @@ export default class Indicator {
 		return wrapper
 	}
 	
-	private handleCenterChange = (e) => {
+	update = () => {
 		this.leftOfIndicator.style.transform = `scaleX(${this.leftWidthScale()})`
 		this.rightOfIndicator.style.transform = `scaleX(${this.rightWidthScale()})`
 	}

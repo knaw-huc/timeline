@@ -1,7 +1,6 @@
 import Domain from '../../../models/domain';
-import { RawEv3nt } from '../../../models/event';
-export declare const onVisible: (from: any, to: any) => (e: RawEv3nt) => boolean;
-export default class MiniMap {
+import Animatable from '../../animatable';
+export default class MiniMap extends Animatable {
     private domain;
     private canvas;
     private ctx;
@@ -9,5 +8,5 @@ export default class MiniMap {
     private eventHeight;
     constructor(domain: Domain);
     render(): HTMLCanvasElement;
-    private drawEvents;
+    update: () => void;
 }

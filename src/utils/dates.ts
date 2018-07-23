@@ -123,3 +123,34 @@ export function byDate(a: RawEv3nt, b: RawEv3nt) {
 
 	return 0
 }
+
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+const getWeekNumber = (date: Date) => {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7)
+};
+
+export const labelBody = (d: Milliseconds, granularity: Granularity) => {
+	const date = new Date(d)
+	if (granularity >= Granularity.YEAR) {
+		return date.getFullYear().toString()
+	} else if (granularity === Granularity.MONTH) {
+		let body = months[date.getMonth()]
+		if (date.getMonth() === 0) body = `${date.getFullYear().toString()}, ${body}`
+		return body
+	} else if (granularity === Granularity.WEEK) {
+		return `${months[date.getMonth()]}<br />week ${getWeekNumber(date)}`
+	} else if (granularity === Granularity.DAY) {
+		let body = days[date.getDay()]
+		body = `${body}<br />${months[date.getMonth()]} ${date.getDate()}`
+		if (date.getMonth() === 0 && date.getDate() === 1) body = `${body}, ${date.getFullYear().toString()}`
+		return body
+	} else if (granularity === Granularity.HOUR) {
+		return 'NOT IMPLEMENTED'
+	}
+}

@@ -12,7 +12,6 @@ export const EVENT_ROW_HEIGHT = 20
 export const DATE_BAR_HEIGHT = EVENT_ROW_HEIGHT 
 export const RULER_LABELS_HEIGHT = 60
 
-export const CENTER_CHANGE = 'CENTER_CHANGE'
 export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
 
 export type Milliseconds = number

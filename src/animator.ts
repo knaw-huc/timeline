@@ -1,5 +1,5 @@
 import props from "./models/props";
-import { CENTER_CHANGE, Milliseconds, CENTER_CHANGE_DONE, Ratio } from "./constants";
+import { Milliseconds, Ratio } from "./constants";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -10,10 +10,12 @@ enum Direction {
 
 export class Animator {
 	private readonly goToDuration: Milliseconds = 300
-	private readonly elapsedTimeThreshold: Milliseconds = 2000
 	private readonly interval: number = .00001
 	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
 
+	// A marker is set when animating/navigating to a point on the timeline
+	// When the marker is set to .5, the timeline will animate in `goToDuration`
+	// time to center = .5
 	private marker: Ratio
 
 	private multiplier: Multiplier = 1
@@ -21,21 +23,23 @@ export class Animator {
 	private direction: Direction = Direction.Stop
 	// Timestamp of the prev animation frame
 	private prevTimestamp: Milliseconds
-	// A counter to throttle the CENTER_CHANGE_DONE event
+
+	// Total time elapsed since start of animation. This reference is kept
+	// to calculate the remaining time when animating to a marker
 	private elapsedTimeTotal: Milliseconds = 0
 
 	private updaters: any[] = []
 
-	registerUpdate(update) {
+	registerUpdater(update) {
 		this.updaters.push(update)
 	}
 
-	private animate = (timestamp) => {
+	animate = (timestamp) => {
 		// time elapsed since previous frame
 		const elapsedTime = this.prevTimestamp == null ? 0 : timestamp - this.prevTimestamp
 
 		// TODO find out why timestamp can be 0
-		if (elapsedTime > 0) {
+		if (elapsedTime > 0 || this.prevTimestamp == null) {
 			// If there is no marker, use the multiplier to determine speed
 			if (this.marker == null) {
 				props.center = props.center + (this.interval * this.multiplier * this.direction)
@@ -46,30 +50,22 @@ export class Animator {
 				if (timeRemaining < elapsedTime) {
 					props.center = this.marker
 					this.stop()
-					return
 				}
 				else props.center = props.center + (centerDelta * this.direction)
 			}
 
-			document.dispatchEvent(new CustomEvent(CENTER_CHANGE))
+			this.update()
 		}
 
 		this.elapsedTimeTotal += elapsedTime
-		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.centerChangeDone()
 
 		if (this.isPlaying() && props.center > 0 && props.center < 1) {
-			this.updaters.forEach(update => update())
 			this.prevTimestamp = timestamp
 			requestAnimationFrame(this.animate)
 		}
 	}
 
-	private centerChangeDone() {
-		this.marker = null
-		this.prevTimestamp = null
-		this.elapsedTimeTotal = 0
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
-	}
+	private update = () => this.updaters.forEach(update => update())
 
 	accelerate(): number {
 		const index = this.multipliers.indexOf(this.multiplier)
@@ -125,7 +121,9 @@ export class Animator {
 
 	stop() {
 		this.direction = Direction.Stop
-		this.centerChangeDone()
+		this.marker = null
+		this.prevTimestamp = null
+		this.elapsedTimeTotal = 0
 	}
 
 	toggle() {

@@ -1,30 +1,21 @@
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
 import EventSegment from './event-segment'
-// import RulerSegment from './ruler-segment'
 import Domain from '../../../models/domain'
 import segmentsWorker from '../../../utils/segments.worker'
 import { DATE_BAR_HEIGHT } from '../../../constants'
+import Animatable from '../../animatable';
 
-export default class Events {
+export default class Events extends Animatable {
 	private eventSegments: EventSegment[] = []
-	// private rulerSegments: RulerSegment[] = []
 
-	constructor(private domain: Domain) {}
+	constructor(private domain: Domain) {
+		super()
+		this.register()
+	}
 
 	render() {
 		const eventsBand = createElement('div', 'events-band')
-
-		// const rulerSegmentsWrap = createElement(
-		// 	'div',
-		// 	'rulers',
-		// 	[
-		// 		'position: absolute',
-		// 	],
-		// 	[
-		// 		`height: ${this.domain.height}px`,
-		// 	]
-		// )
 
 		const eventSegmentsWrap = createElement(
 			'ul',
@@ -39,6 +30,7 @@ export default class Events {
 			]
 		)
 
+		// TODO Move to server if there is a server. Use config.orderedEvents
 		segmentsWorker(
 			{
 				events: this.domain.config.orderedEvents.events,
@@ -51,37 +43,28 @@ export default class Events {
 				segments.forEach(s => {
 					const eventSegment = new EventSegment(this.domain, s, eventSegmentsWrap)
 					this.eventSegments.push(eventSegment)
-
-					// const rulerSegment = new RulerSegment(this.domain, s, rulerSegmentsWrap)
-					// this.rulerSegments.push(rulerSegment)
 				})
-				this.renderChildren()
+				this.update()
 
 				eventsBand.appendChild(eventSegmentsWrap)
-				// eventsBand.appendChild(rulerSegmentsWrap)
 			}
 		)
 
 		return eventsBand
 	}
 
-	renderChildren() {
+	update = () => {
 		// Find the index of the visible segment, which is located at props.center
 		let index = Math.floor((this.eventSegments.length - 1) * props.center)
 
 		// Render the visible segment first
 		this.eventSegments[index].renderChildren()
-		// this.rulerSegments[index].renderChildren()
 
 		// Render the subsequent segments
 		for (let i = index - 2; i <= index + 2; i++) {
 			const eventSegment = this.eventSegments[i]
-			// const rulerSegment = this.rulerSegments[i]
 			if (i >= 0 && i < this.eventSegments.length) {
-				if (i !== index) {
-					eventSegment.renderChildren()
-					// rulerSegment.renderChildren()
-				}
+				if (i !== index) eventSegment.renderChildren()
 			} 
 		}
 	}

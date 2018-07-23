@@ -1,19 +1,20 @@
 import Domain from '../../models/domain'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
-import { CENTER_CHANGE } from '../../constants'
 import EventsBand from './events'
-import eventBus from '../../event-bus';
-import animator from '../../animator';
+import eventBus from '../../event-bus'
+import animator from '../../animator'
+import Animatable from '../animatable'
 
-export default class Band {
+export default class Band extends Animatable {
 	private dragStart: number
 	private dragOffset: number
 	private rootElement: HTMLElement
 	private eventsBand: EventsBand
 
 	constructor(public domain: Domain) {
-		eventBus.register(CENTER_CHANGE, this.updateLeft)
+		super()
+		this.register()
 	}
 
 	render() {
@@ -33,10 +34,6 @@ export default class Band {
 			]
 		)
 
-		// if (this.domain.config.type === 'minimap') {
-
-		// }
-
 		if (this.domain.config.type === 'events') {
 			this.eventsBand = new EventsBand(this.domain)
 			this.rootElement.appendChild(this.eventsBand.render())
@@ -51,9 +48,8 @@ export default class Band {
 		return this.rootElement
 	}
 
-	private updateLeft = () => {
+	update = () => {
 		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
-		if (this.eventsBand != null) this.eventsBand.renderChildren()
 	}
 
 	private onMouseDown = (ev) => {
@@ -66,18 +62,18 @@ export default class Band {
 		if (this.dragOffset) {
 			const left = this.dragStart - (this.dragOffset - ev.clientX)
 			props.center = left / (props.viewportWidth - this.domain.width)
+			animator.play() // Request an animation frame from the Animator
 		}
 	}
 
 	private onMouseUp = (ev) => {
-		document.removeEventListener('mouseup', this.onMouseUp)
 		this.dragOffset = null
+		document.removeEventListener('mouseup', this.onMouseUp)
 	}
 
 	private onDblClick = (ev) => {
 		const rootLeft = this.rootElement.getBoundingClientRect().left
 		const nextCenter = this.domain.proportionAtPosition(ev.clientX - rootLeft)
 		animator.goTo(nextCenter)
-		// props.center = proportion
 	}
 }

@@ -16,6 +16,7 @@ export declare class Props {
     private _center;
     center: Ratio;
     dimensions: HTMLElement;
+    calculateVisibleEvents(): void;
     private centerChangeDone;
 }
 declare const _default: Props;
