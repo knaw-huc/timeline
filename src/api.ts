@@ -10,6 +10,13 @@ export default class Api {
 	protected bands:Band[] = []
 	animator: Animator = animator
 
+	constructor() {
+		document.addEventListener('keydown', (ev) => {
+			if (ev.keyCode === 189) this.zoomOut() // -
+			if (ev.keyCode === 187) this.zoomIn() // +
+		})
+	}
+
 	init(onInit: OnChangeFunction) {
 		const [from, to] = this.bands[0].domain.fromTo
 		onInit(
@@ -38,4 +45,11 @@ export default class Api {
 		)
 	}
 
+	zoomIn() {
+		props.zoomIn()
+	}
+
+	zoomOut() {
+		props.zoomOut()
+	}
 }

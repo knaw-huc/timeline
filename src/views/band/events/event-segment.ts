@@ -1,7 +1,7 @@
 import DomainEvent, { RawEv3nt } from '../../../models/event'
 import PointInTime from './event/point-in-time'
 import Interval from './event/interval'
-import Domain from '../../../models/domain'
+import EventsBand from '../../../models/domain'
 import { RawSegment } from '../../../constants'
 
 export default class Segment {
@@ -10,7 +10,7 @@ export default class Segment {
 	private rawEvents: RawEv3nt[]
 
 	constructor(
-		private domain: Domain,
+		private band: EventsBand,
 		segmentData: RawSegment,
 		private rootElement: HTMLUListElement
 	) {
@@ -24,9 +24,9 @@ export default class Segment {
 
 		for (let i = 0; i < this.rawEvents.length; i++) {
 			const rawEvent = this.rawEvents[i]
-			const event = new DomainEvent(rawEvent, this.domain)
+			const event = new DomainEvent(rawEvent, this.band)
 			const EventClass = event.isInterval() ? Interval : PointInTime
-			const view = new EventClass(this.domain, event)
+			const view = new EventClass(this.band, event)
 			frag.appendChild(view.render())
 		}
 

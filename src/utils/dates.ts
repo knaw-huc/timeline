@@ -7,6 +7,7 @@ export const enum Granularity {
 	WEEK,
 	MONTH,
 	YEAR,
+	YEAR_5, /* 5 YEARS */
 	DECADE,
 	DECADE_5, /* 50 years */
 	CENTURY,
@@ -47,6 +48,7 @@ export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRati
 	if (days < 45) return Granularity.WEEK
 	if (days < 1.5 * 365) return Granularity.MONTH
 	if (days < 15 * 365) return Granularity.YEAR
+	if (days < 100 * 365) return Granularity.YEAR_5
 	if (days < 200 * 365) return Granularity.DECADE
 	if (days < 400 * 365) return Granularity.DECADE_5
 	if (days < 3000 * 365) return Granularity.CENTURY
@@ -56,6 +58,7 @@ export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRati
 
 export const getStep = (granularity: Granularity): number => {
 	if (granularity === Granularity.YEAR) return 1
+	if (granularity === Granularity.YEAR_5) return 5
 	if (granularity === Granularity.DECADE) return 10
 	if (granularity === Granularity.DECADE_5) return 50
 	if (granularity === Granularity.CENTURY) return 100

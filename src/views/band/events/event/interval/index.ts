@@ -2,10 +2,10 @@ import DomainEvent from "../../../../../models/event"
 import createElement from '../../../../../utils/create-element'
 import { EVENT_ROW_HEIGHT } from "../../../../../constants"
 import props from "../../../../../models/props"
-import Domain from "../../../../../models/domain"
+import EventsBand from "../../../../../models/band/events";
 
 export default class Interval {
-	 constructor(private domain: Domain, private event: DomainEvent) {}
+	 constructor(private band: EventsBand, private event: DomainEvent) {}
 
 	public render() {
 		const li = createElement(
@@ -20,7 +20,7 @@ export default class Interval {
 				'z-index: 1',
 			],
 			[
-				`background-color: ${this.domain.color(.25)}`,
+				`background-color: ${this.band.color(.25)}`,
 				`left: ${this.event.left}px`,
 				`bottom: ${(this.event.row) * EVENT_ROW_HEIGHT}px`,
 				`width: ${this.event.width}px`,

@@ -24,42 +24,43 @@
 			const eventsExplorers = await responseExplorers.json()
 
 			const t = new Timeline.default({
-				domains: [
+				events: {
+					zoomLevel: 6,
+					domains: [
+						{
+							events: eventsVOC,
+							heightRatio: .30,
+							label: 'VOC voyages',
+						},
+						{
+							events: eventsPhilosophy,
+							heightRatio: .30,
+							label: 'political philosophers',
+							topOffsetRatio: .30,
+						},
+						{
+							events: eventsExplorers,
+							heightRatio: .30,
+							label: 'explorers',
+							topOffsetRatio: .60,
+						},
+					]
+				},
+				minimaps: [
 					{
-						events: eventsVOC,
-						heightRatio: .30,
-						label: 'VOC voyages',
-						type: 'events',
-						visibleRatio: .005,
-					},
-					{
-						events: eventsPhilosophy,
-						heightRatio: .30,
-						label: 'political philosophers',
-						topOffsetRatio: .30,
-						type: 'events',
-						visibleRatio: .005,
-					},
-					{
-						events: eventsExplorers,
-						heightRatio: .30,
-						label: 'explorers',
-						topOffsetRatio: .60,
-						type: 'events',
-						visibleRatio: .005,
-					},
-					{
-						targets: [0, 1, 2],
-						heightRatio: .05,
-						topOffsetRatio: .90,
-						type: 'minimap',
-						visibleRatio: .25
+						domains: [{
+							targets: [0, 1, 2],
+							heightRatio: .05,
+							topOffsetRatio: .90,
+						}],
+						zoomLevel: 2
 					},
 					{	
-						targets: [0, 1, 2],
-						heightRatio: .05,
-						topOffsetRatio: .95,
-						type: 'minimap'
+						domains: [{
+							targets: [0, 1, 2],
+							heightRatio: .05,
+							topOffsetRatio: .95,
+						}]
 					},
 				],
 				rootElement: document.getElementById('timeline'),

@@ -2,9 +2,7 @@ import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
 import DomainEvent from '../../../models/event'
-import { DATE_BAR_HEIGHT } from '../../../constants'
-// import { findClosestRulerDate } from '../rulers'
-// import animator from '../../../animator'
+import { DATE_BAR_HEIGHT, Milliseconds } from '../../../constants'
 import Animatable from '../../animatable'
 import { findClosestRulerDate, onVisible } from '../../../utils';
 import { labelBody } from '../../../utils/dates';
@@ -51,29 +49,52 @@ export default class MiniMap extends Animatable {
 	update = () => {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-		const [from, to] = this.domain.fromTo
-		const left = this.domain.positionAtDate(from)
+		let from, to
 
 		this.ctx.beginPath()
 
 		if (this.domain.config.type === 'minimap') {
+			[from, to] = this.domain.fromTo
 			this.drawIndicators()
-
-			this.domain.config.targets.forEach(targetIndex => {
-				const targetDomain = props.domains[targetIndex]
-				this.ctx.fillStyle = targetDomain.color(.5)
-
-				const { events } = targetDomain.config.orderedEvents
-				const visibleEvents = events.filter(onVisible(from, to))
-				for (let i = 0; i < visibleEvents.length; i++) {
-					const event = new DomainEvent(visibleEvents[i], this.domain)
-					const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
-					const width = event.width < 1 ? 1 : event.width
-					this.ctx.fillRect(event.left - left, y, width, this.eventHeight)
-				}
-			})
+			this.drawMinimap(from, to)
+		} else {
+			from = props.eventsFrom
+			to = props.eventsTo
 		}
 
+		if (this.domain.config.rulers) this.drawRulers(from, to)
+
+		this.ctx.closePath()
+	}
+
+	private drawMinimap(from: Milliseconds, to: Milliseconds) {
+		const left = this.domain.positionAtDate(from)
+		this.domain.config.targets.forEach(targetIndex => {
+			const targetDomain = props.domains[targetIndex]
+			this.ctx.fillStyle = targetDomain.color(.5)
+
+			const { events } = targetDomain.config.orderedEvents
+			const visibleEvents = events.filter(onVisible(from, to))
+			for (let i = 0; i < visibleEvents.length; i++) {
+				const event = new DomainEvent(visibleEvents[i], this.domain)
+				const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
+				const width = event.width < 1 ? 1 : event.width
+				this.ctx.fillRect(event.left - left, y, width, this.eventHeight)
+			}
+		})
+	}
+
+	private drawIndicators() {
+		this.ctx.fillStyle = `rgba(0, 0, 0, .1)`
+
+		const x1 = this.domain.positionAtDate(props.eventsFrom) + this.domain.left
+		this.ctx.fillRect(0, 0, x1, this.domain.height)
+
+		const x0 = this.domain.positionAtDate(props.eventsTo) + this.domain.left
+		this.ctx.fillRect(x0, 0, props.viewportWidth, this.domain.height)
+	}
+
+	private drawRulers(from: Milliseconds, to: Milliseconds) {
 		this.ctx.strokeStyle = `rgb(200, 200, 200)`
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
 		let date = findClosestRulerDate(from, this.domain.granularity)
@@ -84,20 +105,6 @@ export default class MiniMap extends Animatable {
 			this.ctx.fillText(labelBody(date, this.domain.granularity), left + 3, this.domain.height - 3)
 			date = this.domain.nextDate(date)
 		}
-
 		this.ctx.stroke()
-
-		this.ctx.closePath()
-	}
-
-	private drawIndicators() {
-		this.ctx.fillStyle = `rgba(0, 0, 0, .1)`
-		const [eventsFrom, eventsTo] = props.domains[this.domain.config.targets[0]].fromTo
-
-		const x1 = this.domain.positionAtDate(eventsFrom) + this.domain.left
-		this.ctx.fillRect(0, 0, x1, this.domain.height)
-
-		const x0 = this.domain.positionAtDate(eventsTo) + this.domain.left
-		this.ctx.fillRect(x0, 0, props.viewportWidth, this.domain.height)
 	}
 }

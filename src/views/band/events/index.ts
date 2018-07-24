@@ -5,6 +5,7 @@ import Domain from '../../../models/domain'
 import segmentsWorker from '../../../utils/segments.worker'
 import { DATE_BAR_HEIGHT } from '../../../constants'
 import Animatable from '../../animatable';
+import { visibleRatio } from '../../../utils';
 
 export default class Events extends Animatable {
 	private eventSegments: EventSegment[] = []
@@ -35,7 +36,7 @@ export default class Events extends Animatable {
 			{
 				events: this.domain.config.orderedEvents.events,
 				center: props.center,
-				visibleRatio: this.domain.config.visibleRatio,
+				visibleRatio: visibleRatio(this.domain.config.zoomLevel),
 				from: new Date(props.from).getTime(),
 				time: props.time
 			},

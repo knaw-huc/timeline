@@ -1,6 +1,6 @@
-import Domain from './domain'
 import { Pixels, Milliseconds } from '../constants';
 import { Granularity } from '../utils/dates';
+import EventsBand from './band/events';
 
 export class RawEv3nt {
 	date: Milliseconds
@@ -23,14 +23,14 @@ class DomainEvent extends RawEv3nt {
 	left: Pixels
 	width: Pixels
 
-	constructor(rawEvent: RawEv3nt, domain: Domain) {
+	constructor(rawEvent: RawEv3nt, band: EventsBand) {
 		super()
 
 		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
 
-		this.left = domain.positionAtDate(this.date)
+		this.left = band.positionAtDate(this.date)
 		this.width = this.isInterval() ?
-			(this.end_date - this.date) * domain.pixelsPerMillisecond :
+			(this.end_date - this.date) * band.pixelsPerMillisecond :
 			0
 		this.row = rawEvent.row
 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width

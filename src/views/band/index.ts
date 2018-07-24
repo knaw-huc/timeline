@@ -39,7 +39,7 @@ export default class Band extends Animatable {
 			this.rootElement.appendChild(this.eventsBand.render())
 		}
 
-		if (this.domain.config.visibleRatio < 1) {
+		if (this.domain.config.zoomLevel > 0) {
 			eventBus.register('mousedown', this.onMouseDown, this.rootElement)
 			eventBus.register('mousemove', this.onMouseMove, this.rootElement)
 		}

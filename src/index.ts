@@ -3,7 +3,7 @@ import Config from './models/config'
 import Band from './views/band'
 // import Indicator from './views/indicator'
 import createElement from './utils/create-element'
-import { debounce } from './utils/index'
+import { debounce } from './utils'
 import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import eventBus from './event-bus'
@@ -35,7 +35,7 @@ export default class Timeline extends Api {
 		config.rootElement.appendChild(this.render())
 
 		// <DEBUGGING>
-		 document.addEventListener(CENTER_CHANGE_DONE, () => {
+		document.addEventListener(CENTER_CHANGE_DONE, () => {
 			const data = {} 
 			const body = document.getElementsByTagName('body')[0]
 			function countChildren(root: Element) {
@@ -105,11 +105,6 @@ export default class Timeline extends Api {
 		this.bands
 			.map(band => new MiniMap(band.domain))
 			.forEach(this.appendToWrapper)
-
-		// this.bands
-		// 	.filter(band => band.domain.config.targets != null)
-		// 	.map(band => new Indicator(band.domain))
-		// 	.forEach(this.appendToWrapper)
 	}
 
 	private renderLabels() {

@@ -9,5 +9,7 @@ export default class MiniMap extends Animatable {
     constructor(domain: Domain);
     render(): HTMLCanvasElement;
     update: () => void;
+    private drawMinimap(from, to);
     private drawIndicators();
+    private drawRulers(from, to);
 }

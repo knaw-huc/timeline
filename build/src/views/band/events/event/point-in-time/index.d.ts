@@ -1,8 +1,8 @@
 import DomainEvent from "../../../../../models/event";
-import Domain from "../../../../../models/domain";
+import EventsBand from "../../../../../models/band/events";
 export default class PointInTime {
-    private domain;
+    private band;
     private event;
-    constructor(domain: Domain, event: DomainEvent);
+    constructor(band: EventsBand, event: DomainEvent);
     render(): any;
 }

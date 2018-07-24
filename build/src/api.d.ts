@@ -10,7 +10,10 @@ export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event)
 export default class Api {
     protected bands: Band[];
     animator: Animator;
+    constructor();
     init(onInit: OnChangeFunction): void;
     change(onChange: OnChangeFunction): void;
     private handleChange;
+    zoomIn(): void;
+    zoomOut(): void;
 }
