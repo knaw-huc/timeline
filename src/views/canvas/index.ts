@@ -1,18 +1,18 @@
-import createElement from '../../../utils/create-element'
-import props from '../../../models/props'
-import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT } from '../../../constants'
-import Animatable from '../../animatable'
-import { findClosestRulerDate, onVisible } from '../../../utils'
-import { labelBody } from '../../../utils/dates'
-import MinimapBand from '../../../models/band/minimap'
-import { DomainConfig, MinimapDomainConfig, EventsDomainConfig } from '../../../models/config'
-import Band from '../../../models/band'
+import createElement from '../../utils/create-element'
+import props from '../../models/props'
+import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT } from '../../constants'
+import { findClosestRulerDate, onVisible } from '../../utils'
+import { labelBody } from '../../utils/dates'
+import MinimapBand from '../../models/band/minimap'
+import { DomainConfig, MinimapDomainConfig, EventsDomainConfig } from '../../models/config'
+import Band from '../../models/band'
+import animator from '../../animator';
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
  * It gives an overview of densely (and scarcely) populated areas
  */
-export default class MiniMap extends Animatable {
+export default class Canvas {
 	private readonly font: string = "10px sans-serif"
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
@@ -22,8 +22,7 @@ export default class MiniMap extends Animatable {
 
 
 	constructor() {
-		super() 
-		this.register()
+		animator.registerViewUpdaters(this.update)
 
 		this.offsiteCanvas = createElement('canvas')
 		this.offsiteCtx = this.offsiteCanvas.getContext('2d')
@@ -171,10 +170,6 @@ export default class MiniMap extends Animatable {
 		this.ctx.strokeStyle = `rgb(200, 200, 200)`
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
 		let date = findClosestRulerDate(band.from, band.granularity)
-
-		if (domain.topOffsetRatio === .9) {
-			console.log(band.pixelsPerMillisecond)
-		}
 		
 		const y = domain.topOffsetRatio * props.viewportHeight
 		const height = domain.heightRatio * props.viewportHeight
@@ -188,5 +183,3 @@ export default class MiniMap extends Animatable {
 		this.ctx.stroke()
 	}
 }
-
-const logDate = (date) => console.log(new Date(date))

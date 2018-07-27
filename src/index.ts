@@ -6,7 +6,7 @@ import { debounce } from './utils'
 import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import EventsBandView from './views/band/events'
-import Minimap from './views/band/minimap';
+import Canvas from './views/canvas'
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents }
 
@@ -60,7 +60,7 @@ export default class Timeline extends Api {
 		)
 
 		// Render canvas
-		this.appendToWrapper(new Minimap())
+		this.appendToWrapper(new Canvas())
 
 		// Render bands (for mouse interactivity)
 		this.appendToWrapper(new EventsBandView(props.eventsBand))

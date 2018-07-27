@@ -1,5 +1,4 @@
-import Animatable from '../../animatable';
-export default class MiniMap extends Animatable {
+export default class Canvas {
     private readonly font;
     private canvas;
     private ctx;
