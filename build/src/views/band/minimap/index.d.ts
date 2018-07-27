@@ -3,6 +3,8 @@ export default class MiniMap extends Animatable {
     private readonly font;
     private canvas;
     private ctx;
+    private offsiteCanvas;
+    private offsiteCtx;
     constructor();
     render(): HTMLCanvasElement;
     update: () => void;

@@ -2,7 +2,7 @@ import Config, { EventsDomainConfig, BandConfig, MinimapDomainConfig } from "../
 import { orderEvents } from "./events.worker";
 import { Pixels } from "../constants";
 
-export default function prepareEvents(config: Config, viewportWidth: Pixels): Config {
+export default function prepareConfig(config: Config, viewportWidth: Pixels): Config {
 	if (config.events == null) {
 		console.error('[DomainConfig] No events band in config!')
 		return config

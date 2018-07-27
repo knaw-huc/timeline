@@ -19,9 +19,12 @@ export class Animator {
 	// time to center = .5
 	private centerMarker: Ratio
 
+	// Controls the speed of the animation
 	private multiplier: Multiplier = 1
+
 	// Animation direction, -1 is backward, 0 is pause, 1 is forward
 	private direction: Direction = Direction.Stop
+
 	// Timestamp of the prev animation frame
 	private prevTimestamp: Milliseconds
 
@@ -69,10 +72,12 @@ export class Animator {
 					this.stop()
 				}
 				else props.eventsBand.zoomLevel = props.eventsBand.zoomLevel + zoomDelta
-				// props.domains.forEach(d => d.init())
 			}
 
+			// Update the models. This is real quick ~0ms
 			this.modelUpdaters.forEach(update => update())
+
+			// Update the view. This is too slow ~30-50ms
 			this.viewUpdaters.forEach(update => update())
 		}
 

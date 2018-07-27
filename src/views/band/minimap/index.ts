@@ -17,9 +17,16 @@ export default class MiniMap extends Animatable {
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
 
+	private offsiteCanvas: HTMLCanvasElement
+	private offsiteCtx: CanvasRenderingContext2D
+
+
 	constructor() {
 		super() 
 		this.register()
+
+		this.offsiteCanvas = createElement('canvas')
+		this.offsiteCtx = this.offsiteCanvas.getContext('2d')
 	}
 
 	render() {
@@ -38,6 +45,9 @@ export default class MiniMap extends Animatable {
 	}
 
 	update = () => {
+		if (this.canvas.width !== props.viewportWidth) this.canvas.width = props.viewportWidth
+		if (this.canvas.height !== props.viewportHeight) this.canvas.height = props.viewportHeight
+
 		// TODO Clear rect only the bands where zoomLevel > 0
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -110,12 +120,10 @@ export default class MiniMap extends Animatable {
 		// on the visible canvas
 		if (eventHeight < 1) {
 			eventHeight = 1
-			const canvas = createElement('canvas')
-			canvas.width = props.viewportWidth
-			canvas.height = maxRowCount
-			const ctx = canvas.getContext('2d')
-			drawEvents(ctx, maxRowCount, 0)
-			this.ctx.drawImage(canvas, 0, band.top, props.viewportWidth, maxHeight)
+			this.offsiteCanvas.width = props.viewportWidth
+			this.offsiteCanvas.height = maxRowCount
+			drawEvents(this.offsiteCtx, maxRowCount, 0)
+			this.ctx.drawImage(this.offsiteCanvas, 0, band.top, props.viewportWidth, maxHeight)
 		} else {
 			eventHeight = Math.round(eventHeight)
 			drawEvents(this.ctx, maxHeight)
@@ -163,6 +171,11 @@ export default class MiniMap extends Animatable {
 		this.ctx.strokeStyle = `rgb(200, 200, 200)`
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
 		let date = findClosestRulerDate(band.from, band.granularity)
+
+		if (domain.topOffsetRatio === .9) {
+			console.log(band.pixelsPerMillisecond)
+		}
+		
 		const y = domain.topOffsetRatio * props.viewportHeight
 		const height = domain.heightRatio * props.viewportHeight
 		while(date < band.to) {
@@ -175,3 +188,5 @@ export default class MiniMap extends Animatable {
 		this.ctx.stroke()
 	}
 }
+
+const logDate = (date) => console.log(new Date(date))

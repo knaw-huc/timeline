@@ -16,8 +16,9 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents }
 // TODO flip PiT when on edge of timeline
 // TODO Scroll vertical when events higher than viewportHeight
 // TODO make it possible to have only minimap bands (see index.floods.html)
-// TODO add check if `type` prop is present in config
 // TODO make indicator draggable
+// TODO add config to add space/time before first and last events
+// TODO if minimap visible area is bigger than viewport, zoom out the minimap
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
@@ -34,12 +35,15 @@ export default class Timeline extends Api {
 	public resize = () => {
 		props.dimensions = this.config.rootElement
 		props.eventsBand.zoomLevel = props.eventsBand.zoomLevel
+		props.minimapBands.forEach(mmb => mmb.zoomLevel = mmb.zoomLevel)
 		this.animator.play()
 	}
 	private debouncedResize = debounce(this.resize, 600)
 
-	// public reload = (config?: Config) => {}
-	// private debouncedReload = debounce(this.reload, 600)
+	public reload = (config?: Config) => {
+		if (config != null) props.init(config)
+		this.resize()
+	}
 
 	private render() {
 		this.wrapper = createElement(

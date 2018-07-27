@@ -8,6 +8,7 @@ export default class Timeline extends Api {
     constructor(config: Config);
     resize: () => void;
     private debouncedResize;
+    reload: (config?: Config) => void;
     private render();
     private renderLabels();
     private appendToWrapper;
