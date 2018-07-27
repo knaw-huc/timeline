@@ -1,14 +1,11 @@
-import Domain from '../../models/domain';
-import Animatable from '../animatable';
-export default class Band extends Animatable {
-    domain: Domain;
+import Band from '../../models/band';
+export default class BandView {
+    band: Band;
     private dragStart;
     private dragOffset;
-    private rootElement;
-    private eventsBand;
-    constructor(domain: Domain);
+    protected rootElement: HTMLElement;
+    constructor(band: Band);
     render(): HTMLElement;
-    update: () => void;
     private onMouseDown;
     private onMouseMove;
     private onMouseUp;

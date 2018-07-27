@@ -1,45 +1,36 @@
-import Domain from '../../../models/domain'
 import createElement from '../../../utils/create-element'
 import props from '../../../models/props'
-import DomainEvent from '../../../models/event'
-import { DATE_BAR_HEIGHT, Milliseconds } from '../../../constants'
+import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT } from '../../../constants'
 import Animatable from '../../animatable'
-import { findClosestRulerDate, onVisible } from '../../../utils';
-import { labelBody } from '../../../utils/dates';
-
+import { findClosestRulerDate, onVisible } from '../../../utils'
+import { labelBody } from '../../../utils/dates'
+import MinimapBand from '../../../models/band/minimap'
+import { DomainConfig, MinimapDomainConfig, EventsDomainConfig } from '../../../models/config'
+import Band from '../../../models/band'
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
  * It gives an overview of densely (and scarcely) populated areas
  */
 export default class MiniMap extends Animatable {
+	private readonly font: string = "10px sans-serif"
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
-	private maxHeight: number
-	private eventHeight: number
 
-	constructor(private domain: Domain) {
+	constructor() {
 		super() 
 		this.register()
-
-		if (this.domain.config.type === 'minimap') {
-			this.maxHeight = this.domain.height - DATE_BAR_HEIGHT
-			const rowCounts = this.domain.config.targets.map(index => props.domains[index].config.orderedEvents.rowCount)
-			this.eventHeight = this.maxHeight / Math.max(...rowCounts)
-			if (this.eventHeight < 1) this.eventHeight = 1
-		}
 	}
 
 	render() {
 		this.canvas = createElement('canvas', 'minimap', [
 			'position: absolute',
-		], [
-			`top: ${this.domain.config.topOffsetRatio * 100}%`
 		])
 
 		this.canvas.width = props.viewportWidth
-		this.canvas.height = this.domain.height
+		this.canvas.height = props.viewportHeight
 		this.ctx = this.canvas.getContext('2d')
+		this.ctx.font = this.font
 
 		this.update()
 
@@ -47,63 +38,139 @@ export default class MiniMap extends Animatable {
 	}
 
 	update = () => {
+		// TODO Clear rect only the bands where zoomLevel > 0
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-		let from, to
 
 		this.ctx.beginPath()
 
-		if (this.domain.config.type === 'minimap') {
-			[from, to] = this.domain.fromTo
-			this.drawIndicators()
-			this.drawMinimap(from, to)
-		} else {
-			from = props.eventsFrom
-			to = props.eventsTo
-		}
+		props.eventsBand.domains.forEach(domain => {
+			if (domain.rulers) this.drawRulers(props.eventsBand, domain)
+		})
 
-		if (this.domain.config.rulers) this.drawRulers(from, to)
+		props.minimapBands.forEach(band => {
+			band.domains.forEach(domain => {
+				this.drawMinimap(band, domain)
+				if (domain.rulers) this.drawRulers(band, domain)
+				this.drawIndicators(band, domain)
+			})
+		})
 
 		this.ctx.closePath()
-	}
 
-	private drawMinimap(from: Milliseconds, to: Milliseconds) {
-		const left = this.domain.positionAtDate(from)
-		this.domain.config.targets.forEach(targetIndex => {
-			const targetDomain = props.domains[targetIndex]
-			this.ctx.fillStyle = targetDomain.color(.5)
-
-			const { events } = targetDomain.config.orderedEvents
-			const visibleEvents = events.filter(onVisible(from, to))
-			for (let i = 0; i < visibleEvents.length; i++) {
-				const event = new DomainEvent(visibleEvents[i], this.domain)
-				const y = this.maxHeight - ((event.row + 1) * this.eventHeight)
-				const width = event.width < 1 ? 1 : event.width
-				this.ctx.fillRect(event.left - left, y, width, this.eventHeight)
-			}
+		props.eventsBand.domains.forEach(domain => {
+			this.drawEvents(domain)
 		})
 	}
 
-	private drawIndicators() {
-		this.ctx.fillStyle = `rgba(0, 0, 0, .1)`
+	private drawEvents(domain: EventsDomainConfig) {
+		const band = props.eventsBand
+		const left = band.positionAtTimestamp(band.from)
+		const { events } = domain.orderedEvents
+		const visibleEvents = events.filter(onVisible(band.from, props.eventsBand.to))
+		const offsetY = domain.topOffsetRatio * props.viewportHeight
+		const domainHeight = (domain.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
 
-		const x1 = this.domain.positionAtDate(props.eventsFrom) + this.domain.left
-		this.ctx.fillRect(0, 0, x1, this.domain.height)
+		for (const event of visibleEvents) {
+			const eventWidth = Math.round(event.time * band.pixelsPerMillisecond)
+			let eventLeft = band.positionAtTimestamp(event.date_min != null ? event.date_min : event.date) - left
+			const y = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
+			let width = eventWidth < 1 ? 1 : eventWidth
 
-		const x0 = this.domain.positionAtDate(props.eventsTo) + this.domain.left
-		this.ctx.fillRect(x0, 0, props.viewportWidth, this.domain.height)
+			this.ctx.fillStyle = `rgba(126, 0, 0, .3)`
+			if (event.end_date == null) {
+				this.ctx.beginPath()
+				this.ctx.arc(eventLeft - EVENT_HEIGHT/2, y + EVENT_HEIGHT/2, EVENT_HEIGHT/2, 0, 2 * Math.PI)
+				this.ctx.fill()
+				this.ctx.closePath()
+			} else {
+				this.ctx.fillRect(eventLeft, y, width, EVENT_HEIGHT)
+			}
+
+			if (eventLeft < 0) {
+				width = width + eventLeft
+				eventLeft = 0
+			}
+			if (this.ctx.measureText(event.label).width + 10 < width) {
+				this.ctx.fillStyle = `rgb(126, 0, 0)`
+				this.ctx.fillText(event.label, eventLeft + 3, y + EVENT_HEIGHT - 3)
+			}
+		}
 	}
 
-	private drawRulers(from: Milliseconds, to: Milliseconds) {
+	private drawMinimap(band: MinimapBand, domain: MinimapDomainConfig) {
+		const maxHeight: Pixels = band.height - DATE_BAR_HEIGHT
+		const maxRowCount = band.domains.reduce((prev, curr) => {
+			const counts = curr.targets.map(index => props.eventsBand.domains[index].orderedEvents.rowCount)
+			return Math.max(prev, ...counts)
+		}, 0)
+		let eventHeight: Pixels = maxHeight / maxRowCount
+
+		// If the events have a height less than 1, this means the minimap will be higher than the available
+		// height (maxHeight). To fix this, the minimap is rendered on an invisible canvas and drawn (scaled)
+		// on the visible canvas
+		if (eventHeight < 1) {
+			eventHeight = 1
+			const canvas = createElement('canvas')
+			canvas.width = props.viewportWidth
+			canvas.height = maxRowCount
+			const ctx = canvas.getContext('2d')
+			drawEvents(ctx, maxRowCount, 0)
+			this.ctx.drawImage(canvas, 0, band.top, props.viewportWidth, maxHeight)
+		} else {
+			eventHeight = Math.round(eventHeight)
+			drawEvents(this.ctx, maxHeight)
+		}
+
+		function drawEvents(ctx: CanvasRenderingContext2D, height, offsetY = band.top) {
+			const left = band.positionAtTimestamp(band.from)
+			ctx.fillStyle = `rgba(0, 0, 0, .2)`
+
+			domain.targets.forEach(targetIndex => {
+				const targetDomain = props.eventsBand.domains[targetIndex]
+				// this.ctx.fillStyle = targetDomain.color(.5)
+
+				const { events } = targetDomain.orderedEvents
+				const visibleEvents = events.filter(onVisible(band.from, band.to))
+
+				for (const event of visibleEvents) {
+					const eventWidth = Math.round(event.time * band.pixelsPerMillisecond)
+					const eventLeft = band.positionAtTimestamp(event.date_min != null ? event.date_min : event.date)
+					const y = offsetY + height - ((event.row + 1) * eventHeight)
+					const width = eventWidth < 1 ? 1 : eventWidth
+					ctx.fillRect(eventLeft - left, y, width, eventHeight)
+				}
+			})
+		}
+	}
+
+	private drawIndicators(band: MinimapBand, domain: MinimapDomainConfig) {
+		this.ctx.fillStyle = `rgba(0, 0, 0, .1)`
+
+		// Left indicator
+		const indicatorTOP = Math.round(domain.topOffsetRatio * props.viewportHeight)
+		const leftIndicatorRightX = band.positionAtTimestamp(props.eventsBand.from) + band.left
+		this.ctx.fillRect(0, indicatorTOP, leftIndicatorRightX, band.height)
+
+		// Right indicator
+		const rightIndicatorLeftX = band.positionAtTimestamp(props.eventsBand.to) + band.left
+		this.ctx.fillRect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.height)
+
+		// Cover the DATE_BAR
+		this.ctx.fillRect(leftIndicatorRightX, indicatorTOP + band.height - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
+	}
+
+	private drawRulers(band: Band, domain: DomainConfig) {
 		this.ctx.strokeStyle = `rgb(200, 200, 200)`
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
-		let date = findClosestRulerDate(from, this.domain.granularity)
-		while(date < to) {
-			const left = this.domain.positionAtDate(date) + this.domain.left
-			this.ctx.moveTo(left, 0)
-			this.ctx.lineTo(left, this.domain.height)
-			this.ctx.fillText(labelBody(date, this.domain.granularity), left + 3, this.domain.height - 3)
-			date = this.domain.nextDate(date)
+		let date = findClosestRulerDate(band.from, band.granularity)
+		const y = domain.topOffsetRatio * props.viewportHeight
+		const height = domain.heightRatio * props.viewportHeight
+		while(date < band.to) {
+			const left = band.positionAtTimestamp(date) + band.left
+			this.ctx.moveTo(left, y)
+			this.ctx.lineTo(left, y + height)
+			this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
+			date = band.nextDate(date)
 		}
 		this.ctx.stroke()
 	}

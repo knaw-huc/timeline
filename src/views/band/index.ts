@@ -1,21 +1,15 @@
-import Domain from '../../models/domain'
+import Band from '../../models/band'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
-import EventsBand from './events'
 import eventBus from '../../event-bus'
 import animator from '../../animator'
-import Animatable from '../animatable'
 
-export default class Band extends Animatable {
+export default class BandView {
 	private dragStart: number
 	private dragOffset: number
-	private rootElement: HTMLElement
-	private eventsBand: EventsBand
+	protected rootElement: HTMLElement
 
-	constructor(public domain: Domain) {
-		super()
-		this.register()
-	}
+	constructor(public band: Band) {}
 
 	render() {
 		this.rootElement = createElement(
@@ -26,20 +20,13 @@ export default class Band extends Animatable {
 				'z-index: 1',
 			],
 			[
-				`box-shadow: inset 0 6px 20px ${this.domain.color != null ? this.domain.color(.1) : '#eee'}`,
-				`height: ${this.domain.config.heightRatio * 100}%`,
-				`top: ${this.domain.config.topOffsetRatio * 100}%`,
-				`transform: translate3d(${this.domain.left}px, 0, 0)`,
-				`width: ${this.domain.width}px`,
+				`height: ${this.band.height}px`,
+				`top: ${this.band.top}px`,
+				`width: ${props.viewportWidth}px`,
 			]
 		)
 
-		if (this.domain.config.type === 'events') {
-			this.eventsBand = new EventsBand(this.domain)
-			this.rootElement.appendChild(this.eventsBand.render())
-		}
-
-		if (this.domain.config.zoomLevel > 0) {
+		if (this.band.zoomLevel > 0) {
 			eventBus.register('mousedown', this.onMouseDown, this.rootElement)
 			eventBus.register('mousemove', this.onMouseMove, this.rootElement)
 		}
@@ -48,20 +35,16 @@ export default class Band extends Animatable {
 		return this.rootElement
 	}
 
-	update = () => {
-		this.rootElement.style.transform = `translate3d(${this.domain.updateLeft()}px, 0, 0)`
-	}
-
 	private onMouseDown = (ev) => {
 		document.addEventListener('mouseup', this.onMouseUp)
 		this.dragOffset = ev.clientX
-		this.dragStart = this.domain.left
+		this.dragStart = this.band.left
 	}
 
 	private onMouseMove = (ev) => {
 		if (this.dragOffset) {
 			const left = this.dragStart - (this.dragOffset - ev.clientX)
-			props.center = left / (props.viewportWidth - this.domain.width)
+			props.center = left / (props.viewportWidth - this.band.width)
 			animator.play() // Request an animation frame from the Animator
 		}
 	}
@@ -72,8 +55,7 @@ export default class Band extends Animatable {
 	}
 
 	private onDblClick = (ev) => {
-		const rootLeft = this.rootElement.getBoundingClientRect().left
-		const nextCenter = this.domain.proportionAtPosition(ev.clientX - rootLeft)
+		const nextCenter = this.band.proportionAtPosition(ev.clientX)
 		animator.goTo(nextCenter)
 	}
 }

@@ -31,7 +31,14 @@ export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granu
 		const step = getStep(granularity)
 		if (granularity === Granularity.YEAR) year += 1
 		else while(year % step !== 0) { year += 1 }
-		return Date.UTC(year, 0, 1)
+		if (year > -1 && year < 100) {
+			const nextDate = new Date(Date.UTC(year, 0, 1))
+			nextDate.setUTCFullYear(year)
+			return nextDate.getTime()
+		}
+		else {
+			return Date.UTC(year, 0, 1)
+		}
 	} else if (granularity === Granularity.MONTH) {
 		return Date.UTC(year, date.getMonth() + 1, 1)
 	} else if (granularity === Granularity.DAY) {
@@ -41,6 +48,15 @@ export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granu
 	return timestamp
 }
 
+/**
+ * Convert a zoom level to a visible ratio
+ * 0 = 1 (2^0), the whole timeline is visible
+ * 1 = .5 (2^-1), halve of the timeline visible
+ * 2 = .25 (2^-2), quarter of the timeline visible
+ * 3 = .125 (2^-3), one eights of the timeline visible
+ * ...
+ * Infinity = limit to 0, zoomed in on a pico nano micro millisecond
+ */
 export function visibleRatio(zoomLevel: number): Ratio {
 	return Math.pow(2, zoomLevel * -1)
 }

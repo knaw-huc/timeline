@@ -1,6 +1,5 @@
 import { Animator } from './animator';
 import { Ratio, Milliseconds } from './constants';
-import Band from './views/band';
 export interface OnChangeFunctionProps {
     center: Ratio;
     visibleFrom: Milliseconds;
@@ -8,12 +7,9 @@ export interface OnChangeFunctionProps {
 }
 export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void;
 export default class Api {
-    protected bands: Band[];
     animator: Animator;
     constructor();
     init(onInit: OnChangeFunction): void;
     change(onChange: OnChangeFunction): void;
     private handleChange;
-    zoomIn(): void;
-    zoomOut(): void;
 }

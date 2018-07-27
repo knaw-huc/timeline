@@ -1,6 +1,6 @@
-import { Pixels, Milliseconds } from '../constants';
+import { Milliseconds, Pixels } from '../constants';
 import { Granularity } from '../utils/dates';
-import EventsBand from './band/events';
+// import Band from './band';
 
 export class RawEv3nt {
 	date: Milliseconds
@@ -16,29 +16,38 @@ export class RawEv3nt {
 	label?: string
 	row?: number
 	wikidata_identifier?: string
-	// view?: any
+
+	from: Milliseconds
+	to: Milliseconds
+
+	// The length of time an event took.
+	// A Point in Time has time = 0
+	// For an interval, if something takes 1 year, time = 31536000000
+	time?: Milliseconds
+
+	textWidth?: Pixels
 }
 
-class DomainEvent extends RawEv3nt {
-	left: Pixels
-	width: Pixels
+// class Ev3nt extends RawEv3nt {
+// 	left: Pixels
+// 	width: Pixels
 
-	constructor(rawEvent: RawEv3nt, band: EventsBand) {
-		super()
+// 	constructor(rawEvent: RawEv3nt, band: Band) {
+// 		super()
 
-		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
+// 		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
 
-		this.left = band.positionAtDate(this.date)
-		this.width = this.isInterval() ?
-			(this.end_date - this.date) * band.pixelsPerMillisecond :
-			0
-		this.row = rawEvent.row
-		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
-	}
+// 		this.left = band.positionAtDate(this.date)
+// 		this.width = this.isInterval() ?
+// 			(this.end_date - this.date) * band.pixelsPerMillisecond :
+// 			0
+// 		this.row = rawEvent.row
+// 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
+// 	}
 
-	isInterval(): boolean {
-		return this.end_date != null
-	}
-}
+// 	isInterval(): boolean {
+// 		return this.end_date != null
+// 	}
+// }
 
-export default DomainEvent;
+// export default Ev3nt;

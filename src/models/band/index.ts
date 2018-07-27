@@ -2,7 +2,8 @@ import { getGranularity, Granularity, subsequentDate } from '../../utils/dates'
 import props from '../props'
 import { Pixels, Milliseconds, Ratio } from '../../constants'
 import { visibleRatio } from '../../utils'
-import { BandConfig, MinimapDomainConfig, EventsDomainConfig } from '../config'
+import { BandConfig, MinimapDomainConfig, EventsDomainConfig } from '../config';
+import animator from '../../animator';
 
 /**
  * A Band is a collection of domains. All the domains in the Band
@@ -25,16 +26,20 @@ export default abstract class Band {
 	// Level of detail (ie century, year, month, week, day, etc)
 	granularity: Granularity
 
-	// Total height of the domain
+	// Total height of the band
 	height: Pixels
+
+	nextDate: (d: Milliseconds) => Milliseconds
 
 	// The amount of pixels taken by one day. Metric used for calculating 
 	// the x-position of an event or ruler on the timeline.
 	pixelsPerMillisecond: Pixels
 
+	top: Pixels
+
 	visibleRatio: Ratio
 
-	// Total width of the domain
+	// Total width of the band
 	width: Pixels
 
 	private _left: Pixels
@@ -47,43 +52,40 @@ export default abstract class Band {
 
 	private _zoomLevel: number
 	get zoomLevel(): number { return this._zoomLevel }
-	set zoomLevel(zl: number) {
-		this.visibleRatio = visibleRatio(zl)
-		const visibleTime = this.visibleRatio * props.time
-		const offset = props.center * (props.time - visibleTime)
-		this.from = props.from + offset
-		this.to = this.from + visibleTime
-		this.time = this.to - this.from
-		this._zoomLevel = zl
-	}
-
-	nextDate: (d: Milliseconds) => Milliseconds
-
-	constructor(public config: BandConfig<MinimapDomainConfig | EventsDomainConfig>) {
-		this.visibleRatio = visibleRatio(config.zoomLevel)
-		this.width = props.viewportWidth / this.visibleRatio
+	set zoomLevel(zoomLevel: number) {
+		this.visibleRatio = visibleRatio(zoomLevel)
+		this.width = Math.round(props.viewportWidth / this.visibleRatio)
+		this.time = this.visibleRatio * props.time
+		this.update()
 		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
 		this.pixelsPerMillisecond = this.width / props.time
-		// console.log(this.visibleRatio, this.pixelsPerMillisecond)
-		this.updateLeft()
+		this._zoomLevel = zoomLevel
 	}
 
-
-	updateLeft(): Pixels {
-		this.left = props.center * (props.viewportWidth - this.width)
-		return this.left
+	constructor(config: BandConfig<MinimapDomainConfig | EventsDomainConfig>) {
+		this.zoomLevel = config.zoomLevel
+		this.height = Math.round(config.domains.reduce((prev, curr) => prev + curr.heightRatio, 0) * props.viewportHeight)
+		this.top = Math.round(config.domains.reduce((prev, curr) => Math.min(prev, curr.topOffsetRatio), 1) * props.viewportHeight)
+		animator.registerModelUpdaters(this.update)
 	}
 
-	positionAtDate(date: Milliseconds): Pixels {
-		return (date - props.from) * this.pixelsPerMillisecond
+	update = () => {
+		const offset = props.center * (props.time - this.time)
+		this.from = props.from + offset
+		this.to = this.from + this.time
+		this.left = Math.round(props.center * (props.viewportWidth - this.width))
+	}
+
+	positionAtTimestamp(date: Milliseconds): Pixels {
+		return Math.round((date - props.from) * this.pixelsPerMillisecond)
 	}
 
 	proportionAtPosition(position: Pixels): Ratio {
-		return position / this.width
+		return (Math.abs(this.left) + position) / this.width
 	}
 
-	dateAtProportion(proportion: Ratio): Milliseconds {
+	timestampAtProportion(proportion: Ratio): Milliseconds {
 		return props.from + (props.time * proportion)
 	}
 }

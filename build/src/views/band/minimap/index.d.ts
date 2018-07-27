@@ -1,15 +1,13 @@
-import Domain from '../../../models/domain';
 import Animatable from '../../animatable';
 export default class MiniMap extends Animatable {
-    private domain;
+    private readonly font;
     private canvas;
     private ctx;
-    private maxHeight;
-    private eventHeight;
-    constructor(domain: Domain);
+    constructor();
     render(): HTMLCanvasElement;
     update: () => void;
-    private drawMinimap(from, to);
-    private drawIndicators();
-    private drawRulers(from, to);
+    private drawEvents(domain);
+    private drawMinimap(band, domain);
+    private drawIndicators(band, domain);
+    private drawRulers(band, domain);
 }

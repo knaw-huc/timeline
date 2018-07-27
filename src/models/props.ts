@@ -2,9 +2,8 @@ import { CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
 import EventsBand from "./band/events"
-import { RawEv3nt } from "./event";
-import { debounce, onVisible } from "../utils"
-import animator from "../animator";
+import { debounce } from "../utils"
+import prepareConfig from '../utils/prepare-config'
 
 export class Props {
 	private readonly defaultCenter = .5
@@ -24,10 +23,12 @@ export class Props {
 	viewportHeight: Pixels
 	viewportWidth: Pixels
 
-	visibleEvents: RawEv3nt[] = []
-
 	init(config: Config) {
+		if (config.rootElement == null) console.error('[init] No rootElement found')
+
 		this.dimensions = config.rootElement
+
+		config = prepareConfig(config, this.viewportWidth)
 
 		this.from = config.events.domains
 			.reduce((prev, curr) => {
@@ -48,6 +49,7 @@ export class Props {
 		if (config.center != null) this.center = config.center
 
 		this.minimapBands = config.minimaps.map(mm => new MinimapBand(mm))
+
 		this.eventsBand = new EventsBand(config.events)
 
 		// Last, but not least, initiate the Domains. This depends on almost all the data
@@ -76,30 +78,9 @@ export class Props {
 		this.viewportHeight = nextHeight
 	}
 
-	// TODO update event label if not in view (but rest of the event is)
-	calculateVisibleEvents() {
-		const [from, to] = this.domains.find(d => d.config.type === 'events').fromTo
-		this.visibleEvents = this.eventsBand.domains
-			.reduce((prev, curr) => {
-				return prev.concat(curr.config.orderedEvents.events.filter(onVisible(from, to)))
-			}, [])
-	}
-
 	private centerChangeDone = debounce(() => {
-		this.calculateVisibleEvents()
 		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
 	}, 300)
-
-	zoomIn() {
-		animator.zoomTo(this.zoomLevel + 1)
-		console.log('in', this.zoomLevel)
-	}
-
-	zoomOut() {
-		const nextZoomLevel = (this.zoomLevel === 0) ? 0 :  this.zoomLevel - 1
-		animator.zoomTo(nextZoomLevel)
-		console.log('out', this.zoomLevel)
-	}
 }
 
 export default new Props()

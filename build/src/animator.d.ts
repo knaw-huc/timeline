@@ -10,11 +10,12 @@ export declare class Animator {
     private direction;
     private prevTimestamp;
     private elapsedTimeTotal;
-    private updaters;
+    private modelUpdaters;
+    private viewUpdaters;
     private zoomMarker;
-    registerUpdater(update: any): void;
+    registerModelUpdaters(update: any): void;
+    registerViewUpdaters(update: any): void;
     animate: (timestamp: any) => void;
-    private update;
     accelerate(): number;
     decelerate(): number;
     goTo(nextCenter: Ratio): void;

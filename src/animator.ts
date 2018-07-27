@@ -29,11 +29,16 @@ export class Animator {
 	// to calculate the remaining time when animating to a marker
 	private elapsedTimeTotal: Milliseconds = 0
 
-	private updaters: any[] = []
+	private modelUpdaters: any[] = []
+	private viewUpdaters: any[] = []
 	private zoomMarker: Ratio
 
-	registerUpdater(update) {
-		this.updaters.push(update)
+	registerModelUpdaters(update) {
+		this.modelUpdaters.push(update)
+	}
+
+	registerViewUpdaters(update) {
+		this.viewUpdaters.push(update)
 	}
 
 	animate = (timestamp) => {
@@ -67,7 +72,8 @@ export class Animator {
 				// props.domains.forEach(d => d.init())
 			}
 
-			this.update()
+			this.modelUpdaters.forEach(update => update())
+			this.viewUpdaters.forEach(update => update())
 		}
 
 		this.elapsedTimeTotal += elapsedTime
@@ -77,8 +83,6 @@ export class Animator {
 			requestAnimationFrame(this.animate)
 		}
 	}
-
-	private update = () => this.updaters.forEach(update => update())
 
 	accelerate(): number {
 		const index = this.multipliers.indexOf(this.multiplier)

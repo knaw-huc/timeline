@@ -1,6 +1,5 @@
-import { Pixels, Milliseconds } from '../constants';
+import { Milliseconds, Pixels } from '../constants';
 import { Granularity } from '../utils/dates';
-import EventsBand from './band/events';
 export declare class RawEv3nt {
     date: Milliseconds;
     date_granularity?: Granularity;
@@ -15,11 +14,8 @@ export declare class RawEv3nt {
     label?: string;
     row?: number;
     wikidata_identifier?: string;
+    from: Milliseconds;
+    to: Milliseconds;
+    time?: Milliseconds;
+    textWidth?: Pixels;
 }
-declare class DomainEvent extends RawEv3nt {
-    left: Pixels;
-    width: Pixels;
-    constructor(rawEvent: RawEv3nt, band: EventsBand);
-    isInterval(): boolean;
-}
-export default DomainEvent;

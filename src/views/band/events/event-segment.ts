@@ -1,8 +1,8 @@
 import DomainEvent, { RawEv3nt } from '../../../models/event'
 import PointInTime from './event/point-in-time'
 import Interval from './event/interval'
-import EventsBand from '../../../models/domain'
 import { RawSegment } from '../../../constants'
+import EventsBand from '../../../models/band/events';
 
 export default class Segment {
 	rendered = false

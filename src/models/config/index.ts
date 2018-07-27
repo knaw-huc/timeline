@@ -16,19 +16,19 @@ export abstract class DomainConfig {
 	topOffsetRatio?: Ratio = 0
 }
 
-export abstract class MinimapDomainConfig extends DomainConfig {
+export class MinimapDomainConfig extends DomainConfig {
 	// The indices of the events domains which are visualized by the minimap
 	targets?: number[] = []
 }
 
-export abstract class EventsDomainConfig extends DomainConfig {
-	events?: RawEv3nt[] = []
-	label?: string = null
-	orderedEvents?: OrderedEvents = null
+export class EventsDomainConfig extends DomainConfig {
+	events?: RawEv3nt[]
+	label?: string
+	orderedEvents?: OrderedEvents
 }
 
-export abstract class BandConfig<T> {
-	domains?: T[]
+export class BandConfig<T> {
+	domains?: T[] = []
 
 	// Number between 0 and 1 representing the visible ratio of the domain
 	// in relation to the total. If the total is 8 months, a ratio of .75
@@ -40,11 +40,11 @@ export abstract class BandConfig<T> {
 export default class Config {
 	center?: Ratio = .5
 
-	events?: BandConfig<EventsDomainConfig>
+	events: BandConfig<EventsDomainConfig>
 
-	minimaps?: BandConfig<MinimapDomainConfig>[]
+	minimaps?: BandConfig<MinimapDomainConfig>[] = []
 
 	// The HTML element where the Timeline will be attached to. The element should be a
 	// block element with a width and height.
-	rootElement?: HTMLElement = null
+	rootElement: HTMLElement
 }

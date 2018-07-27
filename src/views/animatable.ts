@@ -2,7 +2,7 @@ import animator from "../animator";
 
 export default abstract class Animatable {
 	register() {
-		animator.registerUpdater(this.update)
+		animator.registerViewUpdaters(this.update)
 	}
 
 	abstract render(): HTMLElement

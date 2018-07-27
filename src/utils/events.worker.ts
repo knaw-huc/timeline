@@ -1,5 +1,6 @@
-import { Milliseconds, Grid, Pixels, Ratio } from "../constants"
+import { Milliseconds, Grid } from "../constants"
 import { RawEv3nt } from "../models/event";
+import { byDate } from "./dates";
 
 export class OrderedEvents {
 	events: RawEv3nt[] = []
@@ -9,35 +10,47 @@ export class OrderedEvents {
 	rowCount: number = 0
 }
 
-export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRatio: Ratio): OrderedEvents { 
+// TODO remove visibleRatio and use 1 ms per 1 pixel as normalized values
+export function orderEvents(events: RawEv3nt[]): OrderedEvents { 
 	if (!events.length) return new OrderedEvents()
 	/** Keep a count the number of rows. It's returned to the main thread to construct the events bar and indicators */
 	let rowCount: number = 0
+
+	events = events.sort(byDate)
+
+	const from = events.reduce((prev, curr) => {
+		return Math.min(curr.date_min || Infinity, curr.date || Infinity, prev)
+	}, Infinity)
+
+	const to = events.reduce((prev, curr) => {
+		return Math.max(curr.end_date_max || -Infinity, curr.end_date || -Infinity, prev)
+	}, -Infinity)
+
 	/**
 	 * The grid exists of rows of cells. A cell is an event defined by it's left position and width:
 	 * cell = [left, width], row = [cell, cell, etc], grid = [row, row, etc]
 	*/
 	const grid: Grid = []
-	const firstEvent = events[0]
-	const from: Milliseconds = firstEvent.date_min != null ? firstEvent.date_min : firstEvent.date
-	const lastEvent = events[events.length - 1]
-	const to: Milliseconds = lastEvent.end_date_max != null ?
-		lastEvent.end_date_max :
-		lastEvent.end_date != null ?
-			lastEvent.end_date :
-			lastEvent.date
-	const millisecondsPerPixel = (to - from) / (viewportWidth / visibleRatio)
-	const eventMinWidth = millisecondsPerPixel * viewportWidth * .1
+	// const millisecondsPerPixel = (to - from) / (viewportWidth / visibleRatio)
+	// const eventMinWidth = millisecondsPerPixel * viewportWidth * .1
+
+	const ctx = document.createElement('canvas').getContext('2d')
+	// TODO turn in to constant
+	ctx.font = '10px sans-serif'
 
 	const addRow = (event: RawEv3nt): RawEv3nt => {
 		// Create a variable to hold the row to find
 		let row: number
 
-		// The right position of the event (event.date is the left position)
-		// let right: Milliseconds = event.hasOwnProperty('endDate') ? event.endDate : event.date
-		const from = event.date_min != null ? event.date_min : event.date
-		let to = event.end_date_max != null ? event.end_date_max : event.end_date
-		if (to == null || (to - from) < eventMinWidth) to = from + eventMinWidth
+		// TODO add from and to to the event object
+		// TODO add width to the event object (width in pixels (calc text length if pit and if interval smaller than text length))
+		// 		but be carefull, width is also calced when zoom, etc, so should be some sort of normalized width
+		
+		event.from = event.date_min != null ? event.date_min : event.date
+		event.to = event.end_date_max != null ? event.end_date_max : event.end_date
+
+		event.time = event.to == null ? 0 : event.to - event.from
+		event.textWidth = ctx.measureText(event.label).width
 
 		// Search the grid for a row which has space for the current event
 		let rowIterator = 0
@@ -47,12 +60,12 @@ export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRa
 			let hasSpace = true
 
 			while (hasSpace && cellIterator < rows.length) {
-				hasSpace = (to < rows[cellIterator][0] || from > rows[cellIterator][1])
+				hasSpace = (event.to < rows[cellIterator][0] || event.from > rows[cellIterator][0] + rows[cellIterator][1])
 				cellIterator++
 			}
 
 			if (hasSpace) {
-				rows.push([from, to])
+				rows.push([event.from, event.time])
 				row = rowIterator
 			}	
 
@@ -61,7 +74,7 @@ export function orderEvents(events: RawEv3nt[], viewportWidth: Pixels, visibleRa
 
 		// If row is undefined, it means there is no space in the current grid and
 		// we need to add an extra row to the grid
-		if (row == null) row = grid.push([[from, to]]) - 1
+		if (row == null) row = grid.push([[event.from, event.time]]) - 1
 
 		// Increment the row count if necessary
 		if (row > rowCount) rowCount = row

@@ -24,6 +24,7 @@
 			const eventsExplorers = await responseExplorers.json()
 
 			const t = new Timeline.default({
+				center: .95,
 				events: {
 					zoomLevel: 6,
 					domains: [
@@ -53,14 +54,14 @@
 							heightRatio: .05,
 							topOffsetRatio: .90,
 						}],
-						zoomLevel: 2
+						zoomLevel: 2,
 					},
 					{	
 						domains: [{
 							targets: [0, 1, 2],
 							heightRatio: .05,
 							topOffsetRatio: .95,
-						}]
+						}],
 					},
 				],
 				rootElement: document.getElementById('timeline'),
