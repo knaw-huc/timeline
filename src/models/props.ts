@@ -2,8 +2,9 @@ import { CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
 import EventsBand from "./band/events"
-import { debounce } from "../utils"
+import { debounce, calcPixelsPerMillisecond } from "../utils"
 import prepareConfig from '../utils/prepare-config'
+import { byDate } from "../utils/dates";
 
 export class Props {
 	private readonly defaultCenter = .5
@@ -21,6 +22,7 @@ export class Props {
 	to: Milliseconds
 
 	viewportHeight: Pixels
+	viewportOffset: Pixels
 	viewportWidth: Pixels
 
 	init(config: Config) {
@@ -28,21 +30,26 @@ export class Props {
 
 		this.dimensions = config.rootElement
 
-		config = prepareConfig(config, this.viewportWidth)
+		const froms = []
+		const tos = []
+		for (const domain of config.events.domains) {
+			let events
+			if (domain.hasOwnProperty('events')) {
+				domain.events.sort(byDate)	
+				events = domain.events
+			}
+			if (events == null) events = domain.orderedEvents.events
 
-		this.from = config.events.domains
-			.reduce((prev, curr) => {
-				const { from } = curr.orderedEvents
-				if (prev == null) return from
-				return (prev < from) ? prev : from
-			}, null as number)
+			froms.push(events[0].date_min || events[0].date)
+			tos.push(events.reduce((prev, curr) => {
+				return Math.max(prev, curr.end_date || -Infinity, curr.end_date_max || -Infinity)
+			}, -Infinity))
+		}
+		this.from = Math.min(...froms) 
+		this.to = Math.max(...tos)
 
-		this.to = config.events.domains
-			.reduce((prev, curr) => {
-				const { to } = curr.orderedEvents
-				if (prev == null) return to
-				return (prev > to) ? prev : to
-			}, null as number)
+		const pixelsPerMillisecond = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
+		config = prepareConfig(config, pixelsPerMillisecond)
 
 		this.time = this.to - this.from
 
@@ -51,11 +58,6 @@ export class Props {
 		this.minimapBands = config.minimaps.map(mm => new MinimapBand(mm))
 
 		this.eventsBand = new EventsBand(config.events)
-
-		// Last, but not least, initiate the Domains. This depends on almost all the data
-		// in this class, so keep it last (after viewport size, from, to, time, etc are set)
-		// const indices = selectRandom(createRange(colors.length), this.config.domains.filter(d => d.type === 'events').length)
-		// this.domains = this.config.domains.map((d, i) => new Domain(d, colors[indices[i]]))
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */
@@ -71,11 +73,10 @@ export class Props {
 
 	set dimensions(rootElement: HTMLElement) {
 		const style = getComputedStyle(rootElement)
-		const nextWidth = parseInt(style.getPropertyValue('width'), 10)
-		const nextHeight = parseInt(style.getPropertyValue('height'), 10)
 
-		this.viewportWidth = nextWidth
-		this.viewportHeight = nextHeight
+		this.viewportHeight = parseInt(style.getPropertyValue('height'), 10)
+		this.viewportOffset = rootElement.getBoundingClientRect().top
+		this.viewportWidth = parseInt(style.getPropertyValue('width'), 10)
 	}
 
 	private centerChangeDone = debounce(() => {

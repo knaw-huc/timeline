@@ -42,7 +42,7 @@ export default class BandView {
 	}
 
 	private onMouseMove = (ev) => {
-		if (this.dragOffset) {
+		if (this.dragOffset && this.band.zoomLevel > 0) {
 			const left = this.dragStart - (this.dragOffset - ev.clientX)
 			props.center = left / (props.viewportWidth - this.band.width)
 			animator.play() // Request an animation frame from the Animator

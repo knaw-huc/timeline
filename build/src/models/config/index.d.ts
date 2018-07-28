@@ -4,6 +4,7 @@ import { RawEv3nt } from "../event";
 export declare abstract class DomainConfig {
     heightRatio?: Ratio;
     rulers?: boolean;
+    rulerLabels?: boolean;
     topOffsetRatio?: Ratio;
 }
 export declare class MinimapDomainConfig extends DomainConfig {

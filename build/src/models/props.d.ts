@@ -10,6 +10,7 @@ export declare class Props {
     time: Milliseconds;
     to: Milliseconds;
     viewportHeight: Pixels;
+    viewportOffset: Pixels;
     viewportWidth: Pixels;
     init(config: Config): void;
     private _center;

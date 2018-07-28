@@ -83,9 +83,13 @@ export class Animator {
 
 		this.elapsedTimeTotal += elapsedTime
 
-		if ((this.isPlaying() && props.center > 0 && props.center < 1) || this.zoomMarker != null) {
-			this.prevTimestamp = timestamp
-			requestAnimationFrame(this.animate)
+		if (this.isPlaying() || this.zoomMarker != null) {
+ 			if ((props.center > 0 && props.center < 1) || this.centerMarker != null) {
+				this.prevTimestamp = timestamp
+				requestAnimationFrame(this.animate)
+			} else {
+				this.stop()
+			}
 		}
 	}
 

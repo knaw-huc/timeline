@@ -53,6 +53,7 @@ export default class Canvas {
 		this.ctx.beginPath()
 
 		props.eventsBand.domains.forEach(domain => {
+
 			if (domain.rulers) this.drawRulers(props.eventsBand, domain)
 		})
 
@@ -64,11 +65,16 @@ export default class Canvas {
 			})
 		})
 
+
 		this.ctx.closePath()
 
 		props.eventsBand.domains.forEach(domain => {
 			this.drawEvents(domain)
 		})
+
+		this.ctx.fillStyle = `rgba(255, 0, 0, .5)`
+		const x = props.eventsBand.positionAtTimestamp(props.eventsBand.timestampAtProportion(props.center)) + props.eventsBand.left
+		this.ctx.fillRect(x - 1, 0, 2, props.viewportHeight)
 	}
 
 	private drawEvents(domain: EventsDomainConfig) {
@@ -80,15 +86,15 @@ export default class Canvas {
 		const domainHeight = (domain.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
 
 		for (const event of visibleEvents) {
-			const eventWidth = Math.round(event.time * band.pixelsPerMillisecond)
-			let eventLeft = band.positionAtTimestamp(event.date_min != null ? event.date_min : event.date) - left
+			const eventWidth = Math.round((event.time + event.space) * band.pixelsPerMillisecond)
+			let eventLeft = band.positionAtTimestamp(event.from) - left
 			const y = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
 			let width = eventWidth < 1 ? 1 : eventWidth
 
 			this.ctx.fillStyle = `rgba(126, 0, 0, .3)`
-			if (event.end_date == null) {
+			if (!event.time) {
 				this.ctx.beginPath()
-				this.ctx.arc(eventLeft - EVENT_HEIGHT/2, y + EVENT_HEIGHT/2, EVENT_HEIGHT/2, 0, 2 * Math.PI)
+				this.ctx.arc(eventLeft, y + EVENT_HEIGHT/2, EVENT_HEIGHT/3, 0, 2 * Math.PI)
 				this.ctx.fill()
 				this.ctx.closePath()
 			} else {
@@ -101,7 +107,8 @@ export default class Canvas {
 			}
 			if (this.ctx.measureText(event.label).width + 10 < width) {
 				this.ctx.fillStyle = `rgb(126, 0, 0)`
-				this.ctx.fillText(event.label, eventLeft + 3, y + EVENT_HEIGHT - 3)
+				const paddingLeft = event.time ? 3 : 8
+				this.ctx.fillText(event.label, eventLeft + paddingLeft, y + EVENT_HEIGHT - 3)
 			}
 		}
 	}
@@ -177,7 +184,7 @@ export default class Canvas {
 			const left = band.positionAtTimestamp(date) + band.left
 			this.ctx.moveTo(left, y)
 			this.ctx.lineTo(left, y + height)
-			this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
+			if (domain.rulerLabels) this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
 			date = band.nextDate(date)
 		}
 		this.ctx.stroke()

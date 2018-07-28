@@ -2,13 +2,13 @@ import props from './models/props'
 import Config from './models/config/index'
 import BandView from './views/band'
 import createElement from './utils/create-element'
-import { debounce } from './utils'
+import { debounce, calcPixelsPerMillisecond } from './utils'
 import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 
-export { Config as TimelineConfig, orderEvents, OrderedEvents }
+export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
 
 // TODO add a roadmap
 // TODO Add open ranges (ie: people still alive)
@@ -19,6 +19,7 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents }
 // TODO make indicator draggable
 // TODO add config to add space/time before first and last events
 // TODO if minimap visible area is bigger than viewport, zoom out the minimap
+// TODO show when playing animation (button pressed?)
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 

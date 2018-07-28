@@ -10,6 +10,9 @@ export abstract class DomainConfig {
 	// Show rulers?
 	rulers?: boolean = true
 
+	// Show the labels of the rulers (the corresponding dates)
+	rulerLabels?: boolean = true
+
 	// Number between 0 and 1 representing the offset from the top
 	// at which the domain should start. A ratio of .3 would make the
 	// domain start at 30% from the top.

@@ -2,6 +2,10 @@ import BandView from './index'
 import eventBus from '../../event-bus';
 import EventsBand from '../../models/band/events';
 
+function formatDate(ts) {
+	const d = new Date(ts)
+	return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
 export default class EventsBandView extends BandView {
 	constructor(public band: EventsBand) {
 		super(band)
@@ -15,6 +19,6 @@ export default class EventsBandView extends BandView {
 
 	private onClick = (ev) => {
 		const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY)
-		console.log(event)
+		if (event) console.log(event.label, formatDate(event.from), formatDate(event.to), event)
 	}
 }

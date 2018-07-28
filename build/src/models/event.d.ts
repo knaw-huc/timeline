@@ -17,5 +17,6 @@ export declare class RawEv3nt {
     from: Milliseconds;
     to: Milliseconds;
     time?: Milliseconds;
+    space: Milliseconds;
     textWidth?: Pixels;
 }

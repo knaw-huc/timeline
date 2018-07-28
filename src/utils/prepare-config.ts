@@ -1,8 +1,8 @@
-import Config, { EventsDomainConfig, BandConfig, MinimapDomainConfig } from "../models/config";
-import { orderEvents } from "./events.worker";
-import { Pixels } from "../constants";
+import Config, { EventsDomainConfig, BandConfig, MinimapDomainConfig } from "../models/config"
+import { orderEvents } from "./events.worker"
+import { Pixels } from "../constants"
 
-export default function prepareConfig(config: Config, viewportWidth: Pixels): Config {
+export default function prepareConfig(config: Config, pixelsPerMillisecond: Pixels): Config {
 	if (config.events == null) {
 		console.error('[DomainConfig] No events band in config!')
 		return config
@@ -19,7 +19,7 @@ export default function prepareConfig(config: Config, viewportWidth: Pixels): Co
 			console.error('[DomainConfig] No events in config!')
 		}
 		else if (domainConfig.orderedEvents == null) {
-			domainConfig.orderedEvents = orderEvents(domainConfig.events)
+			domainConfig.orderedEvents = orderEvents(domainConfig.events, pixelsPerMillisecond)
 			delete domainConfig.events
 		}
 

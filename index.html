@@ -24,7 +24,7 @@
 			const eventsExplorers = await responseExplorers.json()
 
 			const t = new Timeline.default({
-				center: .95,
+				center: .9,
 				events: {
 					zoomLevel: 6,
 					domains: [
@@ -32,11 +32,13 @@
 							events: eventsVOC,
 							heightRatio: .30,
 							label: 'VOC voyages',
+							rulerLabels: false,
 						},
 						{
 							events: eventsPhilosophy,
 							heightRatio: .30,
 							label: 'political philosophers',
+							rulerLabels: false,
 							topOffsetRatio: .30,
 						},
 						{

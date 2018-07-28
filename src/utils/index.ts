@@ -1,5 +1,5 @@
 import { RawEv3nt } from "../models/event";
-import { Milliseconds, Ratio } from "../constants";
+import { Milliseconds, Ratio, Pixels } from "../constants";
 import { Granularity, getStep } from "./dates";
 
 export const debounce = (func, wait) => {
@@ -85,4 +85,8 @@ export function selectRandom(set: (string | number)[], amount: number) {
 	}
 
 	return selected
+}
+
+export function calcPixelsPerMillisecond(viewportWidth: Pixels, zoomLevel: number, totalTime: Milliseconds) {
+	return (viewportWidth / visibleRatio(zoomLevel)) / totalTime
 }

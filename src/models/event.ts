@@ -25,6 +25,11 @@ export class RawEv3nt {
 	// For an interval, if something takes 1 year, time = 31536000000
 	time?: Milliseconds
 
+	// The space an event needs for display
+	// Point in Time = label width + padding
+	// Interval = time + padding
+	space: Milliseconds
+
 	textWidth?: Pixels
 }
 

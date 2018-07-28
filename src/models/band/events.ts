@@ -17,17 +17,15 @@ export default class EventsBand extends Band {
 		const timestamp = this.timestampAtProportion(this.proportionAtPosition(x))
 
 		const domain = this.domains.find(d => {
-			const top = d.topOffsetRatio * props.viewportHeight
-			const height = d.heightRatio * props.viewportHeight
+			const top = props.viewportOffset + d.topOffsetRatio * props.viewportHeight
+			const height = props.viewportOffset + d.heightRatio * props.viewportHeight
 			return top < y && top + height > y
 		})
 
 		const event = domain.orderedEvents.events.find(e => {
-			const eventFrom = e.date_min != null ? e.date_min : e.date
-			const eventTo = e.end_date_max != null ? e.end_date_max : e.end_date
-			if (!(eventFrom < timestamp && eventTo > timestamp)) return false
+			if (!(e.from < timestamp && e.from + e.time + e.space > timestamp)) return false
 
-			const bottomOfDomain = ((domain.topOffsetRatio + domain.heightRatio) * props.viewportHeight) - DATE_BAR_HEIGHT
+			const bottomOfDomain = props.viewportOffset + ((domain.topOffsetRatio + domain.heightRatio) * props.viewportHeight) - DATE_BAR_HEIGHT
 			const row = Math.floor((bottomOfDomain - y) / (EVENT_HEIGHT + 2))
 			return e.row === row
 		})
@@ -37,12 +35,10 @@ export default class EventsBand extends Band {
 
 	zoomIn() {
 		animator.zoomTo(this.zoomLevel + 1)
-		console.log('in', this.zoomLevel)
 	}
 
 	zoomOut() {
 		const nextZoomLevel = (this.zoomLevel === 0) ? 0 :  this.zoomLevel - 1
 		animator.zoomTo(nextZoomLevel)
-		console.log('out', this.zoomLevel)
 	}
 }
