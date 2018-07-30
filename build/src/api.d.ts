@@ -7,9 +7,14 @@ export interface OnChangeFunctionProps {
 }
 export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void;
 export default class Api {
+    private onChange;
     animator: Animator;
-    constructor();
-    init(onInit: OnChangeFunction): void;
-    change(onChange: OnChangeFunction): void;
+    constructor(onChange: (changeProps: {
+        center: Ratio;
+        visibleFrom: Milliseconds;
+        visibleTo: Milliseconds;
+    }) => void);
     private handleChange;
+    zoomIn(): void;
+    zoomOut(): void;
 }

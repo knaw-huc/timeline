@@ -30,6 +30,10 @@ export class RawEv3nt {
 	// Interval = time + padding
 	space: Milliseconds
 
+	left: Pixels
+	top: Pixels
+	width: Pixels
+
 	textWidth?: Pixels
 }
 

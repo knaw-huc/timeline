@@ -114,7 +114,7 @@ export class Animator {
 	}
 
 	zoomTo(nextZoomLevel: Ratio) {
-		if (this.zoomMarker != null) return
+		if (nextZoomLevel < 0) nextZoomLevel = 0
 		this.zoomMarker = nextZoomLevel
 		this.play()
 	}

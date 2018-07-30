@@ -4,9 +4,9 @@ import { orderEvents, OrderedEvents } from './utils/events.worker';
 import Api from './api';
 export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond };
 export default class Timeline extends Api {
-    private config;
+    protected config: Config;
     private wrapper;
-    constructor(config: Config);
+    constructor(config: Config, onChange?: any);
     resize: () => void;
     private debouncedResize;
     reload: (config?: Config) => void;

@@ -38,7 +38,6 @@ export default class EventsBand extends Band {
 	}
 
 	zoomOut() {
-		const nextZoomLevel = (this.zoomLevel === 0) ? 0 :  this.zoomLevel - 1
-		animator.zoomTo(nextZoomLevel)
+		animator.zoomTo(this.zoomLevel - 1)
 	}
 }

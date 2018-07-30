@@ -23,8 +23,8 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
-	constructor(private config: Config) {
-		super()
+	constructor(protected config: Config, onChange?) {
+		super(onChange)
 
 		props.init(config)
 
