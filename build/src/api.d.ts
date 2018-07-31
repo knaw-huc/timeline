@@ -9,7 +9,7 @@ export declare type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event)
 export default class Api {
     private onChange;
     animator: Animator;
-    constructor(onChange: (changeProps: {
+    constructor(rootElement: HTMLElement, onChange: (changeProps: {
         center: Ratio;
         visibleFrom: Milliseconds;
         visibleTo: Milliseconds;

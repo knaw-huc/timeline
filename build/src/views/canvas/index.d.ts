@@ -4,11 +4,16 @@ export default class Canvas {
     private ctx;
     private offsiteCanvas;
     private offsiteCtx;
+    private indicatorsCanvas;
+    private indicatorsCtx;
     constructor();
-    render(): HTMLCanvasElement;
+    render(): HTMLCanvasElement[];
+    private drawStaticMinimapBands();
+    private clear;
     update: () => void;
-    private drawEvents(domain);
+    private drawEvents();
+    private drawEventsText();
     private drawMinimap(band, domain);
-    private drawIndicators(band, domain);
-    private drawRulers(band, domain);
+    private drawIndicators();
+    private drawRulers(band);
 }
