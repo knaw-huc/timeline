@@ -23,8 +23,8 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
-	constructor(protected config: Config, onChange?) {
-		super(onChange)
+	constructor(protected config: Config, onChange?, private onSelect?) {
+		super(config.rootElement, onChange)
 
 		props.init(config)
 
@@ -64,7 +64,7 @@ export default class Timeline extends Api {
 		this.appendToWrapper(new Canvas())
 
 		// Render bands (for mouse interactivity)
-		this.appendToWrapper(new EventsBandView(props.eventsBand))
+		this.appendToWrapper(new EventsBandView(props.eventsBand, this.onSelect))
 		props.minimapBands
 			.map(band => new BandView(band))
 			.forEach(this.appendToWrapper)
@@ -98,5 +98,9 @@ export default class Timeline extends Api {
 
 	}
 
-	private appendToWrapper = (child) => this.wrapper.appendChild(child.render())
+	private appendToWrapper = (child) => {
+		let children = child.render()
+		if (!Array.isArray(children)) children = [children]
+		children.forEach(c => this.wrapper.appendChild(c))
+	}
 }
