@@ -9,6 +9,7 @@ export default class Api {
 	animator: Animator = animator
 
 	constructor(
+		rootElement: HTMLElement, 
 		private onChange: (changeProps: { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }) => void
 	) {
 		document.addEventListener('keydown', (ev) => {
@@ -16,13 +17,11 @@ export default class Api {
 			if (ev.keyCode === 187) props.eventsBand.zoomIn() // +
 		})
 
-		document.addEventListener('wheel', (ev) => {
+		rootElement.addEventListener('wheel', (ev) => {
 			if (Math.abs(ev.deltaX) === 0 && ev.deltaY !== 0) {
 				const nz = props.eventsBand.zoomLevel += ev.deltaY/20
-				console.log(ev.deltaY, nz)
 				animator.zoomTo(nz)
 			}
-			else if (Math.abs(ev.deltaY) === 0 && ev.deltaX !== 0) console.log('move')
 		})
 
 		if (this.onChange != null && typeof this.onChange === 'function') {
