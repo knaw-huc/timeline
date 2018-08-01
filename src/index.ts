@@ -70,21 +70,29 @@ export default class Timeline extends Api {
 		props.eventsBand.domains
 			.filter(d => d.label != null)
 			.map(d => {
-				const eventsLabel: HTMLDivElement = createElement('div', 'events-label',
+				const eventsLabelWrapper: HTMLDivElement = createElement('div', 'events-label-wrapper',
 					[
-						'border-bottom-right-radius: 4px',
-						'color: #444',
-						'font-size: .8em',
-						'font-family: sans-serif',
-						'padding: 2px 4px',
+						'border-top: 1px solid #CCC',
 						'position: absolute',
+						'width: 100%',
 					],
 					[
 						`top: ${d.topOffsetRatio * 100}%`
 					]
 				)
+				const eventsLabel: HTMLDivElement = createElement('div', 'events-label', [
+					'background: white',
+					'border-bottom-right-radius: 4px',
+					'box-shadow: 1px 2px 4px #AAA',
+					'display: inline-block',
+					'color: #444',
+					'font-size: .8em',
+					'font-family: sans-serif',
+					'padding: 4px 8px',
+				])
 				eventsLabel.innerText = d.label
-				this.wrapper.appendChild(eventsLabel)
+				eventsLabelWrapper.appendChild(eventsLabel)
+				this.wrapper.appendChild(eventsLabelWrapper)
 			})
 
 	}
