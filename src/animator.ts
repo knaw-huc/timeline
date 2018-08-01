@@ -71,7 +71,22 @@ export class Animator {
 					props.eventsBand.zoomLevel = this.zoomMarker
 					this.stop()
 				}
-				else props.eventsBand.zoomLevel = props.eventsBand.zoomLevel + zoomDelta
+				else {
+					props.eventsBand.zoomLevel = props.eventsBand.zoomLevel + zoomDelta
+				}
+
+				// A minimap zoom level should never be greater than the events band zoom level
+				props.minimapBands.forEach(mmb => {
+					// If the events band zoomlevel becomes smaller than the minimap band zoomlevel,
+					// adjust the minimap band zoom level to follow the events band zoom level
+					if (props.eventsBand.zoomLevel < mmb.config.zoomLevel) {
+						mmb.zoomLevel = props.eventsBand.zoomLevel
+					// If the events band zoom level becomes greater than the minimap zoom level,
+					// set the minimap zoom level back to the config value
+					} else if (mmb.zoomLevel !== mmb.config.zoomLevel) {
+						mmb.zoomLevel = mmb.config.zoomLevel
+					}
+				})
 			}
 
 			// Update the models. This is real quick ~0ms
