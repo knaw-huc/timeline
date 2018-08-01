@@ -141,19 +141,19 @@ const getWeekNumber = (date: Date) => {
 export const labelBody = (d: Milliseconds, granularity: Granularity) => {
 	const date = new Date(d)
 	if (granularity >= Granularity.YEAR) {
-		return date.getFullYear().toString()
+		return date.getUTCFullYear().toString()
 	} else if (granularity === Granularity.MONTH) {
-		let body = months[date.getMonth()]
-		if (date.getMonth() === 0) body = `${date.getFullYear().toString()}, ${body}`
+		let body = months[date.getUTCMonth()]
+		if (date.getUTCMonth() === 0) body = `${date.getUTCFullYear().toString()}, ${body}`
 		return body
 	} else if (granularity === Granularity.WEEK) {
-		return `${months[date.getMonth()]}<br />week ${getWeekNumber(date)}`
+		return `${months[date.getUTCMonth()]}, week ${getWeekNumber(date)}`
 	} else if (granularity === Granularity.DAY) {
-		let body = days[date.getDay()]
-		body = `${body}<br />${months[date.getMonth()]} ${date.getDate()}`
-		if (date.getMonth() === 0 && date.getDate() === 1) body = `${body}, ${date.getFullYear().toString()}`
+		let body = days[date.getUTCDay()]
+		body = `${body}, ${months[date.getUTCMonth()]} ${date.getUTCDate()}`
+		if (date.getUTCMonth() === 0 && date.getUTCDate() === 1) body = `${body}, ${date.getUTCFullYear().toString()}`
 		return body
 	} else if (granularity === Granularity.HOUR) {
-		return 'NOT IMPLEMENTED'
+		return `${date.getUTCHours()}:00`
 	}
 }

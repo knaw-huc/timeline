@@ -25,7 +25,7 @@ export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granu
 	}
 
 	const date = new Date(timestamp)
-	let year = date.getFullYear()
+	let year = date.getUTCFullYear()
 
 	if (granularity >= Granularity.YEAR) {
 		const step = getStep(granularity)
@@ -40,9 +40,11 @@ export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granu
 			return Date.UTC(year, 0, 1)
 		}
 	} else if (granularity === Granularity.MONTH) {
-		return Date.UTC(year, date.getMonth() + 1, 1)
+		return Date.UTC(year, date.getUTCMonth() + 1, 1)
 	} else if (granularity === Granularity.DAY) {
-		return Date.UTC(year, date.getMonth(), date.getDate() + 1)
+		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate() + 1)
+	} else if (granularity === Granularity.HOUR) {
+		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
 	}
 
 	return timestamp
