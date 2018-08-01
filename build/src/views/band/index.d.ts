@@ -10,4 +10,5 @@ export default class BandView {
     private onMouseMove;
     private onMouseUp;
     private onDblClick;
+    resize(): void;
 }

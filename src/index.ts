@@ -21,6 +21,8 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 // TODO if minimap visible area is bigger than viewport, zoom out the minimap
 // TODO show when playing animation (button pressed?)
 export default class Timeline extends Api {
+	private minimapBandViews: BandView[]
+	private eventsBandView: EventsBandView
 	private wrapper: HTMLElement
 
 	constructor(protected config: Config, onChange?, private onSelect?) {
@@ -36,7 +38,9 @@ export default class Timeline extends Api {
 	public resize = () => {
 		props.dimensions = this.config.rootElement
 		props.eventsBand.zoomLevel = props.eventsBand.zoomLevel
+		this.eventsBandView.resize()
 		props.minimapBands.forEach(mmb => mmb.zoomLevel = mmb.zoomLevel)
+		this.minimapBandViews.forEach(mmbv => mmbv.resize())
 		this.animator.play()
 	}
 	private debouncedResize = debounce(this.resize, 600)
@@ -64,10 +68,11 @@ export default class Timeline extends Api {
 		this.appendToWrapper(new Canvas())
 
 		// Render bands (for mouse interactivity)
-		this.appendToWrapper(new EventsBandView(props.eventsBand, this.onSelect))
-		props.minimapBands
-			.map(band => new BandView(band))
-			.forEach(this.appendToWrapper)
+		this.eventsBandView = new EventsBandView(props.eventsBand, this.onSelect)
+		this.appendToWrapper(this.eventsBandView)
+
+		this.minimapBandViews = props.minimapBands.map(band => new BandView(band))
+		this.minimapBandViews.forEach(this.appendToWrapper)
 
 		this.renderLabels()
 

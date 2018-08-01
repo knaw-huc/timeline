@@ -58,4 +58,8 @@ export default class BandView {
 		const nextCenter = this.band.proportionAtPosition(ev.clientX)
 		animator.goTo(nextCenter)
 	}
+
+	resize() {
+		this.rootElement.style.cssText = `height: ${this.band.height}px; top: ${this.band.top}px; width: ${props.viewportWidth}px;`
+	}
 }

@@ -6,6 +6,8 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 export default class Timeline extends Api {
     protected config: Config;
     private onSelect;
+    private minimapBandViews;
+    private eventsBandView;
     private wrapper;
     constructor(config: Config, onChange?: any, onSelect?: any);
     resize: () => void;
