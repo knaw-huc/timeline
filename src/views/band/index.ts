@@ -3,8 +3,9 @@ import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import eventBus from '../../event-bus'
 import animator from '../../animator'
+import View from '../index'
 
-export default class BandView {
+export default class BandView implements View { 
 	private dragStart: number
 	private dragOffset: number
 	protected rootElement: HTMLElement

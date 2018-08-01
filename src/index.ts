@@ -7,6 +7,8 @@ import { orderEvents, OrderedEvents } from './utils/events.worker'
 import Api from './api'
 import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
+import View from './views';
+import Label from './views/label'
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
 
@@ -18,7 +20,6 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 // TODO make it possible to have only minimap bands (see index.floods.html)
 // TODO make indicator draggable
 // TODO add config to add space/time before first and last events
-// TODO if minimap visible area is bigger than viewport, zoom out the minimap
 // TODO show when playing animation (button pressed?)
 export default class Timeline extends Api {
 	private minimapBandViews: BandView[]
@@ -69,35 +70,12 @@ export default class Timeline extends Api {
 	private renderLabels() {
 		props.eventsBand.domains
 			.filter(d => d.label != null)
-			.map(d => {
-				const eventsLabelWrapper: HTMLDivElement = createElement('div', 'events-label-wrapper',
-					[
-						'border-top: 1px solid #CCC',
-						'position: absolute',
-						'width: 100%',
-					],
-					[
-						`top: ${d.topOffsetRatio * 100}%`
-					]
-				)
-				const eventsLabel: HTMLDivElement = createElement('div', 'events-label', [
-					'background: white',
-					'border-bottom-right-radius: 4px',
-					'box-shadow: 1px 2px 4px #AAA',
-					'display: inline-block',
-					'color: #444',
-					'font-size: .8em',
-					'font-family: sans-serif',
-					'padding: 4px 8px',
-				])
-				eventsLabel.innerText = d.label
-				eventsLabelWrapper.appendChild(eventsLabel)
-				this.wrapper.appendChild(eventsLabelWrapper)
-			})
+			.map(d => new Label(d))
+			.forEach(this.appendToWrapper)
 
 	}
 
-	private appendToWrapper = (child) => {
+	private appendToWrapper = (child: View) => {
 		let children = child.render()
 		if (!Array.isArray(children)) children = [children]
 		children.forEach(c => this.wrapper.appendChild(c))

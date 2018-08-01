@@ -1,4 +1,5 @@
-export default class Canvas {
+import View from '../index';
+export default class Canvas implements View {
     private readonly font;
     private canvas;
     private ctx;

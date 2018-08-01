@@ -1,5 +1,6 @@
 import Band from '../../models/band';
-export default class BandView {
+import View from '../index';
+export default class BandView implements View {
     band: Band;
     private dragStart;
     private dragOffset;

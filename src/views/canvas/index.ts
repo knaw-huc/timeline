@@ -7,12 +7,13 @@ import MinimapBand from '../../models/band/minimap'
 import { MinimapDomainConfig } from '../../models/config'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
+import View from '../index'
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
  * It gives an overview of densely (and scarcely) populated areas
  */
-export default class Canvas {
+export default class Canvas implements View {
 	private readonly font: string = "10px sans-serif"
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
