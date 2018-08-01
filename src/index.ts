@@ -32,22 +32,8 @@ export default class Timeline extends Api {
 
 		config.rootElement.appendChild(this.render())
 
-		window.addEventListener('resize', this.debouncedResize)
-	}
-
-	public resize = () => {
-		props.dimensions = this.config.rootElement
-		props.eventsBand.zoomLevel = props.eventsBand.zoomLevel
-		this.eventsBandView.resize()
-		props.minimapBands.forEach(mmb => mmb.zoomLevel = mmb.zoomLevel)
-		this.minimapBandViews.forEach(mmbv => mmbv.resize())
-		this.animator.play()
-	}
-	private debouncedResize = debounce(this.resize, 600)
-
-	public reload = (config?: Config) => {
-		if (config != null) props.init(config)
-		this.resize()
+		const debouncedResize = debounce(this.resize, 600)
+		window.addEventListener('resize', debouncedResize)
 	}
 
 	private render() {
@@ -107,5 +93,19 @@ export default class Timeline extends Api {
 		let children = child.render()
 		if (!Array.isArray(children)) children = [children]
 		children.forEach(c => this.wrapper.appendChild(c))
+	}
+
+	reload = (config?: Config) => {
+		if (config != null) props.init(config)
+		this.resize()
+	}
+
+	resize = () => {
+		props.dimensions = this.config.rootElement
+		props.eventsBand.zoomLevel = props.eventsBand.zoomLevel
+		this.eventsBandView.resize()
+		props.minimapBands.forEach(mmb => mmb.zoomLevel = mmb.zoomLevel)
+		this.minimapBandViews.forEach(mmbv => mmbv.resize())
+		this.animator.play()
 	}
 }

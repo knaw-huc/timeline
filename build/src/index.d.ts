@@ -10,10 +10,9 @@ export default class Timeline extends Api {
     private eventsBandView;
     private wrapper;
     constructor(config: Config, onChange?: any, onSelect?: any);
-    resize: () => void;
-    private debouncedResize;
-    reload: (config?: Config) => void;
     private render();
     private renderLabels();
     private appendToWrapper;
+    reload: (config?: Config) => void;
+    resize: () => void;
 }
