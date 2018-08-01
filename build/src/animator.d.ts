@@ -1,7 +1,6 @@
 import { Ratio } from "./constants";
 export declare type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16;
 export declare class Animator {
-    private readonly elapsedTimeThreshold;
     private readonly goToDuration;
     private readonly zoomToDuration;
     private readonly interval;
@@ -17,7 +16,6 @@ export declare class Animator {
     registerModelUpdaters(update: any): void;
     registerViewUpdaters(update: any): void;
     animate: (timestamp: any) => void;
-    private resetElapsedTimeTotal();
     accelerate(): number;
     decelerate(): number;
     goTo(nextCenter: Ratio): void;
