@@ -1,0 +1,76 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Timeline</title>
+<style>
+	html, body {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+</style>
+<body>
+	<div id="timeline" style="width: 100%; height: 100%"></div>
+	<script src="../build/bundle.js"></script>
+	<script>
+		async function go() {
+			const responseVOC = await fetch('./data/voc.json')
+			const eventsVOC = await responseVOC.json()
+
+			const responsePhilosophy = await fetch('./data/political-philosophy.json')
+			const eventsPhilosophy = await responsePhilosophy.json()
+
+			const responseExplorers = await fetch('./data/explorers.json')
+			const eventsExplorers = await responseExplorers.json()
+
+			const t = new Timeline.default({
+				center: .9,
+				events: {
+					zoomLevel: 6,
+					domains: [
+						{
+							events: eventsVOC,
+							heightRatio: .30,
+							label: 'VOC voyages',
+							rulerLabels: false,
+						},
+						{
+							events: eventsPhilosophy,
+							heightRatio: .30,
+							label: 'political philosophers',
+							rulerLabels: false,
+							topOffsetRatio: .30,
+						},
+						{
+							events: eventsExplorers,
+							heightRatio: .30,
+							label: 'explorers',
+							topOffsetRatio: .60,
+						},
+					]
+				},
+				minimaps: [
+					{
+						domains: [{
+							targets: [0, 1, 2],
+							heightRatio: .05,
+							topOffsetRatio: .90,
+						}],
+						zoomLevel: 2,
+					},
+					{	
+						domains: [{
+							targets: [0, 1, 2],
+							heightRatio: .05,
+							topOffsetRatio: .95,
+						}],
+					},
+				],
+				rootElement: document.getElementById('timeline'),
+			},
+			() => {},
+			() => {})
+		}
+		go()
+	</script>
+</body>
