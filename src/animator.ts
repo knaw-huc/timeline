@@ -1,5 +1,5 @@
 import props from "./models/props";
-import { Milliseconds, Ratio } from "./constants";
+import { Milliseconds, Ratio, CENTER_CHANGE_DONE } from "./constants";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -9,6 +9,7 @@ enum Direction {
 }
 
 export class Animator {
+	private readonly elapsedTimeThreshold: Milliseconds = 2000
 	private readonly goToDuration: Milliseconds = 300
 	private readonly zoomToDuration: Milliseconds = 300
 	private readonly interval: number = .00001
@@ -97,6 +98,7 @@ export class Animator {
 		}
 
 		this.elapsedTimeTotal += elapsedTime
+		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.resetElapsedTimeTotal()
 
 		if (this.isPlaying() || this.zoomMarker != null) {
  			if ((props.center > 0 && props.center < 1) || this.centerMarker != null) {
@@ -106,6 +108,11 @@ export class Animator {
 				this.stop()
 			}
 		}
+	}
+
+	private resetElapsedTimeTotal() {
+		this.elapsedTimeTotal = 0
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
 	}
 
 	accelerate(): number {
