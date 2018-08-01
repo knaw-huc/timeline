@@ -19,8 +19,8 @@ export default class Api {
 
 		rootElement.addEventListener('wheel', (ev) => {
 			if (Math.abs(ev.deltaX) === 0 && ev.deltaY !== 0) {
-				const nz = props.eventsBand.zoomLevel += ev.deltaY/20
-				animator.zoomTo(nz)
+				if (ev.deltaY < 0) props.eventsBand.zoomOut()
+				if (ev.deltaY > 0) props.eventsBand.zoomIn()
 			}
 		})
 

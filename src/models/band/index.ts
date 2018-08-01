@@ -53,6 +53,7 @@ export default abstract class Band {
 	private _zoomLevel: number
 	get zoomLevel(): number { return this._zoomLevel }
 	set zoomLevel(zoomLevel: number) {
+		if (zoomLevel < 0) zoomLevel = 0
 		this.visibleRatio = visibleRatio(zoomLevel)
 		this.width = Math.round(props.viewportWidth / this.visibleRatio)
 		this.time = this.visibleRatio * props.time
