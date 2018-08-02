@@ -17,5 +17,5 @@ export declare const isEqual: (date1: Date, date2: Date) => boolean;
 export declare const getGranularity: (from: number, to: number, visibleRatio: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
 export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);
-export declare function byDate(a: RawEv3nt, b: RawEv3nt): 0 | 1 | -1;
+export declare function byDate(a: RawEv3nt, b: RawEv3nt): 1 | 0 | -1;
 export declare const labelBody: (d: number, granularity: Granularity) => string;

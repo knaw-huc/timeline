@@ -1,5 +1,5 @@
 import props from "./models/props";
-import { Milliseconds, Ratio } from "./constants";
+import { Milliseconds, Ratio, ZOOM_DONE } from "./constants";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -69,6 +69,7 @@ export class Animator {
 				const zoomDelta = (this.zoomMarker - props.eventsBand.zoomLevel) / (timeRemaining / elapsedTime)
 				if (timeRemaining < elapsedTime) {
 					props.eventsBand.zoomLevel = this.zoomMarker
+					document.dispatchEvent(new CustomEvent(ZOOM_DONE))
 					this.stop()
 				}
 				else {
@@ -129,6 +130,7 @@ export class Animator {
 	}
 
 	zoomTo(nextZoomLevel: Ratio) {
+		if (this.zoomMarker != null) return
 		if (nextZoomLevel < 0) nextZoomLevel = 0
 		this.zoomMarker = nextZoomLevel
 		this.play()

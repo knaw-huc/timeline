@@ -5,6 +5,7 @@ export declare const EVENT_ROW_HEIGHT = 20;
 export declare const DATE_BAR_HEIGHT = 20;
 export declare const RULER_LABELS_HEIGHT = 60;
 export declare const CENTER_CHANGE_DONE = "CENTER_CHANGE_DONE";
+export declare const ZOOM_DONE = "ZOOM_DONE";
 export declare type Milliseconds = number;
 export declare type Grid = [Milliseconds, Milliseconds][][];
 export declare type Ratio = number;

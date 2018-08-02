@@ -1,8 +1,8 @@
 import animator, { Animator } from './animator'
-import { CENTER_CHANGE_DONE, Ratio, Milliseconds } from './constants'
+import { CENTER_CHANGE_DONE, Ratio, Milliseconds, ZOOM_DONE } from './constants'
 import props from './models/props';
 
-export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }
+export interface OnChangeFunctionProps { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds, zoomLevel: number }
 export type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void
 
 export default class Api {
@@ -10,7 +10,7 @@ export default class Api {
 
 	constructor(
 		rootElement: HTMLElement, 
-		private onChange: (changeProps: { center: Ratio, visibleFrom: Milliseconds, visibleTo: Milliseconds }) => void
+		private onChange: (changeProps: OnChangeFunctionProps) => void
 	) {
 		document.addEventListener('keydown', (ev) => {
 			if (ev.keyCode === 189) props.eventsBand.zoomOut() // -
@@ -26,6 +26,7 @@ export default class Api {
 
 		if (this.onChange != null && typeof this.onChange === 'function') {
 			document.addEventListener(CENTER_CHANGE_DONE, this.handleChange)
+			document.addEventListener(ZOOM_DONE, this.handleChange)
 		}
 	}
 
@@ -36,6 +37,7 @@ export default class Api {
 			center: props.center,
 			visibleFrom: from,
 			visibleTo: to,
+			zoomLevel: props.eventsBand.zoomLevel
 		})
 	}
 
