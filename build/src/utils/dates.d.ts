@@ -14,7 +14,6 @@ export declare const enum Granularity {
     MILLENIUM = 10,
 }
 export declare const isEqual: (date1: Date, date2: Date) => boolean;
-export declare const format: (date: Date, granularity: Granularity) => string;
 export declare const getGranularity: (from: number, to: number, visibleRatio: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
 export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);

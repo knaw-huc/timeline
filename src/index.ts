@@ -15,6 +15,7 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 // TODO add config to add space/time before first and last events
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO zoom in to milliseconds
+// TODO add API to constrain by spacial data
 // TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline

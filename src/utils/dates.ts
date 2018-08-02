@@ -17,29 +17,17 @@ export const enum Granularity {
 
 export const isEqual = (date1: Date, date2: Date): boolean => date1.getTime() === date2.getTime()
 
-export const format = (date: Date, granularity: Granularity): string => {
-	if (date == null) return '∞';
+// export const format = (date: Date, granularity: Granularity): string => {
+// 	if (date == null) return '∞';
 
-	let displayDate = date.getFullYear().toString();
+// 	let displayDate = date.getUTCFullYear().toString();
 
-	if (granularity >= Granularity.MONTH) {
-		const months = [
-			'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-			'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-		];
-		displayDate = `${months[date.getMonth()]} ${displayDate}`;
-	}
-	
-	if (granularity >= Granularity.DAY) {
-		displayDate = `${date.getDate()} ${displayDate}`;
-	}
-	
-	if (granularity === Granularity.HOUR) {
-		displayDate = `${date.getHours()}:${date.getMinutes()} ${displayDate}`;
-	}
+// 	if (granularity >= Granularity.MONTH) displayDate = `${months[date.getMonth()]} ${displayDate}`
+// 	if (granularity >= Granularity.DAY) displayDate = `${date.getUTCDate()} ${displayDate}`
+// 	if (granularity === Granularity.HOUR) displayDate = `${date.getUTCHours()}:${date.getUTCMinutes()} ${displayDate}`
 
-	return displayDate;
-}
+// 	return displayDate;
+// }
 
 export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRatio: Ratio): Granularity => {
 	const days =  visibleRatio * ((to - from) / 86400000) // 1000ms * 60s * 60m * 24h
@@ -140,20 +128,29 @@ const getWeekNumber = (date: Date) => {
 
 export const labelBody = (d: Milliseconds, granularity: Granularity) => {
 	const date = new Date(d)
+
 	if (granularity >= Granularity.YEAR) {
 		return date.getUTCFullYear().toString()
-	} else if (granularity === Granularity.MONTH) {
+	}
+	
+	if (granularity === Granularity.MONTH) {
 		let body = months[date.getUTCMonth()]
 		if (date.getUTCMonth() === 0) body = `${date.getUTCFullYear().toString()}, ${body}`
 		return body
-	} else if (granularity === Granularity.WEEK) {
+	}
+	
+	if (granularity === Granularity.WEEK) {
 		return `${months[date.getUTCMonth()]}, week ${getWeekNumber(date)}`
-	} else if (granularity === Granularity.DAY) {
+	}
+	
+	if (granularity === Granularity.DAY) {
 		let body = days[date.getUTCDay()]
 		body = `${body}, ${months[date.getUTCMonth()]} ${date.getUTCDate()}`
 		if (date.getUTCMonth() === 0 && date.getUTCDate() === 1) body = `${body}, ${date.getUTCFullYear().toString()}`
 		return body
-	} else if (granularity === Granularity.HOUR) {
+	}
+	
+	if (granularity === Granularity.HOUR) {
 		return `${date.getUTCHours()}:00`
 	}
 }
