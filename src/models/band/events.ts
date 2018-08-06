@@ -12,7 +12,6 @@ export default class EventsBand extends Band {
 		super(config)
 		this.domains = config.domains
 		this.updateEvents()
-		animator.registerModelUpdaters(() => this.update())
 	}
 
 	private updateEvents() {
@@ -32,7 +31,7 @@ export default class EventsBand extends Band {
 		}
 	}
 
-	protected update() {
+	update() {
 		super.update()
 		this.updateEvents()
 	}

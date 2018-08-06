@@ -25,7 +25,7 @@ export default class Canvas implements View {
 	private indicatorsCtx: CanvasRenderingContext2D
 
 	constructor() {
-		animator.registerViewUpdaters(this.update)
+		animator.registerView(this)
 		this.offsiteCtx = this.offsiteCanvas.getContext('2d')
 	}
 

@@ -1,5 +1,7 @@
 import props from "./models/props";
 import { Milliseconds, Ratio, ZOOM_DONE } from "./constants";
+import Band from "./models/band";
+import Canvas from "./views/canvas";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -32,17 +34,17 @@ export class Animator {
 	// to calculate the remaining time when animating to a marker
 	private elapsedTimeTotal: Milliseconds = 0
 
-	private modelUpdaters: any[] = []
-	private viewUpdaters: any[] = []
+	private models: Band[] = []
+	private views: Canvas[] = []
 
 	private zoomMarker: Ratio
 
-	registerModelUpdaters(update) {
-		this.modelUpdaters.push(update)
+	registerModel(model: Band) {
+		this.models.push(model)
 	}
 
-	registerViewUpdaters(update) {
-		this.viewUpdaters.push(update)
+	registerView(view: Canvas) {
+		this.views.push(view)
 	}
 
 	animate = (timestamp) => {
@@ -92,10 +94,10 @@ export class Animator {
 			}
 
 			// Update the models. This is real quick ~0ms
-			this.modelUpdaters.forEach(update => update())
+			this.models.forEach(model => model.update())
 
 			// Update the view. This is too slow ~30-50ms
-			this.viewUpdaters.forEach(update => update())
+			this.views.forEach(view => view.update())
 		}
 
 		this.elapsedTimeTotal += elapsedTime
