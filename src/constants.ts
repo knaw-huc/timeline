@@ -1,9 +1,5 @@
 import { RawEv3nt } from "./models/event";
 
-// The minimal space (in px) an event should take. This space can be bigger
-// than the width of the event, to accommodate the label.
-export const EVENT_MIN_SPACE = 160 
-
 export const EVENT_HEIGHT = 14
 
 // The height (in px) of a row of events.
@@ -14,6 +10,8 @@ export const RULER_LABELS_HEIGHT = 60
 
 export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
 export const ZOOM_DONE = 'ZOOM_DONE'
+
+export const PIXELS_PER_LETTER = 8
 
 export type Milliseconds = number
 export type Grid = [Milliseconds, Milliseconds][][]

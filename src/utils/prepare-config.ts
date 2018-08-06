@@ -1,8 +1,22 @@
 import Config, { EventsDomainConfig, BandConfig, MinimapDomainConfig } from "../models/config"
 import { orderEvents } from "./events.worker"
 import { Pixels } from "../constants"
+import { RawEv3nt } from "../models/event";
+import { OrderedEvents } from "..";
 
-export default function prepareConfig(config: Config, pixelsPerMillisecond: Pixels): Config {
+function orderEventsProxy(events: RawEv3nt[], pixelsPerMillisecond, orderEventsWasm?): OrderedEvents {
+	// @ts-ignore
+	if (typeof WebAssembly === "object" && typeof WebAssembly.instantiate === "function" && orderEventsWasm) {
+		console.warn("[Timeline] Using WebAssembly")
+		const es = JSON.stringify(events)
+		const es2 = orderEventsWasm.order_events(es, pixelsPerMillisecond)
+		return JSON.parse(es2)
+	} else {
+		return orderEvents(events, pixelsPerMillisecond)
+	}
+}
+
+export default async function prepareConfig(config: Config, pixelsPerMillisecond: Pixels): Promise<Config> {
 	if (config.events == null) {
 		console.error('[DomainConfig] No events band in config!')
 		return config
@@ -13,13 +27,14 @@ export default function prepareConfig(config: Config, pixelsPerMillisecond: Pixe
 		return config
 	}
 
+	const oe = await import('../wasm/timeline_sort_events.js')
 
 	config.events.domains = config.events.domains.map(domainConfig => {
 		if (domainConfig.events == null && domainConfig.orderedEvents == null) {
 			console.error('[DomainConfig] No events in config!')
 		}
 		else if (domainConfig.orderedEvents == null) {
-			domainConfig.orderedEvents = orderEvents(domainConfig.events, pixelsPerMillisecond)
+			domainConfig.orderedEvents = orderEventsProxy(domainConfig.events, pixelsPerMillisecond, oe)
 			delete domainConfig.events
 		}
 

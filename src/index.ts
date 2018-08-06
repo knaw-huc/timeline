@@ -3,7 +3,7 @@ import Config from './models/config/index'
 import BandView from './views/band'
 import createElement from './utils/create-element'
 import { debounce, calcPixelsPerMillisecond } from './utils'
-import { orderEvents, OrderedEvents } from './utils/events.worker'
+import { OrderedEvents, orderEvents } from './utils/events.worker'
 import Api from './api'
 import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
@@ -31,12 +31,12 @@ export default class Timeline extends Api {
 	constructor(protected config: Config, onChange?, private onSelect?) {
 		super(config.rootElement, onChange)
 
-		props.init(config)
+		props.init(config).then(() => {
+			config.rootElement.appendChild(this.render())
 
-		config.rootElement.appendChild(this.render())
-
-		const debouncedResize = debounce(this.resize, 600)
-		window.addEventListener('resize', debouncedResize)
+			const debouncedResize = debounce(this.resize, 600)
+			window.addEventListener('resize', debouncedResize)
+		})
 	}
 
 	private render() {
@@ -68,13 +68,11 @@ export default class Timeline extends Api {
 		return this.wrapper
 	}
 
-	// TODO use a class (like BandView) and a render method and appendToWrapper
 	private renderLabels() {
 		props.eventsBand.domains
 			.filter(d => d.label != null)
 			.map(d => new Label(d))
 			.forEach(this.appendToWrapper)
-
 	}
 
 	private appendToWrapper = (child: View) => {

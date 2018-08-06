@@ -3,8 +3,8 @@ import { RawEv3nt } from "../models/event";
 
 export class OrderedEvents {
 	events: RawEv3nt[] = []
-	grid: Grid = []
-	rowCount: number = 0
+	// grid: Grid = []
+	row_count: number = 0
 }
 
 const pixelsPerLetter = 8
@@ -28,6 +28,8 @@ export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Millisecon
 		// Create a variable to hold the row to find
 		let row: number
 
+
+		if (event.label == null) event.label = 'NO LABEL'
 		event.from = event.date_min || event.date
 		event.to = event.end_date_max || event.end_date
 		event.time = event.to == null ? 0 : event.to - event.from
@@ -37,7 +39,7 @@ export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Millisecon
 			if (event.label == null) event.label = 'NO LABEL'
 			event.space = ((event.label.length * pixelsPerLetter) / pixelsPerMillisecond) + paddingRight
 		}
-			
+
 		// Search the grid for a row which has space for the current event
 		let rowIterator = 0
 		while (row == null && rowIterator < grid.length) {
@@ -83,27 +85,27 @@ export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Millisecon
 		events, 
 		// from,
 		// to,
-		grid,
-		rowCount
+		// grid,
+		row_count: grid.length
 	}
 }
 
-export function eventsWorker(e: { data: { events: RawEv3nt[], orderEventsURL: string } }) {
-	importScripts(e.data.orderEventsURL)
+// export function eventsWorker(e: { data: { events: RawEv3nt[], orderEventsURL: string } }) {
+// 	importScripts(e.data.orderEventsURL)
 	
-	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
-	postMessage(orderEvents(e.data.events))
-}
+// 	//@ts-ignore Typescript wants the second parameter (targetOrigin), but the browser will throw
+// 	postMessage(orderEvents(e.data.events))
+// }
 
-export default (events: RawEv3nt[], done: (response: OrderedEvents) => void) => {
-	const orderEventsURL = URL.createObjectURL(new Blob([orderEvents]))
-	const func = `onmessage = ${eventsWorker.toString()}`
-	const objectURL = URL.createObjectURL(new Blob([func]))
-	let worker: Worker = new Worker(objectURL)
-	worker.postMessage({ events, orderEventsURL })
-	worker.onmessage = (e) => {
-		URL.revokeObjectURL(objectURL)
-		worker.terminate()
-		done(e.data)
-	}
-}
+// export default (events: RawEv3nt[], done: (response: OrderedEvents) => void) => {
+// 	const orderEventsURL = URL.createObjectURL(new Blob([orderEvents]))
+// 	const func = `onmessage = ${eventsWorker.toString()}`
+// 	const objectURL = URL.createObjectURL(new Blob([func]))
+// 	let worker: Worker = new Worker(objectURL)
+// 	worker.postMessage({ events, orderEventsURL })
+// 	worker.onmessage = (e) => {
+// 		URL.revokeObjectURL(objectURL)
+// 		worker.terminate()
+// 		done(e.data)
+// 	}
+// }

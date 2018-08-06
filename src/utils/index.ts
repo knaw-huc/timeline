@@ -92,3 +92,11 @@ export function selectRandom(set: (string | number)[], amount: number) {
 export function calcPixelsPerMillisecond(viewportWidth: Pixels, zoomLevel: number, totalTime: Milliseconds) {
 	return (viewportWidth / visibleRatio(zoomLevel)) / totalTime
 }
+
+function formatDate(ts) {
+	const d = new Date(ts)
+	return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+export function logEvent(event: RawEv3nt, ...rest) {
+	console.log(event.label, event, event.left, formatDate(event.from), formatDate(event.to), rest)
+}

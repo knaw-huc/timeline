@@ -12,7 +12,7 @@ export declare class Props {
     viewportHeight: Pixels;
     viewportOffset: Pixels;
     viewportWidth: Pixels;
-    init(config: Config): void;
+    init(config: Config): Promise<void>;
     private _center;
     center: Ratio;
     dimensions: HTMLElement;

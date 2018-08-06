@@ -9,12 +9,12 @@ export default class Canvas implements View {
     private indicatorsCtx;
     constructor();
     render(): HTMLCanvasElement[];
-    private drawStaticMinimapBands();
+    private drawStaticMinimapBands;
     private clear;
     update: () => void;
-    private drawEvents();
-    private drawEventsText();
-    private drawMinimap(band, domain);
-    private drawIndicators();
-    private drawRulers(band);
+    private drawEvents;
+    private drawEventsText;
+    private drawMinimap;
+    private drawIndicators;
+    private drawRulers;
 }

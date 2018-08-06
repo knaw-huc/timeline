@@ -27,10 +27,11 @@ export class RawEv3nt {
 
 	// The space an event needs for display
 	// Point in Time = label width + padding
-	// Interval = time + padding
+	// Interval = padding
 	space: Milliseconds
 
 	left: Pixels
+	padding: Pixels
 	top: Pixels
 	width: Pixels
 

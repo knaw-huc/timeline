@@ -25,7 +25,7 @@ export class Props {
 	viewportOffset: Pixels
 	viewportWidth: Pixels
 
-	init(config: Config) {
+	async init(config: Config) {
 		if (config.rootElement == null) console.error('[init] No rootElement found')
 
 		this.dimensions = config.rootElement
@@ -48,10 +48,17 @@ export class Props {
 		this.from = Math.min(...froms) 
 		this.to = Math.max(...tos)
 
-		const pixelsPerMillisecond = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
-		config = prepareConfig(config, pixelsPerMillisecond)
-
 		this.time = this.to - this.from
+
+		// const pixelsPerMillisecond2 = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
+
+		// this.from -= (this.viewportWidth / 8) / pixelsPerMillisecond2
+		// this.to += (this.viewportWidth / 8) / pixelsPerMillisecond2
+		// // this.to += this.time * .1
+		// this.time = this.to - this.from
+
+		const pixelsPerMillisecond = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
+		config = await prepareConfig(config, pixelsPerMillisecond)
 
 		if (config.center != null) this.center = config.center
 

@@ -1,6 +1,6 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT } from '../../constants'
+import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT, PIXELS_PER_LETTER } from '../../constants'
 import { findClosestRulerDate } from '../../utils'
 import { labelBody } from '../../utils/dates'
 import MinimapBand from '../../models/band/minimap'
@@ -120,7 +120,8 @@ export default class Canvas implements View {
 
 			for (const event of domain.orderedEvents.events) {
 				event.left = band.positionAtTimestamp(event.from) - left
-				event.width = Math.round((event.time + event.space) * band.pixelsPerMillisecond)
+				event.width = Math.round((event.time) * band.pixelsPerMillisecond)
+				event.padding = Math.round((event.space) * band.pixelsPerMillisecond)
 				if (event.width < 1) event.width = 1
 				event.top = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
 
@@ -147,7 +148,7 @@ export default class Canvas implements View {
 			for (const event of domain.orderedEvents.events) {
 				if (event.from > props.eventsBand.to || event.to < props.eventsBand.from) continue
 
-				let eventWidth = event.width
+				let eventWidth = event.time === 0 ? event.padding : event.width
 				let eventLeft = event.left
 
 				if (event.left < 0 && event.time !== 0) {
@@ -155,8 +156,8 @@ export default class Canvas implements View {
 					eventLeft = 0
 				}
 
-				if (event.label == null) event.label = 'NO LABEL'
-				if ((event.label.length * 8) + 10 < eventWidth) {
+				let eventLabelLength = event.label.length * PIXELS_PER_LETTER
+				if (eventLabelLength <= eventWidth) {
 					const paddingLeft = event.time ? 3 : 8
 					this.ctx.fillText(event.label, eventLeft + paddingLeft, event.top + EVENT_HEIGHT - 3)
 				}
@@ -167,7 +168,7 @@ export default class Canvas implements View {
 	private drawMinimap(band: MinimapBand, domain: MinimapDomainConfig) {
 		const maxHeight: Pixels = band.height - DATE_BAR_HEIGHT
 		const maxRowCount = band.domains.reduce((prev, curr) => {
-			const counts = curr.targets.map(index => props.eventsBand.domains[index].orderedEvents.rowCount)
+			const counts = curr.targets.map(index => props.eventsBand.domains[index].orderedEvents.row_count)
 			return Math.max(prev, ...counts)
 		}, 0)
 		let eventHeight: Pixels = maxHeight / maxRowCount

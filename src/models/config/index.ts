@@ -39,7 +39,6 @@ export class BandConfig<T> {
 	zoomLevel?: number = 0
 }
 
-
 export default class Config {
 	center?: Ratio = .5
 
