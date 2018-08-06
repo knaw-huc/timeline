@@ -3,7 +3,6 @@ import props from '../props'
 import { Pixels, Milliseconds, Ratio } from '../../constants'
 import { visibleRatio } from '../../utils'
 import { BandConfig, MinimapDomainConfig, EventsDomainConfig } from '../config';
-import animator from '../../animator';
 
 /**
  * A Band is a collection of domains. All the domains in the Band
@@ -68,10 +67,9 @@ export default abstract class Band {
 		this.zoomLevel = config.zoomLevel
 		this.height = Math.round(config.domains.reduce((prev, curr) => prev + curr.heightRatio, 0) * props.viewportHeight)
 		this.top = Math.round(config.domains.reduce((prev, curr) => Math.min(prev, curr.topOffsetRatio), 1) * props.viewportHeight)
-		animator.registerModelUpdaters(this.update)
 	}
 
-	update = () => {
+	protected update() {
 		const offset = props.center * (props.time - this.time)
 		this.from = props.from + offset
 		this.to = this.from + this.time

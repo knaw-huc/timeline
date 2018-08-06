@@ -34,6 +34,7 @@ export class Animator {
 
 	private modelUpdaters: any[] = []
 	private viewUpdaters: any[] = []
+
 	private zoomMarker: Ratio
 
 	registerModelUpdaters(update) {
@@ -91,14 +92,10 @@ export class Animator {
 			}
 
 			// Update the models. This is real quick ~0ms
-			const t0 = performance.now()
 			this.modelUpdaters.forEach(update => update())
-			const t1 = performance.now(); console.log('Performance: ', `${t1 - t0}ms`)
 
 			// Update the view. This is too slow ~30-50ms
-			const t2 = performance.now()
 			this.viewUpdaters.forEach(update => update())
-			const t3 = performance.now(); console.log('Performance: ', `${t3 - t2}ms`)
 		}
 
 		this.elapsedTimeTotal += elapsedTime

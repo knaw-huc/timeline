@@ -95,6 +95,7 @@ export default class Canvas implements View {
 		this.drawRulers(props.eventsBand)
 
 		this.drawEvents()
+		this.drawEventsText()
 
 		props.minimapBands
 			.filter(band => band.zoomLevel !== 0)
@@ -112,20 +113,9 @@ export default class Canvas implements View {
 	private drawEvents() {
 		this.ctx.beginPath()
 
-		props.eventsBand.domains.forEach(domain => {
-			const band = props.eventsBand
-			const left = band.positionAtTimestamp(band.from)
-			const offsetY = domain.topOffsetRatio * props.viewportHeight
-			const domainHeight = (domain.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
-
+		for (const domain of props.eventsBand.domains) {
 			for (const event of domain.orderedEvents.events) {
-				event.left = band.positionAtTimestamp(event.from) - left
-				event.width = Math.round((event.time) * band.pixelsPerMillisecond)
-				event.padding = Math.round((event.space) * band.pixelsPerMillisecond)
-				if (event.width < 1) event.width = 1
-				event.top = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
-
-				if (event.from > band.to || event.to < band.from) continue
+				if (event.from > props.eventsBand.to || event.to < props.eventsBand.from) continue
 
 				if (!event.time) {
 					this.ctx.moveTo(event.left, event.top + EVENT_HEIGHT/2)
@@ -134,12 +124,10 @@ export default class Canvas implements View {
 					this.ctx.rect(event.left, event.top, event.width, EVENT_HEIGHT)
 				}
 			}
-		})
+		}
 
 		this.ctx.fillStyle = `rgba(126, 0, 0, .3)`
 		this.ctx.fill()
-
-		this.drawEventsText()
 	}
 
 	private drawEventsText() {

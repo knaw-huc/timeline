@@ -11,6 +11,30 @@ export default class EventsBand extends Band {
 	constructor(config: BandConfig<EventsDomainConfig>) {
 		super(config)
 		this.domains = config.domains
+		this.updateEvents()
+		animator.registerModelUpdaters(() => this.update())
+	}
+
+	private updateEvents() {
+		if (!this.domains) return
+
+		for (const domain of this.domains) {
+			const offsetY = domain.topOffsetRatio * props.viewportHeight
+			const domainHeight = (domain.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
+
+			for (const event of domain.orderedEvents.events) {
+				event.left = this.positionAtTimestamp(event.from) + this.left
+				event.width = Math.round((event.time) * this.pixelsPerMillisecond)
+				event.padding = Math.round((event.space) * this.pixelsPerMillisecond)
+				if (event.width < 1) event.width = 1
+				event.top = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
+			}
+		}
+	}
+
+	protected update() {
+		super.update()
+		this.updateEvents()
 	}
 
 	getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt {
