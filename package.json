@@ -7,13 +7,23 @@
   "author": "Gijsjan Brouwer",
   "license": "ISC",
   "scripts": {
-    "prebuild": "rm -rf build",
+    "clean": "rm -rf build",
+
     "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+
     "test": "jest",
-    "prewatch": "rm -rf build",
-    "start": "webpack-dev-server --mode development",
-    "start:dev": "browser-sync start -s --no-open -f \"build\" \"index.html\"",
-    "watch": "webpack -w --mode development"
+
+    "start": "webpack-dev-server --mode production",
+    "start:dev": "webpack-dev-server --mode development",
+
+    "watch": "webpack -w --mode development",
+
+    "prebuild": "npm run clean",
+    "prebuild:dev": "npm run clean",
+    "prestart": "npm run clean",
+    "prestart:dev": "npm run clean",
+    "prewatch": "npm run clean"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",

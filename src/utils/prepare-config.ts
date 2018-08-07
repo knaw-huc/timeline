@@ -1,10 +1,9 @@
 import Config, { EventsDomainConfig, BandConfig, MinimapDomainConfig } from "../models/config"
-import { orderEvents } from "./events.worker"
+import { orderEvents, OrderedEvents } from "./events.worker"
 import { Pixels } from "../constants"
 import { RawEv3nt } from "../models/event";
-import { OrderedEvents } from "..";
 
-function orderEventsProxy(events: RawEv3nt[], pixelsPerMillisecond, orderEventsWasm?): OrderedEvents {
+function orderEventsProxy(events: RawEv3nt[], pixelsPerMillisecond: Pixels, orderEventsWasm?): OrderedEvents {
 	// @ts-ignore
 	if (typeof WebAssembly === "object" && typeof WebAssembly.instantiate === "function" && orderEventsWasm) {
 		console.warn("[Timeline] Using WebAssembly")
@@ -27,14 +26,18 @@ export default async function prepareConfig(config: Config, pixelsPerMillisecond
 		return config
 	}
 
-	const oe = await import('../wasm/timeline_sort_events.js')
+	/**
+	 * Wasm works in dev mode. When created into a lib, the deps are lazy loaded
+	 * from the wrong dir (project root)
+	 */
+	// const orderEventsWasm = await import('../wasm/timeline_sort_events.js')
 
 	config.events.domains = config.events.domains.map(domainConfig => {
 		if (domainConfig.events == null && domainConfig.orderedEvents == null) {
 			console.error('[DomainConfig] No events in config!')
 		}
 		else if (domainConfig.orderedEvents == null) {
-			domainConfig.orderedEvents = orderEventsProxy(domainConfig.events, pixelsPerMillisecond, oe)
+			domainConfig.orderedEvents = orderEventsProxy(domainConfig.events, pixelsPerMillisecond)
 			delete domainConfig.events
 		}
 
