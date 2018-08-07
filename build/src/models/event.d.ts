@@ -22,5 +22,5 @@ export declare class RawEv3nt {
     padding: Pixels;
     top: Pixels;
     width: Pixels;
-    textWidth?: Pixels;
+    visible: boolean;
 }

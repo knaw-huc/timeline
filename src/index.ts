@@ -12,6 +12,8 @@ import Label from './views/label'
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
 
+// TODO center in config should not be ratio but timestamp
+// TODO pixelsPerMillisecond should be millisecondsPerPixel
 // TODO add config to add space/time before first and last events
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO zoom in to milliseconds

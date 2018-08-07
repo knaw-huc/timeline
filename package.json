@@ -16,6 +16,7 @@
 
     "start": "webpack-dev-server --mode production",
     "start:dev": "webpack-dev-server --mode development",
+    "start:dev:browsersync": "browser-sync start -s --no-open -f \"build\" \"index.html\"",
 
     "watch": "webpack -w --mode development",
 

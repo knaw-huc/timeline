@@ -28,14 +28,15 @@ export class RawEv3nt {
 	// The space an event needs for display
 	// Point in Time = label width + padding
 	// Interval = padding
-	space: Milliseconds
+	space?: Milliseconds
 
-	left: Pixels
-	padding: Pixels
-	top: Pixels
-	width: Pixels
+	left?: Pixels
+	padding?: Pixels
+	top?: Pixels
+	width?: Pixels
+	outsideViewport?: boolean
 
-	textWidth?: Pixels
+	// textWidth?: Pixels
 }
 
 // class Ev3nt extends RawEv3nt {

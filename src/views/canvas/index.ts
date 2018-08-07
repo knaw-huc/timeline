@@ -1,7 +1,7 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
 import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT, PIXELS_PER_LETTER } from '../../constants'
-import { findClosestRulerDate } from '../../utils'
+import { findClosestRulerDate, logEvent } from '../../utils'
 import { labelBody } from '../../utils/dates'
 import MinimapBand from '../../models/band/minimap'
 import { MinimapDomainConfig } from '../../models/config'
@@ -113,16 +113,12 @@ export default class Canvas implements View {
 	private drawEvents() {
 		this.ctx.beginPath()
 
-		for (const domain of props.eventsBand.domains) {
-			for (const event of domain.orderedEvents.events) {
-				if (event.from > props.eventsBand.to || event.to < props.eventsBand.from) continue
-
-				if (!event.time) {
-					this.ctx.moveTo(event.left, event.top + EVENT_HEIGHT/2)
-					this.ctx.arc(event.left, event.top + EVENT_HEIGHT/2, EVENT_HEIGHT/3, 0, 2 * Math.PI)
-				} else {
-					this.ctx.rect(event.left, event.top, event.width, EVENT_HEIGHT)
-				}
+		for (const event of props.eventsBand.visibleEvents) {
+			if (!event.time) {
+				this.ctx.moveTo(event.left, event.top + EVENT_HEIGHT/2)
+				this.ctx.arc(event.left, event.top + EVENT_HEIGHT/2, EVENT_HEIGHT/3, 0, 2 * Math.PI)
+			} else {
+				this.ctx.rect(event.left, event.top, event.width, EVENT_HEIGHT)
 			}
 		}
 
@@ -132,23 +128,25 @@ export default class Canvas implements View {
 
 	private drawEventsText() {
 		this.ctx.fillStyle = `rgb(126, 0, 0)`
-		for (const domain of props.eventsBand.domains) {
-			for (const event of domain.orderedEvents.events) {
-				if (event.from > props.eventsBand.to || event.to < props.eventsBand.from) continue
 
-				let eventWidth = event.time === 0 ? event.padding : event.width
-				let eventLeft = event.left
+		for (const event of props.eventsBand.visibleEvents) {
+			let eventWidth = event.time === 0 ? event.padding : event.width
+			let eventLeft = event.left
 
-				if (event.left < 0 && event.time !== 0) {
-					eventWidth = event.width + event.left
-					eventLeft = 0
-				}
+			if (event.left < 0 && event.time !== 0) {
+				eventWidth = event.width + event.left
+				eventLeft = 0
+			}
 
-				let eventLabelLength = event.label.length * PIXELS_PER_LETTER
-				if (eventLabelLength <= eventWidth) {
-					const paddingLeft = event.time ? 3 : 8
-					this.ctx.fillText(event.label, eventLeft + paddingLeft, event.top + EVENT_HEIGHT - 3)
-				}
+			let eventLabelLength = event.label.length * PIXELS_PER_LETTER
+			if (event.label.indexOf("Quifangondo") > -1) {
+				logEvent(event, this)
+				console.log(eventLabelLength, eventWidth)
+				// console.log(event.from, props.eventsBand.to, event.to, props.eventsBand.from)
+			}
+			if (eventLabelLength <= eventWidth) {
+				const paddingLeft = event.time ? 3 : 8
+				this.ctx.fillText(event.label, eventLeft + paddingLeft, event.top + EVENT_HEIGHT - 3)
 			}
 		}
 	}

@@ -32,6 +32,7 @@ export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Millisecon
 		if (event.label == null) event.label = 'NO LABEL'
 		event.from = event.date_min || event.date
 		event.to = event.end_date_max || event.end_date
+		if (event.to == null) event.to = event.from
 		event.time = event.to == null ? 0 : event.to - event.from
 		// If the event is a Point in Time, we use the label width to determine the width
 		event.space = 0

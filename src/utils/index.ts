@@ -94,6 +94,7 @@ export function calcPixelsPerMillisecond(viewportWidth: Pixels, zoomLevel: numbe
 }
 
 function formatDate(ts) {
+	if (ts == null) return null
 	const d = new Date(ts)
 	return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
