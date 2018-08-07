@@ -40,7 +40,7 @@ export class BandConfig<T> {
 }
 
 export default class Config {
-	center?: Ratio = .5
+	center?: number
 
 	events: BandConfig<EventsDomainConfig>
 

@@ -1,7 +1,7 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
 import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT, PIXELS_PER_LETTER } from '../../constants'
-import { findClosestRulerDate, logEvent } from '../../utils'
+import { findClosestRulerDate } from '../../utils'
 import { labelBody } from '../../utils/dates'
 import MinimapBand from '../../models/band/minimap'
 import { MinimapDomainConfig } from '../../models/config'
@@ -101,7 +101,7 @@ export default class Canvas implements View {
 			.filter(band => band.zoomLevel !== 0)
 			.forEach(band => {
 				band.domains.forEach(domain => {
-					this.drawMinimap(band, domain)
+					// this.drawMinimap(band, domain)
 				})
 
 				this.drawRulers(band)
@@ -139,11 +139,6 @@ export default class Canvas implements View {
 			}
 
 			let eventLabelLength = event.label.length * PIXELS_PER_LETTER
-			if (event.label.indexOf("Quifangondo") > -1) {
-				logEvent(event, this)
-				console.log(eventLabelLength, eventWidth)
-				// console.log(event.from, props.eventsBand.to, event.to, props.eventsBand.from)
-			}
 			if (eventLabelLength <= eventWidth) {
 				const paddingLeft = event.time ? 3 : 8
 				this.ctx.fillText(event.label, eventLeft + paddingLeft, event.top + EVENT_HEIGHT - 3)
@@ -204,11 +199,11 @@ export default class Canvas implements View {
 			band.domains.forEach(domain => {
 				// Left indicator
 				const indicatorTOP = Math.round(domain.topOffsetRatio * props.viewportHeight)
-				const leftIndicatorRightX = band.positionAtTimestamp(props.eventsBand.from) + band.left
+				const leftIndicatorRightX = band.positionAtTimestamp(props.eventsBand.from)
 				this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.height)
 
 				// Right indicator
-				const rightIndicatorLeftX = band.positionAtTimestamp(props.eventsBand.to) + band.left
+				const rightIndicatorLeftX = band.positionAtTimestamp(props.eventsBand.to)
 				this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.height)
 
 				// Cover the DATE_BAR
@@ -221,7 +216,7 @@ export default class Canvas implements View {
 
 		// Draw red center line
 		this.indicatorsCtx.fillStyle = `rgba(255, 0, 0, .5)`
-		const x = props.eventsBand.positionAtTimestamp(props.eventsBand.timestampAtProportion(props.center)) + props.eventsBand.left
+		const x = props.eventsBand.positionAtTimestamp(props.center)
 		this.indicatorsCtx.fillRect(x - 1, 0, 2, props.viewportHeight)
 
 		this.indicatorsCtx.closePath()
@@ -239,7 +234,7 @@ export default class Canvas implements View {
 			const height = domain.heightRatio * props.viewportHeight
 
 			while(date < band.to) {
-				const left = band.positionAtTimestamp(date) + band.left
+				const left = band.positionAtTimestamp(date)
 				this.ctx.moveTo(left, y)
 				this.ctx.lineTo(left, y + height)
 				if (domain.rulerLabels) this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)

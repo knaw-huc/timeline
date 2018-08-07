@@ -4,7 +4,6 @@ import animator from '../../animator';
 import { Pixels, EVENT_HEIGHT, DATE_BAR_HEIGHT } from '../../constants';
 import props from '../props';
 import { RawEv3nt } from '../event';
-// import { logEvent } from '../../utils';
 
 export default class EventsBand extends Band {
 	domains: EventsDomainConfig[]
@@ -27,7 +26,7 @@ export default class EventsBand extends Band {
 				.filter(event => !(event.from > this.to || event.to < this.from))
 				.map(event => {
 					// event.left (px) === event.from (ms) + band offset (ms)
-					event.left = this.positionAtTimestamp(event.from) + this.left			 // ||<- left ->[   event   ]                 ||  
+					event.left = this.positionAtTimestamp(event.from) //+ this.left			 // ||<- left ->[   event   ]                 ||  
 
 					// event.width (px) === event.time (ms)
 					event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
@@ -51,7 +50,7 @@ export default class EventsBand extends Band {
 	}
 
 	getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt {
-		const timestamp = this.timestampAtProportion(this.proportionAtPosition(x))
+		const timestamp = this.timestampAtPosition(x)
 
 		const domain = this.domains.find(d => {
 			const top = props.viewportOffset + d.topOffsetRatio * props.viewportHeight

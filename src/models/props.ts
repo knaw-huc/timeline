@@ -1,4 +1,4 @@
-import { CENTER_CHANGE_DONE, Ratio, Milliseconds, Pixels } from "../constants"
+import { CENTER_CHANGE_DONE, Milliseconds, Pixels } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
 import EventsBand from "./band/events"
@@ -7,7 +7,7 @@ import prepareConfig from '../utils/prepare-config'
 import { byDate } from "../utils/dates";
 
 export class Props {
-	private readonly defaultCenter = .5
+	private readonly defaultCenterRatio = .5
 
 	eventsBand: EventsBand
 	minimapBands: MinimapBand[]
@@ -60,7 +60,10 @@ export class Props {
 		const pixelsPerMillisecond = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
 		config = await prepareConfig(config, pixelsPerMillisecond)
 
-		if (config.center != null) this.center = config.center
+		// TODO move to prepareConfig
+		this.center = (config.center != null) ?
+			config.center :
+			this.from + (this.defaultCenterRatio * this.time)
 
 		this.minimapBands = config.minimaps.map(mm => new MinimapBand(mm))
 
@@ -68,12 +71,12 @@ export class Props {
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */
-	private _center: Ratio = this.defaultCenter
+	private _center: Milliseconds
 	get center() { return this._center }
-	set center(n: Ratio) {
-		if ((this._center === 0 && n < 0) || (this._center === 1 && n > 1)) return
-		else if (n < 0) this._center = 0
-		else if (n > 1) this._center = 1
+	set center(n: Milliseconds) {
+		if ((this._center === this.from && n < this.from) || (this._center === this.to && n > this.to)) return
+		if (n < this.from) this._center = this.from 
+		else if (n > this.to) this._center = this.to
 		else this._center = n
 		this.centerChangeDone()
 	}

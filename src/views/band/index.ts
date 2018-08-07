@@ -4,9 +4,10 @@ import createElement from '../../utils/create-element'
 import eventBus from '../../event-bus'
 import animator from '../../animator'
 import View from '../index'
+import { Milliseconds } from '../../constants';
 
 export default class BandView implements View { 
-	private dragStart: number
+	// private dragStart: number
 	private dragOffset: number
 	protected rootElement: HTMLElement
 
@@ -39,14 +40,17 @@ export default class BandView implements View {
 	private onMouseDown = (ev) => {
 		document.addEventListener('mouseup', this.onMouseUp)
 		this.dragOffset = ev.clientX
-		this.dragStart = this.band.left
 	}
 
 	private onMouseMove = (ev) => {
 		if (this.dragOffset && this.band.zoomLevel > 0) {
-			const left = this.dragStart - (this.dragOffset - ev.clientX)
-			props.center = left / (props.viewportWidth - this.band.width)
+			// Calculate the difference between the current mouse position and
+			// the previous mouse position. This yields an offset in pixels, which
+			// is converted to milliseconds.
+			const offset: Milliseconds = (this.dragOffset - ev.clientX) / this.band.pixelsPerMillisecond
+			props.center += offset
 			animator.play() // Request an animation frame from the Animator
+			this.dragOffset = ev.clientX
 		}
 	}
 
@@ -56,7 +60,7 @@ export default class BandView implements View {
 	}
 
 	private onDblClick = (ev) => {
-		const nextCenter = this.band.proportionAtPosition(ev.clientX)
+		const nextCenter = this.band.timestampAtPosition(ev.clientX)
 		animator.goTo(nextCenter)
 	}
 

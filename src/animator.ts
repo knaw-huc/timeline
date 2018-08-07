@@ -1,7 +1,8 @@
 import props from "./models/props";
-import { Milliseconds, Ratio, ZOOM_DONE } from "./constants";
+import { Milliseconds, ZOOM_DONE } from "./constants";
 import Band from "./models/band";
 import Canvas from "./views/canvas";
+import Debug from "./views/debug";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -13,13 +14,13 @@ enum Direction {
 export class Animator {
 	private readonly goToDuration: Milliseconds = 300
 	private readonly zoomToDuration: Milliseconds = 300
-	private readonly interval: number = .00001
+	// private readonly interval: number = .00001
 	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
 
 	// A marker is set when animating/navigating to a point on the timeline
 	// When the marker is set to .5, the timeline will animate in `goToDuration`
 	// time to center = .5
-	private centerMarker: Ratio
+	private centerMarker: Milliseconds
 
 	// Controls the speed of the animation
 	private multiplier: Multiplier = 1
@@ -35,15 +36,15 @@ export class Animator {
 	private elapsedTimeTotal: Milliseconds = 0
 
 	private models: Band[] = []
-	private views: Canvas[] = []
+	private views: (Canvas | Debug)[] = []
 
-	private zoomMarker: Ratio
+	private zoomMarker: number
 
 	registerModel(model: Band) {
 		this.models.push(model)
 	}
 
-	registerView(view: Canvas) {
+	registerView(view: Canvas | Debug) {
 		this.views.push(view)
 	}
 
@@ -55,7 +56,7 @@ export class Animator {
 		if (elapsedTime > 0 || this.prevTimestamp == null) {
 			// If there is no marker, use the multiplier to determine speed
 			if (this.centerMarker == null && this.zoomMarker == null) {
-				props.center = props.center + (this.interval * this.multiplier * this.direction)
+				props.center += (props.eventsBand.time / 10000) * this.multiplier * this.direction
 			// Else if there is a marker, calculated the speed based on props.center and time remaining
 			}
 			else if (this.centerMarker != null) {
@@ -103,7 +104,7 @@ export class Animator {
 		this.elapsedTimeTotal += elapsedTime
 
 		if (this.isPlaying() || this.zoomMarker != null) {
- 			if ((props.center > 0 && props.center < 1) || this.centerMarker != null || this.zoomMarker != null) {
+ 			if ((props.center >= props.from && props.center <= props.to) || this.centerMarker != null || this.zoomMarker != null) {
 				this.prevTimestamp = timestamp
 				requestAnimationFrame(this.animate)
 			} else {
@@ -126,13 +127,13 @@ export class Animator {
 		return this.multiplier
 	}
 
-	goTo(nextCenter: Ratio) {
+	goTo(nextCenter: Milliseconds) {
 		this.centerMarker = nextCenter
 		if (nextCenter > props.center) this.playForward()
 		else this.playBackward()
 	}
 
-	zoomTo(nextZoomLevel: Ratio) {
+	zoomTo(nextZoomLevel: number) {
 		if (this.zoomMarker != null) return
 		if (nextZoomLevel < 0) nextZoomLevel = 0
 		this.zoomMarker = nextZoomLevel

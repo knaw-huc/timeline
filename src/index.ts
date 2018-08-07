@@ -9,6 +9,7 @@ import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
 import Label from './views/label'
+// import Debug from './views/debug'
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
 
@@ -66,6 +67,8 @@ export default class Timeline extends Api {
 		this.minimapBandViews.forEach(this.appendToWrapper)
 
 		this.renderLabels()
+
+		// this.appendToWrapper(new Debug())
 
 		return this.wrapper
 	}

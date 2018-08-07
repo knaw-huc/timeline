@@ -56,12 +56,12 @@ export default abstract class Band {
 		if (zoomLevel < 0) zoomLevel = 0
 		this.visibleRatio = visibleRatio(zoomLevel)
 		this.width = Math.round(props.viewportWidth / this.visibleRatio)
+		this.pixelsPerMillisecond = this.width / props.time
 		this.time = this.visibleRatio * props.time
-		this.update()
 		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
-		this.pixelsPerMillisecond = this.width / props.time
 		this._zoomLevel = zoomLevel
+		this.update()
 	}
 
 	constructor(config: BandConfig<MinimapDomainConfig | EventsDomainConfig>) {
@@ -72,21 +72,24 @@ export default abstract class Band {
 	}
 
 	update() {
-		const offset = props.center * (props.time - this.time)
-		this.from = props.from + offset
-		this.to = this.from + this.time
-		this.left = Math.round(props.center * (props.viewportWidth - this.width))
+		this.from = props.center - this.time/2
+		this.to = props.center + this.time/2
+		this.left = (props.from - this.from) * this.pixelsPerMillisecond
 	}
 
-	positionAtTimestamp(date: Milliseconds): Pixels {
-		return Math.round((date - props.from) * this.pixelsPerMillisecond)
+	positionAtTimestamp(timestamp: Milliseconds): Pixels {
+		return Math.round((timestamp - this.from) * this.pixelsPerMillisecond)
 	}
 
-	proportionAtPosition(position: Pixels): Ratio {
-		return (Math.abs(this.left) + position) / this.width
-	}
+	// proportionAtPosition(position: Pixels): Ratio {
+	// 	return (Math.abs(this.left) + position) / this.width
+	// }
 
 	timestampAtProportion(proportion: Ratio): Milliseconds {
 		return props.from + (props.time * proportion)
+	}
+
+	timestampAtPosition(position: Pixels): Milliseconds {
+		return this.from + (position / this.pixelsPerMillisecond)
 	}
 }
