@@ -1,5 +1,5 @@
 # Timeline
 
-## Development
-- `npm run watch` starts a Webpack watch to build the /src
-- `npm run start:dev` starts a Browsersync webserver
+## Development server
+- `npm run start` starts a Webpack dev server in production mode
+- `npm run start:dev` starts a Webpack dev server in development mode
