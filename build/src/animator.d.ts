@@ -1,0 +1,36 @@
+import { Ratio } from "./constants";
+import Band from "./models/band";
+import Canvas from "./views/canvas";
+export declare type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16;
+export declare class Animator {
+    private readonly goToDuration;
+    private readonly zoomToDuration;
+    private readonly interval;
+    readonly multipliers: Multiplier[];
+    private centerMarker;
+    private multiplier;
+    private direction;
+    private prevTimestamp;
+    private elapsedTimeTotal;
+    private models;
+    private views;
+    private zoomMarker;
+    registerModel(model: Band): void;
+    registerView(view: Canvas): void;
+    animate: (timestamp: any) => void;
+    accelerate(): number;
+    decelerate(): number;
+    goTo(nextCenter: Ratio): void;
+    zoomTo(nextZoomLevel: Ratio): void;
+    speed(multiplier: string): void;
+    isPlaying(): boolean;
+    isPlayingForward(): boolean;
+    isPlayingBackward(): boolean;
+    play(): void;
+    playForward(): void;
+    playBackward(): void;
+    stop(): void;
+    toggle(): void;
+}
+declare const _default: Animator;
+export default _default;
