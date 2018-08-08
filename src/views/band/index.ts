@@ -47,8 +47,8 @@ export default class BandView implements View {
 			// Calculate the difference between the current mouse position and
 			// the previous mouse position. This yields an offset in pixels, which
 			// is converted to milliseconds.
-			const offset: Milliseconds = (this.dragOffset - ev.clientX) / this.band.pixelsPerMillisecond
-			props.center += offset
+			const offsetX: Milliseconds = (this.dragOffset - ev.clientX) / this.band.pixelsPerMillisecond
+			props.center += offsetX
 			animator.play() // Request an animation frame from the Animator
 			this.dragOffset = ev.clientX
 		}
