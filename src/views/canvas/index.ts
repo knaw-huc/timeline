@@ -24,6 +24,8 @@ export default class Canvas implements View {
 	private indicatorsCanvas: HTMLCanvasElement
 	private indicatorsCtx: CanvasRenderingContext2D
 
+	private prevZoomLevel: number
+
 	constructor() {
 		animator.registerView(this)
 		this.offsiteCtx = this.offsiteCanvas.getContext('2d')
@@ -49,47 +51,22 @@ export default class Canvas implements View {
 
 		this.update()
 
-		this.drawStaticMinimapBands()
-
 		return [this.canvas, this.indicatorsCanvas]
-	}
-
-	private drawStaticMinimapBands() {
-		props.minimapBands
-			.filter(band => band.zoomLevel === 0)
-			.forEach(band => {
-				band.domains.forEach(domain => {
-					this.drawMinimap(band, domain)
-				})
-
-				this.drawRulers(band)
-			})
-
 	}
 
 	// Clear the canvas active parts
 	private clear = () => {
 		// Clear the events band
-		this.ctx.clearRect(props.eventsBand.top, 0, this.canvas.width, props.eventsBand.height)
+		this.ctx.clearRect(0, props.eventsBand.top, this.canvas.width, props.eventsBand.height)
 
 		// Clear the minimap bands which are not totally zoomed out.
 		// If zoom level is 0, the band cannot move (it is completely visible),
 		// so it does not have to be recalculated and updated
 		props.minimapBands
-			.filter(band => band.zoomLevel !== 0)
 			.forEach(band => this.ctx.clearRect(0, band.top, this.canvas.width, band.height))
 	}
 
 	update = () => {
-		if (this.canvas.width !== props.viewportWidth || this.canvas.height !== props.viewportHeight) {
-			this.canvas.width = props.viewportWidth
-			this.canvas.height = props.viewportHeight
-			this.indicatorsCanvas.width = props.viewportWidth
-			this.indicatorsCanvas.height = props.viewportHeight
-			
-			this.drawStaticMinimapBands()
-		}
-
 		this.clear()
 
 		this.drawRulers(props.eventsBand)
@@ -98,16 +75,18 @@ export default class Canvas implements View {
 		this.drawEventsText()
 
 		props.minimapBands
-			.filter(band => band.zoomLevel !== 0)
+			// .filter(band => band.zoomLevel !== 0)
 			.forEach(band => {
 				band.domains.forEach(domain => {
-					// this.drawMinimap(band, domain)
+					this.drawMinimap(band, domain)
 				})
 
 				this.drawRulers(band)
 			})
 
 		this.drawIndicators()
+
+		this.prevZoomLevel = props.eventsBand.zoomLevel
 	}
 
 	private drawEvents() {
@@ -191,6 +170,9 @@ export default class Canvas implements View {
 	}
 
 	private drawIndicators() {
+		// The indicators only change when the zoomLevel is changed
+		if (this.prevZoomLevel != null && this.prevZoomLevel === props.eventsBand.zoomLevel) return
+
 		this.indicatorsCtx.clearRect(0, 0, props.viewportWidth, props.viewportHeight)
 
 		this.indicatorsCtx.beginPath()
@@ -213,11 +195,6 @@ export default class Canvas implements View {
 
 		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .1)`
 		this.indicatorsCtx.fill()
-
-		// Draw red center line
-		this.indicatorsCtx.fillStyle = `rgba(255, 0, 0, .5)`
-		const x = props.eventsBand.positionAtTimestamp(props.center)
-		this.indicatorsCtx.fillRect(x - 1, 0, 2, props.viewportHeight)
 
 		this.indicatorsCtx.closePath()
 	}

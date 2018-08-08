@@ -9,13 +9,10 @@ import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
 import Label from './views/label'
-// import Debug from './views/debug'
+import Debug from './views/debug'
 
 export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
 
-// TODO center in config should not be ratio but timestamp
-// TODO pixelsPerMillisecond should be millisecondsPerPixel
-// TODO add config to add space/time before first and last events
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO zoom in to milliseconds
 // TODO add API to constrain by spacial data
@@ -59,16 +56,30 @@ export default class Timeline extends Api {
 		// Render canvas
 		this.appendToWrapper(new Canvas())
 
-		// Render bands (for mouse interactivity)
+		// Render events band (for mouse interactivity)
 		this.eventsBandView = new EventsBandView(props.eventsBand, this.onSelect)
 		this.appendToWrapper(this.eventsBandView)
 
+		// Render minimap bands (for mouse interactivity)
+		this.eventsBandView = new EventsBandView(props.eventsBand, this.onSelect)
 		this.minimapBandViews = props.minimapBands.map(band => new BandView(band))
 		this.minimapBandViews.forEach(this.appendToWrapper)
 
 		this.renderLabels()
 
-		// this.appendToWrapper(new Debug())
+		// @ts-ignore
+		if (process.env.NODE_ENV === 'development') this.appendToWrapper(new Debug())
+
+		const redLine = createElement('div', 'red-line', [
+			'position: absolute',
+			'width: 1px',
+			'background-color: red',
+			'left: calc(50% - 1px)',
+			'top: 0',
+			'bottom: 0',
+		])
+
+		this.wrapper.appendChild(redLine)
 
 		return this.wrapper
 	}

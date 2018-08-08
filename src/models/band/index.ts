@@ -81,10 +81,6 @@ export default abstract class Band {
 		return Math.round((timestamp - this.from) * this.pixelsPerMillisecond)
 	}
 
-	// proportionAtPosition(position: Pixels): Ratio {
-	// 	return (Math.abs(this.left) + position) / this.width
-	// }
-
 	timestampAtProportion(proportion: Ratio): Milliseconds {
 		return props.from + (props.time * proportion)
 	}

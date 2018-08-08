@@ -9,7 +9,6 @@ export class OrderedEvents {
 
 const pixelsPerLetter = 8
 
-// TODO remove visibleRatio and use 1 ms per 1 pixel as normalized values
 export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Milliseconds): OrderedEvents { 
 	if (!events.length) return new OrderedEvents()
 

@@ -34,7 +34,6 @@ export class RawEv3nt {
 	padding?: Pixels
 	top?: Pixels
 	width?: Pixels
-	outsideViewport?: boolean
 
 	// textWidth?: Pixels
 }
