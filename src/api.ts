@@ -1,6 +1,6 @@
 import animator, { Animator } from './animator'
 import { CENTER_CHANGE_DONE, Ratio, Milliseconds, ZOOM_DONE } from './constants'
-import props from './models/props';
+import props from './models/props'
 
 export interface OnChangeFunctionProps {
 	center: Ratio,
@@ -21,9 +21,8 @@ export default class Api {
 		private onChange: (changeProps: OnChangeFunctionProps) => void
 	) {
 		document.addEventListener('keydown', (ev) => {
-			console.log('NOT IMPLEMENTED')
-			// if (ev.keyCode === 189) props.eventsBand.zoomOut() // -
-			// if (ev.keyCode === 187) props.eventsBand.zoomIn() // +
+			if (ev.keyCode === 189) props.eventsBands[0].zoomOut() // -
+			if (ev.keyCode === 187) props.eventsBands[0].zoomIn() // +
 		})
 
 		if (this.onChange != null && typeof this.onChange === 'function') {
@@ -33,8 +32,6 @@ export default class Api {
 	}
 
 	private handleChange = () => {
-		// const { from, to } = props.eventsBand
-
 		this.onChange({
 			center: props.center,
 			bands: props.bands.map(b => ({
@@ -42,9 +39,6 @@ export default class Api {
 				to: b.to,
 				zoomLevel: b.zoomLevel
 			}))
-			// visibleFrom: from,
-			// visibleTo: to,
-			// zoomLevel: props.eventsBand.zoomLevel
 		})
 	}
 }
