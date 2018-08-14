@@ -64,26 +64,36 @@ export default abstract class Band<T extends BandConfig> {
 		this.nextDate = subsequentDate(this.granularity)
 		this.prevZoomLevel = this.zoomLevel || zoomLevel
 		this._zoomLevel = zoomLevel
-		this.setFromToLeft()
+		this.setHorizontalProps()
 	}
 
 	constructor(public config: T) {}
 
-	init() {
-		this.zoomLevel = this.config.zoomLevel
+	private setVerticalProps() {
 		this.height = Math.round(this.config.heightRatio * props.viewportHeight)
 		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
-		animator.registerModel(this)
 	}
 
-	private setFromToLeft() {
+	private setHorizontalProps() {
 		this.from = props.center - this.time/2
 		this.to = props.center + this.time/2
 		this.left = (props.from - this.from) * this.pixelsPerMillisecond
 	}
 
+	init() {
+		this.zoomLevel = this.config.zoomLevel
+		this.setVerticalProps()
+		animator.registerModel(this)
+	}
+
+	resize() {
+		this.zoomLevel = this.zoomLevel
+		this.setVerticalProps()
+		// Horizontal props are set through the setting of the zoom level
+	}
+
 	update() {
-		this.setFromToLeft()
+		this.setHorizontalProps()
 	}
 
 	positionAtTimestamp(timestamp: Milliseconds): Pixels {

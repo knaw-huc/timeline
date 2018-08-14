@@ -46,6 +46,11 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 		this.nextCanvas.height = this.maxRowCount * this.eventHeight
 	}
 
+	resize() {
+		super.resize()
+		this.isDrawn = false
+	}
+
 	draw(): HTMLCanvasElement {
 		if (!this.isDrawn) this.drawEvents()
 		else this.updateNextCanvas()

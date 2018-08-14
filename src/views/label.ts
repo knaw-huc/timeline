@@ -33,4 +33,8 @@ export default class Label implements View {
 
 		return wrapper
 	}
+
+	resize() {
+
+	}
 }

@@ -32,14 +32,40 @@ export class Props {
 	// Timestamp of the end date of the timeline
 	to: Milliseconds
 
+	rootElement: HTMLElement
+
 	viewportHeight: Pixels
 	viewportOffset: Pixels
 	viewportWidth: Pixels
 
+	/** Current center of the timeline by ratio [0, 1] */
+	private _center: Milliseconds
+	get center() { return this._center }
+	set center(n: Milliseconds) {
+		if ((this._center === this.from && n < this.from) || (this._center === this.to && n > this.to)) return
+		if (n < this.from) this._center = this.from 
+		else if (n > this.to) this._center = this.to
+		else this._center = n
+		this.centerChangeDone()
+	}
+
+	set dimensions(rootElement: HTMLElement) {
+		const style = getComputedStyle(rootElement)
+
+		this.viewportHeight = parseInt(style.getPropertyValue('height'), 10)
+		this.viewportOffset = rootElement.getBoundingClientRect().top
+		this.viewportWidth = parseInt(style.getPropertyValue('width'), 10)
+	}
+
+	private centerChangeDone = debounce(() => {
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
+	}, 300)
+
 	init(config: Config) {
 		if (config.rootElement == null) console.error('[init] No rootElement found')
 
-		this.dimensions = config.rootElement
+		this.rootElement = config.rootElement
+		this.dimensions = this.rootElement
 
 		const [froms, tos] = config.bands.reduce((prev, curr) => {
 			if (curr instanceof MinimapBand) return prev
@@ -69,28 +95,9 @@ export class Props {
 		}
 	}
 
-	/** Current center of the timeline by ratio [0, 1] */
-	private _center: Milliseconds
-	get center() { return this._center }
-	set center(n: Milliseconds) {
-		if ((this._center === this.from && n < this.from) || (this._center === this.to && n > this.to)) return
-		if (n < this.from) this._center = this.from 
-		else if (n > this.to) this._center = this.to
-		else this._center = n
-		this.centerChangeDone()
+	resize() {
+		this.dimensions = this.rootElement
 	}
-
-	set dimensions(rootElement: HTMLElement) {
-		const style = getComputedStyle(rootElement)
-
-		this.viewportHeight = parseInt(style.getPropertyValue('height'), 10)
-		this.viewportOffset = rootElement.getBoundingClientRect().top
-		this.viewportWidth = parseInt(style.getPropertyValue('width'), 10)
-	}
-
-	private centerChangeDone = debounce(() => {
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
-	}, 300)
 }
 
 export default new Props()

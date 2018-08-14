@@ -19,7 +19,7 @@ export default class BandView implements View {
 			'band-wrap',
 			[
 				'position: absolute',
-				'z-index: 1',
+				'z-index: 2',
 			],
 			[
 				`height: ${this.band.height}px`,

@@ -29,6 +29,8 @@ export default class Debug implements View {
 		return this.wrapper
 	}
 
+	resize() {}
+
 	update() {
 		this.wrapper.innerHTML = `
 			${
@@ -49,10 +51,3 @@ export default class Debug implements View {
 		`
 	}
 }
-			// <h3 style="padding: 0; margin: 0">Events band</h3>
-			// <div>left: ${Math.round(props.eventsBand.left)}px</div>
-			// <div>width: ${Math.round(props.eventsBand.width)}px</div>
-			// <div>px/ms: ${props.eventsBand.pixelsPerMillisecond}</div>
-			// <div>from: ${new Date(props.eventsBand.from).toISOString()}</div>
-			// <div>to: ${new Date(props.eventsBand.to).toISOString()}</div>
-			// <h3 style="padding: 0; margin: 0; margin-top: 1em">Minimap bands</h3>

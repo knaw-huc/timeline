@@ -45,6 +45,16 @@ export default class Canvas implements View {
 		return [this.canvas, this.indicatorsCanvas]
 	}
 
+	resize() {
+		this.indicatorsCanvas.width = props.viewportWidth
+		this.indicatorsCanvas.height = props.viewportHeight
+
+		this.canvas.width = props.viewportWidth
+		this.canvas.height = props.viewportHeight
+
+		this.indicatorsDrawn = false
+	}
+
 	private clear(band: MinimapBand | EventsBand) {
 		this.ctx.clearRect(0, band.top, this.canvas.width, band.height)
 	}

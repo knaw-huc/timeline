@@ -31,7 +31,7 @@ export {
 // TODO make it possible to have only minimap bands (see index.floods.html)
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 export default class Timeline extends Api {
-	private bandViews: BandView[]
+	private views: View[]
 	private wrapper: HTMLElement
 
 	constructor(protected config: Config, onChange?, private onSelect?) {
@@ -58,16 +58,16 @@ export default class Timeline extends Api {
 			]
 		)
 
-		// Render canvas
-		this.appendToWrapper(new Canvas())
-
 		// Render bands
-		this.bandViews = props.bands.map(band =>
-			(band instanceof EventsBand) ?
-				new EventsBandView(band, this.onSelect) :
-				new BandView(band)
-		)
-		this.bandViews.forEach(this.appendToWrapper)
+		this.views = props.bands
+			.map(band =>
+				(band instanceof EventsBand) ?
+					new EventsBandView(band, this.onSelect) :
+					new BandView(band)
+			)
+		this.views.push(new Canvas())
+		this.views.forEach(this.appendToWrapper)	
+		// this.views.forEach(this.appendToWrapper)
 
 		this.renderLabels()
 
@@ -107,14 +107,14 @@ export default class Timeline extends Api {
 	}
 
 	resize = () => {
-		props.dimensions = this.config.rootElement
+		props.resize()
 
 		for (const band of props.bands) {
-			band.zoomLevel = band.zoomLevel
+			band.resize()
 		}
 
-		for (const bandView of this.bandViews) {
-			bandView.resize()
+		for (const view of this.views) {
+			view.resize()
 		}
 
 		this.animator.play()
