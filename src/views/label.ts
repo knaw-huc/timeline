@@ -1,9 +1,9 @@
 import View from "./index"
 import createElement from '../utils/create-element'
-import { EventsDomainConfig } from "../models/config";
+import EventsBand from "../models/band/events";
 
 export default class Label implements View {
-	constructor(private domain: EventsDomainConfig) {}
+	constructor(private band: EventsBand) {}
 
 	render() {
 		const wrapper: HTMLDivElement = createElement('div', 'events-label-wrapper',
@@ -13,7 +13,7 @@ export default class Label implements View {
 				'width: 100%',
 			],
 			[
-				`top: ${this.domain.topOffsetRatio * 100}%`
+				`top: ${this.band.config.topOffsetRatio * 100}%`
 			]
 		)
 
@@ -27,7 +27,7 @@ export default class Label implements View {
 			'font-family: sans-serif',
 			'padding: 4px 8px',
 		])
-		eventsLabel.innerText = this.domain.label
+		eventsLabel.innerText = this.band.config.label
 
 		wrapper.appendChild(eventsLabel)
 

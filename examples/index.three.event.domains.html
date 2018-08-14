@@ -25,46 +25,41 @@
 
 			const t = new Timeline.default({
 				center: Date.UTC(1750),
-				events: {
-					zoomLevel: 6,
-					domains: [
-						{
-							events: eventsVOC,
-							heightRatio: .30,
-							label: 'VOC voyages',
-							rulerLabels: false,
-						},
-						{
-							events: eventsPhilosophy,
-							heightRatio: .30,
-							label: 'political philosophers',
-							rulerLabels: false,
-							topOffsetRatio: .30,
-						},
-						{
-							events: eventsExplorers,
-							heightRatio: .30,
-							label: 'explorers',
-							topOffsetRatio: .60,
-						},
-					]
-				},
-				minimaps: [
-					{
-						domains: [{
-							targets: [0, 1, 2],
-							heightRatio: .05,
-							topOffsetRatio: .90,
-						}],
+				bands: [
+					new Timeline.EventsBand({
+						zoomLevel: 10,
+						events: eventsVOC,
+						heightRatio: .30,
+						label: 'VOC voyages',
+					}),
+					new Timeline.EventsBand({
+						events: eventsPhilosophy,
+						heightRatio: .30,
+						label: 'political philosophers',
+						rulerLabels: false,
+						topOffsetRatio: .30,
+						zoomLevel: 6,
+					}),
+					new Timeline.EventsBand({
+						events: eventsExplorers,
+						heightRatio: .30,
+						label: 'explorers',
+						topOffsetRatio: .60,
+						zoomLevel: 6,
+					}),
+					new Timeline.MinimapBand({
+						heightRatio: .05,
+						indicatorFor: 1,
+						targets: [0, 1, 2],
+						topOffsetRatio: .90,
 						zoomLevel: 2,
-					},
-					{	
-						domains: [{
-							targets: [0, 1, 2],
-							heightRatio: .05,
-							topOffsetRatio: .95,
-						}],
-					},
+					}),
+					new Timeline.MinimapBand({	
+						heightRatio: .05,
+						indicatorFor: 1,
+						targets: [0, 1, 2],
+						topOffsetRatio: .95,
+					}),
 				],
 				rootElement: document.getElementById('timeline'),
 			},

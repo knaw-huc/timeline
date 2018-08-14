@@ -1,47 +1,61 @@
 import Band from '.'
-import { BandConfig, EventsDomainConfig } from '../config';
-import animator from '../../animator';
-import { Pixels, EVENT_HEIGHT, DATE_BAR_HEIGHT } from '../../constants';
-import props from '../props';
-import { RawEv3nt } from '../event';
+import { EventsBandConfig } from '../config'
+import animator from '../../animator'
+import { Pixels, EVENT_HEIGHT, DATE_BAR_HEIGHT } from '../../constants'
+import props from '../props'
+import { RawEv3nt } from '../event'
+import { orderEvents } from '../../utils/events.worker';
+import { byDate } from '../../utils/dates';
+import { calcPixelsPerMillisecond } from '../../utils';
 
-export default class EventsBand extends Band {
-	domains: EventsDomainConfig[]
-	visibleEvents: RawEv3nt[]
+export default class EventsBand extends Band<EventsBandConfig> {
+	events: RawEv3nt[] = []
+	rowCount: number = 0
+	visibleEvents: RawEv3nt[] = []
 
-	constructor(config: BandConfig<EventsDomainConfig>) {
-		super(config)
-		this.domains = config.domains
+	constructor(config: EventsBandConfig) {
+		super({ ...new EventsBandConfig(), ...config })
+
+		if (this.config.events != null) this.config.events.sort(byDate)
+	}
+
+	init() {
+		super.init()
+
+		const pixelsPerMillisecond = calcPixelsPerMillisecond(props.viewportWidth, this.config.zoomLevel || 0, props.to - props.from)
+		const orderedEvents = this.config.orderedEvents == null ?
+			orderEvents(this.config.events, pixelsPerMillisecond) :
+			this.config.orderedEvents
+
+		this.rowCount = orderedEvents.row_count
+
+		// While setting this.events, add the top prop to every event
+		const offsetY = this.config.topOffsetRatio * props.viewportHeight
+		const domainHeight = (this.config.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
+		this.events = orderedEvents.events.map(event => {
+			event.top = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
+			return event
+		})
+
 		this.updateEvents()
 	}
 
 	private updateEvents() {
-		if (!this.domains) return
+		this.visibleEvents = this.events
+			.filter(event => !(event.from > this.to || event.to < this.from))
+			.map(event => {
+				// event.left (px) === event.from (ms) + band offset (ms)
+				event.left = this.positionAtTimestamp(event.from) //+ this.left			 // ||<- left ->[   event   ]                 ||  
 
-		this.visibleEvents = this.domains.reduce((prev, domain) => {
-			const offsetY = domain.topOffsetRatio * props.viewportHeight
-			const domainHeight = (domain.heightRatio * props.viewportHeight) - DATE_BAR_HEIGHT
+				// event.width (px) === event.time (ms)
+				event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
+				if (event.time && event.width < 1) event.width = 1
 
-			const visibleEvents = domain.orderedEvents.events
-				.filter(event => !(event.from > this.to || event.to < this.from))
-				.map(event => {
-					// event.left (px) === event.from (ms) + band offset (ms)
-					event.left = this.positionAtTimestamp(event.from) //+ this.left			 // ||<- left ->[   event   ]                 ||  
+				// event.padding (px) === event.space (ms)
+				event.padding = Math.round((event.space) * this.pixelsPerMillisecond)    // ||          [   event   ]<- padding ->    ||
 
-					// event.width (px) === event.time (ms)
-					event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
-					if (event.time && event.width < 1) event.width = 1
-
-					// event.padding (px) === event.space (ms)
-					event.padding = Math.round((event.space) * this.pixelsPerMillisecond)    // ||          [   event   ]<- padding ->    ||
-
-					// event.top (px) === event.row (integer)
-					event.top = offsetY + domainHeight - ((event.row + 1) * (EVENT_HEIGHT + 2))
-					return event
-				})
-
-			return prev.concat(visibleEvents)
-		}, [])
+				return event
+			})
 	}
 
 	update() {
@@ -52,16 +66,10 @@ export default class EventsBand extends Band {
 	getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt {
 		const timestamp = this.timestampAtPosition(x)
 
-		const domain = this.domains.find(d => {
-			const top = props.viewportOffset + d.topOffsetRatio * props.viewportHeight
-			const height = props.viewportOffset + d.heightRatio * props.viewportHeight
-			return top < y && top + height > y
-		})
-
-		const event = domain.orderedEvents.events.find(e => {
+		const event = this.events.find(e => {
 			if (!(e.from < timestamp && e.from + e.time + e.space > timestamp)) return false
 
-			const bottomOfDomain = props.viewportOffset + ((domain.topOffsetRatio + domain.heightRatio) * props.viewportHeight) - DATE_BAR_HEIGHT
+			const bottomOfDomain = props.viewportOffset + ((this.config.topOffsetRatio + this.config.heightRatio) * props.viewportHeight) - DATE_BAR_HEIGHT
 			const row = Math.floor((bottomOfDomain - y) / (EVENT_HEIGHT + 2))
 			return e.row === row
 		})
@@ -70,10 +78,10 @@ export default class EventsBand extends Band {
 	}
 
 	zoomIn() {
-		animator.zoomTo(this.zoomLevel + 1)
+		animator.zoomTo(this, this.zoomLevel + 1)
 	}
 
 	zoomOut() {
-		animator.zoomTo(this.zoomLevel - 1)
+		animator.zoomTo(this, this.zoomLevel - 1)
 	}
 }

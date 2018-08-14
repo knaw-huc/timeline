@@ -10,8 +10,17 @@ import Canvas from './views/canvas'
 import View from './views'
 import Label from './views/label'
 import Debug from './views/debug'
+import MinimapBand from './models/band/minimap';
+import EventsBand from './models/band/events';
 
-export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMillisecond }
+export {
+	Config as TimelineConfig,
+	orderEvents,
+	OrderedEvents,
+	calcPixelsPerMillisecond,
+	EventsBand,
+	MinimapBand,
+}
 
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO zoom in to milliseconds
@@ -22,21 +31,18 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 // TODO Scroll vertical when events higher than viewportHeight
 // TODO make it possible to have only minimap bands (see index.floods.html)
 // TODO make indicator draggable
-// TODO show when playing animation (button pressed?)
 export default class Timeline extends Api {
-	private minimapBandViews: BandView[]
-	private eventsBandView: EventsBandView
+	private bandViews: BandView[]
 	private wrapper: HTMLElement
 
 	constructor(protected config: Config, onChange?, private onSelect?) {
 		super(config.rootElement, onChange)
 
-		props.init(config).then(() => {
-			config.rootElement.appendChild(this.render())
+		props.init(config)
+		config.rootElement.appendChild(this.render())
 
-			const debouncedResize = debounce(this.resize, 600)
-			window.addEventListener('resize', debouncedResize)
-		})
+		const debouncedResize = debounce(this.resize, 600)
+		window.addEventListener('resize', debouncedResize)
 	}
 
 	private render() {
@@ -56,14 +62,13 @@ export default class Timeline extends Api {
 		// Render canvas
 		this.appendToWrapper(new Canvas())
 
-		// Render events band (for mouse interactivity)
-		this.eventsBandView = new EventsBandView(props.eventsBand, this.onSelect)
-		this.appendToWrapper(this.eventsBandView)
-
-		// Render minimap bands (for mouse interactivity)
-		this.eventsBandView = new EventsBandView(props.eventsBand, this.onSelect)
-		this.minimapBandViews = props.minimapBands.map(band => new BandView(band))
-		this.minimapBandViews.forEach(this.appendToWrapper)
+		// Render bands
+		this.bandViews = props.bands.map(band =>
+			(band instanceof EventsBand) ?
+				new EventsBandView(band, this.onSelect) :
+				new BandView(band)
+		)
+		this.bandViews.forEach(this.appendToWrapper)
 
 		this.renderLabels()
 
@@ -85,9 +90,9 @@ export default class Timeline extends Api {
 	}
 
 	private renderLabels() {
-		props.eventsBand.domains
-			.filter(d => d.label != null)
-			.map(d => new Label(d))
+		props.bands
+			.filter(band => band instanceof EventsBand && band.config.label != null)
+			.map(band => new Label(band as EventsBand))
 			.forEach(this.appendToWrapper)
 	}
 
@@ -104,10 +109,15 @@ export default class Timeline extends Api {
 
 	resize = () => {
 		props.dimensions = this.config.rootElement
-		props.eventsBand.zoomLevel = props.eventsBand.zoomLevel
-		this.eventsBandView.resize()
-		props.minimapBands.forEach(mmb => mmb.zoomLevel = mmb.zoomLevel)
-		this.minimapBandViews.forEach(mmbv => mmbv.resize())
+
+		for (const band of props.bands) {
+			band.zoomLevel = band.zoomLevel
+		}
+
+		for (const bandView of this.bandViews) {
+			bandView.resize()
+		}
+
 		this.animator.play()
 	}
 }

@@ -5,13 +5,13 @@ import eventBus from '../../event-bus'
 import animator from '../../animator'
 import View from '../index'
 import { Milliseconds } from '../../constants';
+import { MinimapBandConfig, EventsBandConfig } from '../../models/config'
 
 export default class BandView implements View { 
-	// private dragStart: number
 	private dragOffset: number
 	protected rootElement: HTMLElement
 
-	constructor(public band: Band) {}
+	constructor(public band: Band<MinimapBandConfig | EventsBandConfig>) {}
 
 	render() {
 		this.rootElement = createElement(
@@ -28,10 +28,8 @@ export default class BandView implements View {
 			]
 		)
 
-		if (this.band.zoomLevel > 0) {
-			eventBus.register('mousedown', this.onMouseDown, this.rootElement)
-			eventBus.register('mousemove', this.onMouseMove, this.rootElement)
-		}
+		eventBus.register('mousedown', this.onMouseDown, this.rootElement)
+		eventBus.register('mousemove', this.onMouseMove, this.rootElement)
 		eventBus.register('dblclick', this.onDblClick, this.rootElement)
 
 		return this.rootElement
@@ -43,7 +41,7 @@ export default class BandView implements View {
 	}
 
 	private onMouseMove = (ev) => {
-		if (this.dragOffset && this.band.zoomLevel > 0) {
+		if (this.dragOffset) {
 			// Calculate the difference between the current mouse position and
 			// the previous mouse position. This yields an offset in pixels, which
 			// is converted to milliseconds.

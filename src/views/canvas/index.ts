@@ -1,10 +1,9 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { DATE_BAR_HEIGHT, Pixels, EVENT_HEIGHT, PIXELS_PER_LETTER } from '../../constants'
+import { EVENT_HEIGHT, PIXELS_PER_LETTER, DATE_BAR_HEIGHT } from '../../constants'
 import { findClosestRulerDate } from '../../utils'
 import { labelBody } from '../../utils/dates'
 import MinimapBand from '../../models/band/minimap'
-import { MinimapDomainConfig } from '../../models/config'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
 import View from '../index'
@@ -18,17 +17,12 @@ export default class Canvas implements View {
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
 
-	private offsiteCanvas: HTMLCanvasElement = createElement('canvas')
-	private offsiteCtx: CanvasRenderingContext2D
-
 	private indicatorsCanvas: HTMLCanvasElement
 	private indicatorsCtx: CanvasRenderingContext2D
-
-	private prevZoomLevel: number
+	private indicatorsDrawn: boolean = false
 
 	constructor() {
 		animator.registerView(this)
-		this.offsiteCtx = this.offsiteCanvas.getContext('2d')
 	}
 
 	render() {
@@ -54,48 +48,35 @@ export default class Canvas implements View {
 		return [this.canvas, this.indicatorsCanvas]
 	}
 
-	// Clear the canvas active parts
-	private clear = () => {
-		// Clear the events band
-		this.ctx.clearRect(0, props.eventsBand.top, this.canvas.width, props.eventsBand.height)
-
-		// Clear the minimap bands which are not totally zoomed out.
-		// If zoom level is 0, the band cannot move (it is completely visible),
-		// so it does not have to be recalculated and updated
-		props.minimapBands
-			.forEach(band => this.ctx.clearRect(0, band.top, this.canvas.width, band.height))
+	private clear(band: MinimapBand | EventsBand) {
+		this.ctx.clearRect(0, band.top, this.canvas.width, band.height)
 	}
 
 	update = () => {
-		this.clear()
-
-		this.drawRulers(props.eventsBand)
-
-		this.drawEvents()
-		this.drawEventsText()
-
-		props.minimapBands
-			// .filter(band => band.zoomLevel !== 0)
+		props.bands
 			.forEach(band => {
-				band.domains.forEach(domain => {
-					this.drawMinimap(band, domain)
-				})
-
-				this.drawRulers(band)
+				if (band instanceof EventsBand)
+					this.drawEventsBand(band)
+				else
+					this.drawMinimapBand(band)
 			})
 
 		this.drawIndicators()
-
-		this.prevZoomLevel = props.eventsBand.zoomLevel
 	}
 
-	private drawEvents() {
+	private drawEventsBand(band: EventsBand) {
+		this.clear(band)
+		this.drawRulers(band)
+
 		this.ctx.beginPath()
 
-		for (const event of props.eventsBand.visibleEvents) {
+		for (const event of band.visibleEvents) {
+			// If point in time, draw circle
 			if (!event.time) {
 				this.ctx.moveTo(event.left, event.top + EVENT_HEIGHT/2)
 				this.ctx.arc(event.left, event.top + EVENT_HEIGHT/2, EVENT_HEIGHT/3, 0, 2 * Math.PI)
+			
+			// Else if interval, draw rectangle
 			} else {
 				this.ctx.rect(event.left, event.top, event.width, EVENT_HEIGHT)
 			}
@@ -103,12 +84,14 @@ export default class Canvas implements View {
 
 		this.ctx.fillStyle = `rgba(126, 0, 0, .3)`
 		this.ctx.fill()
+
+		this.drawEventsText(band)
 	}
 
-	private drawEventsText() {
+	private drawEventsText(band: EventsBand) {
 		this.ctx.fillStyle = `rgb(126, 0, 0)`
 
-		for (const event of props.eventsBand.visibleEvents) {
+		for (const event of band.visibleEvents) {
 			let eventWidth = event.time === 0 ? event.padding : event.width
 			let eventLeft = event.left
 
@@ -125,98 +108,68 @@ export default class Canvas implements View {
 		}
 	}
 
-	private drawMinimap(band: MinimapBand, domain: MinimapDomainConfig) {
-		const maxHeight: Pixels = band.height - DATE_BAR_HEIGHT
-		const maxRowCount = band.domains.reduce((prev, curr) => {
-			const counts = curr.targets.map(index => props.eventsBand.domains[index].orderedEvents.row_count)
-			return Math.max(prev, ...counts)
-		}, 0)
-		let eventHeight: Pixels = maxHeight / maxRowCount
+	private drawMinimapBand(band: MinimapBand) {
+		// Do not draw the minimap if left or zoom level have not changed
+		if (band.isDrawn && band.prevLeft === band.left && band.prevZoomLevel === band.zoomLevel) return
 
-		// If the events have a height less than 1, this means the minimap will be higher than the available
-		// height (maxHeight). To fix this, the minimap is rendered on an invisible canvas and drawn (scaled)
-		// on the visible canvas
-		if (eventHeight < 1) {
-			eventHeight = 1
-			this.offsiteCanvas.width = props.viewportWidth
-			this.offsiteCanvas.height = maxRowCount
-			drawEvents(this.offsiteCtx, maxRowCount, 0)
-			this.ctx.drawImage(this.offsiteCanvas, 0, band.top, props.viewportWidth, maxHeight)
-		} else {
-			eventHeight = Math.round(eventHeight)
-			drawEvents(this.ctx, maxHeight)
-		}
+		this.clear(band)
+		this.drawRulers(band)
 
-		function drawEvents(ctx: CanvasRenderingContext2D, height, offsetY = band.top) {
-			ctx.beginPath()
-			const left = band.positionAtTimestamp(band.from)
+		const minimapCanvas = band.draw()
+		this.ctx.drawImage(minimapCanvas, 0, band.top, props.viewportWidth, band.canvasHeight)
 
-			domain.targets.forEach(targetIndex => {
-				const targetDomain = props.eventsBand.domains[targetIndex]
-
-				for (const event of targetDomain.orderedEvents.events) {
-					if (event.from > band.to || event.to < band.from) continue
-					const eventWidth = Math.round(event.time * band.pixelsPerMillisecond)
-					const eventLeft = band.positionAtTimestamp(event.date_min != null ? event.date_min : event.date)
-					const y = offsetY + height - ((event.row + 1) * eventHeight)
-					const width = eventWidth < 1 ? 1 : eventWidth
-					ctx.rect(eventLeft - left, y, width, eventHeight)
-				}
-			})
-
-			ctx.fillStyle = `rgba(0, 0, 0, .2)`
-			ctx.fill()
-		}
+		band.isDrawn = true
 	}
 
 	private drawIndicators() {
 		// The indicators only change when the zoomLevel is changed
-		if (this.prevZoomLevel != null && this.prevZoomLevel === props.eventsBand.zoomLevel) return
+		if (this.indicatorsDrawn && props.eventsBands.every(b => b.prevZoomLevel === b.zoomLevel)) return
 
 		this.indicatorsCtx.clearRect(0, 0, props.viewportWidth, props.viewportHeight)
-
 		this.indicatorsCtx.beginPath()
 
-		props.minimapBands.forEach(band => {
-			band.domains.forEach(domain => {
-				// Left indicator
-				const indicatorTOP = Math.round(domain.topOffsetRatio * props.viewportHeight)
-				const leftIndicatorRightX = band.positionAtTimestamp(props.eventsBand.from)
-				this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.height)
+		for (const band of props.minimapBands) {
+			const eventsBand = props.eventsBands[band.config.indicatorFor]
 
-				// Right indicator
-				const rightIndicatorLeftX = band.positionAtTimestamp(props.eventsBand.to)
-				this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.height)
+			// Left indicator
+			const indicatorTOP = Math.round(band.config.topOffsetRatio * props.viewportHeight)
+			const leftIndicatorRightX = band.positionAtTimestamp(eventsBand.from)
+			this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.height)
 
-				// Cover the DATE_BAR
-				this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.height - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
-			})
-		})
+			// Right indicator
+			const rightIndicatorLeftX = band.positionAtTimestamp(eventsBand.to)
+			this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.height)
+
+			// Cover the DATE_BAR
+			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.height - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
+		}
 
 		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .1)`
 		this.indicatorsCtx.fill()
 
 		this.indicatorsCtx.closePath()
+
+		this.indicatorsDrawn = true
 	}
 
+	// TODO draw special dates in darker gray, add dates and specialDates to arrays in while loop,
+	// 		to prevent to much change of strokeStyle
 	private drawRulers(band: MinimapBand | EventsBand) {
+		if (!band.config.rulers) return
+
 		this.ctx.beginPath()
 		this.ctx.fillStyle = `rgb(150, 150, 150)`
 
-		for (const domain of band.domains) {
-			if (!domain.rulers) continue
+		let date = findClosestRulerDate(band.from, band.granularity)
+		const y = band.config.topOffsetRatio * props.viewportHeight
+		const height = band.config.heightRatio * props.viewportHeight
 
-			let date = findClosestRulerDate(band.from, band.granularity)
-			const y = domain.topOffsetRatio * props.viewportHeight
-			const height = domain.heightRatio * props.viewportHeight
-
-			while(date < band.to) {
-				const left = band.positionAtTimestamp(date)
-				this.ctx.moveTo(left, y)
-				this.ctx.lineTo(left, y + height)
-				if (domain.rulerLabels) this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
-				date = band.nextDate(date)
-			}
+		while(date < band.to) {
+			const left = band.positionAtTimestamp(date)
+			this.ctx.moveTo(left, y)
+			this.ctx.lineTo(left, y + height)
+			if (band.config.rulerLabels) this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
+			date = band.nextDate(date)
 		}
 
 		this.ctx.strokeStyle = `rgb(200, 200, 200)`

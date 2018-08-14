@@ -2,7 +2,7 @@ import { getGranularity, Granularity, subsequentDate } from '../../utils/dates'
 import props from '../props'
 import { Pixels, Milliseconds, Ratio } from '../../constants'
 import { visibleRatio } from '../../utils'
-import { BandConfig, MinimapDomainConfig, EventsDomainConfig } from '../config';
+import { BandConfig } from '../config';
 import animator from '../../animator';
 
 /**
@@ -11,7 +11,7 @@ import animator from '../../animator';
  * Easiest way to think of it is: they scroll together.
  */
 
-export default abstract class Band {
+export default abstract class Band<T extends BandConfig> {
 	protected readonly defaultZoomLevel = 0
 
 	// Timestamp of the visible start of the events domains
@@ -35,6 +35,9 @@ export default abstract class Band {
 	// the x-position of an event or ruler on the timeline.
 	pixelsPerMillisecond: Pixels
 
+	prevLeft: Pixels
+	prevZoomLevel: number
+
 	top: Pixels
 
 	visibleRatio: Ratio
@@ -45,8 +48,7 @@ export default abstract class Band {
 	private _left: Pixels
 	get left() { return this._left }
 	set left(left) { 
-		if (left < -this.width + props.viewportWidth) left = props.viewportWidth - this.width
-		else if (left > 0) left = 0 
+		this.prevLeft = this.left || left
 		this._left = left
 	}
 
@@ -60,21 +62,28 @@ export default abstract class Band {
 		this.time = this.visibleRatio * props.time
 		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
 		this.nextDate = subsequentDate(this.granularity)
+		this.prevZoomLevel = this.zoomLevel || zoomLevel
 		this._zoomLevel = zoomLevel
-		this.update()
+		this.setFromToLeft()
 	}
 
-	constructor(config: BandConfig<MinimapDomainConfig | EventsDomainConfig>) {
-		this.zoomLevel = config.zoomLevel
-		this.height = Math.round(config.domains.reduce((prev, curr) => prev + curr.heightRatio, 0) * props.viewportHeight)
-		this.top = Math.round(config.domains.reduce((prev, curr) => Math.min(prev, curr.topOffsetRatio), 1) * props.viewportHeight)
+	constructor(public config: T) {}
+
+	init() {
+		this.zoomLevel = this.config.zoomLevel
+		this.height = Math.round(this.config.heightRatio * props.viewportHeight)
+		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
 		animator.registerModel(this)
 	}
 
-	update() {
+	private setFromToLeft() {
 		this.from = props.center - this.time/2
 		this.to = props.center + this.time/2
 		this.left = (props.from - this.from) * this.pixelsPerMillisecond
+	}
+
+	update() {
+		this.setFromToLeft()
 	}
 
 	positionAtTimestamp(timestamp: Milliseconds): Pixels {

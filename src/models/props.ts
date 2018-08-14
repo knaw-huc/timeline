@@ -1,16 +1,27 @@
 import { CENTER_CHANGE_DONE, Milliseconds, Pixels } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
-import EventsBand from "./band/events"
-import { debounce, calcPixelsPerMillisecond } from "../utils"
-import prepareConfig from '../utils/prepare-config'
-import { byDate } from "../utils/dates";
+// import EventsBand from "./band/events"
+import { debounce } from "../utils"
+import EventsBand from "./band/events";
+// import prepareConfig from '../utils/prepare-config'
+// import { byDate } from "../utils/dates";
+
+function onEventsBand (band: MinimapBand | EventsBand): band is EventsBand {
+	return band instanceof EventsBand
+}
+
+function onMinimapBand (band: MinimapBand | EventsBand): band is MinimapBand {
+	return band instanceof MinimapBand
+}
 
 export class Props {
 	private readonly defaultCenterRatio = .5
 
-	eventsBand: EventsBand
+	bands: (EventsBand | MinimapBand)[]
+	eventsBands: EventsBand[]
 	minimapBands: MinimapBand[]
+	// minimapBands: MinimapBand[]
 
 	// Timestamp of the start date of the timeline
 	from: Milliseconds
@@ -25,49 +36,37 @@ export class Props {
 	viewportOffset: Pixels
 	viewportWidth: Pixels
 
-	async init(config: Config) {
+	init(config: Config) {
 		if (config.rootElement == null) console.error('[init] No rootElement found')
 
 		this.dimensions = config.rootElement
 
-		const froms = []
-		const tos = []
-		for (const domain of config.events.domains) {
-			let events
-			if (domain.hasOwnProperty('events')) {
-				domain.events.sort(byDate)	
-				events = domain.events
-			}
-			if (events == null) events = domain.orderedEvents.events
-
-			froms.push(events[0].date_min || events[0].date)
-			tos.push(events.reduce((prev, curr) => {
+		const [froms, tos] = config.bands.reduce((prev, curr) => {
+			if (curr instanceof MinimapBand) return prev
+			const events = curr.config.orderedEvents == null ? curr.config.events : curr.config.orderedEvents.events
+			prev[0].push(events[0].date_min || events[0].date)
+			prev[1].push(events.reduce((prev, curr) => {
 				return Math.max(prev, curr.end_date || -Infinity, curr.end_date_max || -Infinity)
 			}, -Infinity))
-		}
+			return prev
+		}, [[], []])
+
 		this.from = Math.min(...froms) 
 		this.to = Math.max(...tos)
 
 		this.time = this.to - this.from
 
-		// const pixelsPerMillisecond2 = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
-
-		// this.from -= (this.viewportWidth / 8) / pixelsPerMillisecond2
-		// this.to += (this.viewportWidth / 8) / pixelsPerMillisecond2
-		// // this.to += this.time * .1
-		// this.time = this.to - this.from
-
-		const pixelsPerMillisecond = calcPixelsPerMillisecond(this.viewportWidth, config.events.zoomLevel || 0, this.to - this.from)
-		config = await prepareConfig(config, pixelsPerMillisecond)
-
-		// TODO move to prepareConfig
 		this.center = (config.center != null) ?
 			config.center :
 			this.from + (this.defaultCenterRatio * this.time)
 
-		this.minimapBands = config.minimaps.map(mm => new MinimapBand(mm))
+		this.bands = config.bands
+		this.eventsBands = this.bands.filter(onEventsBand)
+		this.minimapBands = this.bands.filter(onMinimapBand)
 
-		this.eventsBand = new EventsBand(config.events)
+		for (const band of this.bands) {
+			band.init()
+		}
 	}
 
 	/** Current center of the timeline by ratio [0, 1] */

@@ -3,6 +3,8 @@ import { Milliseconds, ZOOM_DONE } from "./constants";
 import Band from "./models/band";
 import Canvas from "./views/canvas";
 import Debug from "./views/debug";
+import { MinimapBandConfig, EventsBandConfig } from "./models/config";
+import EventsBand from "./models/band/events";
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -12,8 +14,10 @@ enum Direction {
 }
 
 export class Animator {
+	private activeBand: EventsBand
 	private readonly goToDuration: Milliseconds = 300
 	private readonly zoomToDuration: Milliseconds = 300
+
 	// private readonly interval: number = .00001
 	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
 
@@ -35,12 +39,12 @@ export class Animator {
 	// to calculate the remaining time when animating to a marker
 	private elapsedTimeTotal: Milliseconds = 0
 
-	private models: Band[] = []
+	private models: Band<MinimapBandConfig | EventsBandConfig>[] = []
 	private views: (Canvas | Debug)[] = []
 
 	private zoomMarker: number
 
-	registerModel(model: Band) {
+	registerModel(model: Band<MinimapBandConfig | EventsBandConfig>) {
 		this.models.push(model)
 	}
 
@@ -48,18 +52,28 @@ export class Animator {
 		this.views.push(view)
 	}
 
+	private adjustMinimapBands() {
+		// A minimap zoom level should never be greater than the events band zoom level
+		props.minimapBands.forEach(mmb => {
+			// If the events band zoomlevel becomes smaller than the minimap band zoomlevel,
+			// adjust the minimap band zoom level to follow the events band zoom level
+			if (this.activeBand.zoomLevel < mmb.config.zoomLevel) {
+				mmb.zoomLevel = this.activeBand.zoomLevel
+			}
+		})
+	}
+
 	animate = (timestamp) => {
 		// time elapsed since previous frame
 		const elapsedTime = this.prevTimestamp == null ? 0 : timestamp - this.prevTimestamp
 
-		// TODO find out why timestamp can be 0
 		if (elapsedTime > 0 || this.prevTimestamp == null) {
 			// If there is no marker, use the multiplier to determine speed
 			if (this.centerMarker == null && this.zoomMarker == null) {
-				props.center += (props.eventsBand.time / 10000) * this.multiplier * this.direction
-			// Else if there is a marker, calculated the speed based on props.center and time remaining
-			}
-			else if (this.centerMarker != null) {
+				props.center += (props.eventsBands[0].time / 10000) * this.multiplier * this.direction
+
+			// Else if there is a center marker, calculated the speed based on props.center and time remaining
+			} else if (this.centerMarker != null) {
 				const timeRemaining = this.goToDuration - this.elapsedTimeTotal
 				const centerDelta = Math.abs(this.centerMarker - props.center) / (timeRemaining / elapsedTime)
 				if (timeRemaining < elapsedTime) {
@@ -68,36 +82,38 @@ export class Animator {
 				}
 				else props.center = props.center + (centerDelta * this.direction)
 			}
+
+			// Else if there is a zoom marker
 			else if (this.zoomMarker != null) {
 				const timeRemaining = this.zoomToDuration - this.elapsedTimeTotal
-				const zoomDelta = (this.zoomMarker - props.eventsBand.zoomLevel) / (timeRemaining / elapsedTime)
+				const zoomDelta = (this.zoomMarker - this.activeBand.zoomLevel) / (timeRemaining / elapsedTime)
 				if (timeRemaining < elapsedTime) {
-					props.eventsBand.zoomLevel = this.zoomMarker
+					this.activeBand.zoomLevel = this.zoomMarker
+					props.eventsBands.forEach(band => {
+						// The band zoom level should always end in a whole number (the zoom marker)
+						if (band === this.activeBand) this.activeBand.zoomLevel = this.zoomMarker
+						// To get the whole number for the "inactive" bands, the zoom marker is added 
+						// to the original (in the config) difference of the zoom levels with the active band
+						else band.zoomLevel = this.zoomMarker + (band.config.zoomLevel - this.activeBand.config.zoomLevel)
+					})
+					this.adjustMinimapBands()
 					document.dispatchEvent(new CustomEvent(ZOOM_DONE))
 					this.stop()
 				}
 				else {
-					props.eventsBand.zoomLevel = props.eventsBand.zoomLevel + zoomDelta
-				}
-
-				// A minimap zoom level should never be greater than the events band zoom level
-				props.minimapBands.forEach(mmb => {
-					// If the events band zoomlevel becomes smaller than the minimap band zoomlevel,
-					// adjust the minimap band zoom level to follow the events band zoom level
-					if (props.eventsBand.zoomLevel < mmb.config.zoomLevel) {
-						mmb.zoomLevel = props.eventsBand.zoomLevel
-					// If the events band zoom level becomes greater than the minimap zoom level,
-					// set the minimap zoom level back to the config value
-					} else if (mmb.zoomLevel !== mmb.config.zoomLevel) {
-						mmb.zoomLevel = mmb.config.zoomLevel
+					for (const band of props.eventsBands) {
+						band.zoomLevel = band.zoomLevel + zoomDelta
 					}
-				})
+					this.adjustMinimapBands()
+				}
 			}
 
-			// Update the models. This is real quick ~0ms
+			// Remember. There are only ~16ms (1000ms / 60fps) to update a frame
+
+			// Update the models. This is quick ~2ms
 			this.models.forEach(model => model.update())
 
-			// Update the view. This is too slow ~30-50ms
+			// Update the view. This is slower ~10/~15ms
 			this.views.forEach(view => view.update())
 		}
 
@@ -133,10 +149,28 @@ export class Animator {
 		else this.playBackward()
 	}
 
-	zoomTo(nextZoomLevel: number) {
+	zoomTo(band: EventsBand, nextZoomLevel: number) {
+		// If the zoom marker is already set, return to let current the animation finish
 		if (this.zoomMarker != null) return
+
+		// The zoom level cannot be smaller than 0, 0 === no zoom
 		if (nextZoomLevel < 0) nextZoomLevel = 0
+
+		// If the the active band changed, reset the animation with this.stop()
+		// and set the active band
+		if (band !== this.activeBand) {
+			this.stop()
+			this.activeBand = band
+		}
+
+		// If the zoom level is the same as the current zoom level,
+		// return to avoid unnecessary calcs and renders
+		if (this.activeBand.zoomLevel === nextZoomLevel) return
+
+		// Set the zoom marker
 		this.zoomMarker = nextZoomLevel
+
+		// Run the first frame
 		this.play()
 	}
 
@@ -174,6 +208,7 @@ export class Animator {
 
 	stop() {
 		this.direction = Direction.Stop
+		this.activeBand = null
 		this.centerMarker = null
 		this.zoomMarker = null
 		this.prevTimestamp = null

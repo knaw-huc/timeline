@@ -12,7 +12,15 @@ export default class EventsBandView extends BandView {
 	render() {
 		const root = super.render()
 		eventBus.register('click', this.onClick, this.rootElement)
+		eventBus.register('wheel', this.onWheel, this.rootElement)
 		return root
+	}
+
+	private onWheel = (ev) => {
+		if (Math.abs(ev.deltaX) === 0 && ev.deltaY !== 0) {
+			if (ev.deltaY < 0) this.zoomOut()
+			if (ev.deltaY > 0) this.zoomIn()
+		}
 	}
 
 	private onClick = (ev) => {
@@ -22,4 +30,15 @@ export default class EventsBandView extends BandView {
 			logEvent(event)
 		}
 	}
+
+	private zoomIn() {
+		// console.error('NOT IMPLEMENTED')
+		this.band.zoomIn()
+	}
+
+	private zoomOut() {
+		// console.error('NOT IMPLEMENTED')
+		this.band.zoomOut()
+		// this.handleChange()
+	} 
 }
