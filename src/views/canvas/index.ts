@@ -1,19 +1,17 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
 import { EVENT_HEIGHT, PIXELS_PER_LETTER, DATE_BAR_HEIGHT } from '../../constants'
-import { findClosestRulerDate } from '../../utils'
-import { labelBody } from '../../utils/dates'
 import MinimapBand from '../../models/band/minimap'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
 import View from '../index'
+import drawRulers from './rulers'
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
  * It gives an overview of densely (and scarcely) populated areas
  */
 export default class Canvas implements View {
-	private readonly font: string = "10px sans-serif"
 	private canvas: HTMLCanvasElement
 	private ctx: CanvasRenderingContext2D
 
@@ -33,7 +31,6 @@ export default class Canvas implements View {
 		this.canvas.width = props.viewportWidth
 		this.canvas.height = props.viewportHeight
 		this.ctx = this.canvas.getContext('2d')
-		this.ctx.font = this.font
 
 		this.indicatorsCanvas = createElement('canvas', 'minimap', [
 			'position: absolute',
@@ -66,7 +63,7 @@ export default class Canvas implements View {
 
 	private drawEventsBand(band: EventsBand) {
 		this.clear(band)
-		this.drawRulers(band)
+		drawRulers(this.ctx, band)
 
 		this.ctx.beginPath()
 
@@ -82,13 +79,14 @@ export default class Canvas implements View {
 			}
 		}
 
-		this.ctx.fillStyle = `rgba(126, 0, 0, .3)`
+		this.ctx.fillStyle = `rgb(216, 178, 178)`
 		this.ctx.fill()
 
 		this.drawEventsText(band)
 	}
 
 	private drawEventsText(band: EventsBand) {
+		this.ctx.font = '11px sans-serif'
 		this.ctx.fillStyle = `rgb(126, 0, 0)`
 
 		for (const event of band.visibleEvents) {
@@ -113,7 +111,8 @@ export default class Canvas implements View {
 		if (band.isDrawn && band.prevLeft === band.left && band.prevZoomLevel === band.zoomLevel) return
 
 		this.clear(band)
-		this.drawRulers(band)
+
+		drawRulers(this.ctx, band)
 
 		const minimapCanvas = band.draw()
 		this.ctx.drawImage(minimapCanvas, 0, band.top, props.viewportWidth, band.canvasHeight)
@@ -144,35 +143,11 @@ export default class Canvas implements View {
 			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.height - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
 		}
 
-		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .1)`
+		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .04)`
 		this.indicatorsCtx.fill()
 
 		this.indicatorsCtx.closePath()
 
 		this.indicatorsDrawn = true
-	}
-
-	// TODO draw special dates in darker gray, add dates and specialDates to arrays in while loop,
-	// 		to prevent to much change of strokeStyle
-	private drawRulers(band: MinimapBand | EventsBand) {
-		if (!band.config.rulers) return
-
-		this.ctx.beginPath()
-		this.ctx.fillStyle = `rgb(150, 150, 150)`
-
-		let date = findClosestRulerDate(band.from, band.granularity)
-		const y = band.config.topOffsetRatio * props.viewportHeight
-		const height = band.config.heightRatio * props.viewportHeight
-
-		while(date < band.to) {
-			const left = band.positionAtTimestamp(date)
-			this.ctx.moveTo(left, y)
-			this.ctx.lineTo(left, y + height)
-			if (band.config.rulerLabels) this.ctx.fillText(labelBody(date, band.granularity), left + 3, y + height - 3)
-			date = band.nextDate(date)
-		}
-
-		this.ctx.strokeStyle = `rgb(200, 200, 200)`
-		this.ctx.stroke()
 	}
 }
