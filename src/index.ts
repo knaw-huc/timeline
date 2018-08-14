@@ -22,15 +22,14 @@ export {
 	MinimapBand,
 }
 
-// TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
-// TODO zoom in to milliseconds
+// TODO Scroll vertical when events higher than viewportHeight
 // TODO add API to constrain by spacial data
-// TODO Add open ranges (ie: people still alive)
+// TODO Add open ranges (ie: people still alive) and EDTF dates
+// TODO zoom in to milliseconds
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline
-// TODO Scroll vertical when events higher than viewportHeight
 // TODO make it possible to have only minimap bands (see index.floods.html)
-// TODO make indicator draggable
+// TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 export default class Timeline extends Api {
 	private bandViews: BandView[]
 	private wrapper: HTMLElement
