@@ -1,0 +1,8 @@
+# Z-index
+
+0 main canvas
+1 indicators canvas 
+2 band wrappers
+3 band labels
+4 red line
+10 debug

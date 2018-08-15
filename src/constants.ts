@@ -3,7 +3,7 @@ import { RawEv3nt } from "./models/event";
 export const EVENT_HEIGHT = 14
 
 // The height (in px) of a row of events.
-export const EVENT_ROW_HEIGHT = 20
+export const EVENT_ROW_HEIGHT = 16 
 
 export const DATE_BAR_HEIGHT = EVENT_ROW_HEIGHT 
 export const RULER_LABELS_HEIGHT = 60

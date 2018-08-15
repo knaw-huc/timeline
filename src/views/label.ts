@@ -11,6 +11,7 @@ export default class Label implements View {
 				'border-top: 1px solid #CCC',
 				'position: absolute',
 				'width: 100%',
+				'z-index: 3',
 			],
 			[
 				`top: ${this.band.config.topOffsetRatio * 100}%`

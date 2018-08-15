@@ -1,6 +1,6 @@
 import Band from '.'
 import { MinimapBandConfig } from '../config'
-import { Pixels, DATE_BAR_HEIGHT } from '../../constants'
+import { Pixels } from '../../constants'
 import props from '../props'
 import createElement from '../../utils/create-element'
 
@@ -9,7 +9,7 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 	private maxRowCount: number
 
 	isDrawn: boolean = false
-	canvasHeight: Pixels
+	// canvasHeight: Pixels
 
 	// This canvas holds the "end product". It's output is
 	// rendered by the main canvas. It's output is also used
@@ -31,12 +31,12 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 	init() {
 		super.init()
 
-		this.canvasHeight = this.height - DATE_BAR_HEIGHT
+		// this.canvasHeight = this.visibleHeight - DATE_BAR_HEIGHT
 		this.maxRowCount = this.config.targets.reduce((prev, curr) => {
 			const { rowCount } = props.eventsBands[curr]
 			return Math.max(prev, rowCount)
 		}, 0)
-		const eventHeight = this.canvasHeight / this.maxRowCount
+		const eventHeight = this.availableHeight / this.maxRowCount
 		this.eventHeight = eventHeight < 1 ? 1 : Math.round(eventHeight)
 
 		this.canvas.width = props.viewportWidth
@@ -84,7 +84,7 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 
 	private updateNextCanvas() {
 		// Round the left offset to whole pixels (otherwise the browser interprets and adds gradient)
-		const leftOffset = Math.round(this.left - this.prevLeft)
+		const leftOffset = Math.round(this.offsetX - this.prevOffsetX)
 		// No offset = no change = no re-draw
 		if (leftOffset === 0) return this.canvas
 

@@ -171,7 +171,7 @@ export class Animator {
 		this.zoomMarker = nextZoomLevel
 
 		// Run the first frame
-		this.play()
+		this.nextFrame()
 	}
 
 	speed(multiplier: string) {
@@ -192,18 +192,18 @@ export class Animator {
 		return this.direction === Direction.Backward
 	}
 
-	play() {
+	nextFrame() {
 		requestAnimationFrame(this.animate)
 	}
 
 	playForward() {
 		this.direction = Direction.Forward
-		this.play()
+		this.nextFrame()
 	}
 
 	playBackward() {
 		this.direction = Direction.Backward
-		this.play()
+		this.nextFrame()
 	}
 
 	stop() {
@@ -216,7 +216,7 @@ export class Animator {
 	}
 
 	toggle() {
-		this.isPlaying() ? this.stop() : this.play()
+		this.isPlaying() ? this.stop() : this.nextFrame()
 	}
 }
 

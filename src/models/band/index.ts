@@ -1,6 +1,6 @@
 import { getGranularity, Granularity, subsequentDate } from '../../utils/dates'
 import props from '../props'
-import { Pixels, Milliseconds, Ratio } from '../../constants'
+import { Pixels, Milliseconds, Ratio, DATE_BAR_HEIGHT } from '../../constants'
 import { visibleRatio } from '../../utils'
 import { BandConfig } from '../config';
 import animator from '../../animator';
@@ -26,8 +26,11 @@ export default abstract class Band<T extends BandConfig> {
 	// Level of detail (ie century, year, month, week, day, etc)
 	granularity: Granularity
 
-	// Total height of the band
-	height: Pixels
+	// Height available for drawing events or minimap
+	availableHeight: Pixels
+
+	// Visible height of the band
+	visibleHeight: Pixels
 
 	nextDate: (d: Milliseconds) => Milliseconds
 
@@ -35,7 +38,7 @@ export default abstract class Band<T extends BandConfig> {
 	// the x-position of an event or ruler on the timeline.
 	pixelsPerMillisecond: Pixels
 
-	prevLeft: Pixels
+	prevOffsetX: Pixels
 	prevZoomLevel: number
 
 	top: Pixels
@@ -45,11 +48,11 @@ export default abstract class Band<T extends BandConfig> {
 	// Total width of the band
 	width: Pixels
 
-	private _left: Pixels
-	get left() { return this._left }
-	set left(left) { 
-		this.prevLeft = this.left || left
-		this._left = left
+	private _offsetX: Pixels
+	get offsetX() { return this._offsetX }
+	set offsetX(left) { 
+		this.prevOffsetX = this.offsetX || left
+		this._offsetX = left
 	}
 
 	private _zoomLevel: number
@@ -70,14 +73,15 @@ export default abstract class Band<T extends BandConfig> {
 	constructor(public config: T) {}
 
 	private setVerticalProps() {
-		this.height = Math.round(this.config.heightRatio * props.viewportHeight)
+		this.visibleHeight = Math.round(this.config.heightRatio * props.viewportHeight)
+		this.availableHeight = this.visibleHeight - DATE_BAR_HEIGHT
 		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
 	}
 
 	private setHorizontalProps() {
 		this.from = props.center - this.time/2
 		this.to = props.center + this.time/2
-		this.left = (props.from - this.from) * this.pixelsPerMillisecond
+		this.offsetX = (props.from - this.from) * this.pixelsPerMillisecond
 	}
 
 	init() {

@@ -22,7 +22,6 @@ export {
 	MinimapBand,
 }
 
-// TODO Scroll vertical when events higher than viewportHeight
 // TODO add API to constrain by spacial data
 // TODO Add open ranges (ie: people still alive) and EDTF dates
 // TODO zoom in to milliseconds
@@ -75,12 +74,13 @@ export default class Timeline extends Api {
 		if (process.env.NODE_ENV === 'development') this.appendToWrapper(new Debug())
 
 		const redLine = createElement('div', 'red-line', [
-			'position: absolute',
-			'width: 1px',
-			'background-color: red',
-			'left: calc(50% - 1px)',
-			'top: 0',
+			'background-color: rgb(126, 0, 0)',
 			'bottom: 0',
+			'left: calc(50% - 1px)',
+			'position: absolute',
+			'top: 0',
+			'width: 2px',
+			'z-index: 4'
 		])
 
 		this.wrapper.appendChild(redLine)
@@ -117,6 +117,6 @@ export default class Timeline extends Api {
 			view.resize()
 		}
 
-		this.animator.play()
+		this.animator.nextFrame()
 	}
 }

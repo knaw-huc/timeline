@@ -22,6 +22,7 @@ export default class Debug implements View {
 			'right: 0',
 			'top: 200px',
 			'width: 240px',
+			'z-index: 10',
 		])
 
 		this.update()
@@ -40,7 +41,7 @@ export default class Debug implements View {
 							<tr><td style="color: gray" width=40>type</td><td>${band instanceof MinimapBand ? 'minimap' : 'events'}</td></tr>
 							<tr><td style="color: gray">zoom</td><td>${band.zoomLevel}</td></tr>
 							<tr><td style="color: gray">px/ms</td><td>${band.pixelsPerMillisecond.toExponential(2)}</td></tr>
-							<tr><td style="color: gray">left</td><td>${Math.round(band.left)}px</td></tr>
+							<tr><td style="color: gray">left</td><td>${Math.round(band.offsetX)}px</td></tr>
 							<tr><td style="color: gray">width</td><td>${Math.round(band.width)}px</td></tr>
 							<tr><td style="color: gray">from</td><td>${new Date(band.from).toUTCString()}</td></tr>
 							<tr><td style="color: gray">to</td><td>${new Date(band.to).toUTCString()}</td></tr>

@@ -24,7 +24,7 @@ export default class Canvas implements View {
 	}
 
 	render() {
-		this.canvas = createElement('canvas', 'minimap', [
+		this.canvas = createElement('canvas', 'main', [
 			'position: absolute',
 		])
 
@@ -32,7 +32,7 @@ export default class Canvas implements View {
 		this.canvas.height = props.viewportHeight
 		this.ctx = this.canvas.getContext('2d')
 
-		this.indicatorsCanvas = createElement('canvas', 'minimap', [
+		this.indicatorsCanvas = createElement('canvas', 'indicators', [
 			'position: absolute',
 		], [ 'z-index: 1' ])
 
@@ -56,7 +56,7 @@ export default class Canvas implements View {
 	}
 
 	private clear(band: MinimapBand | EventsBand) {
-		this.ctx.clearRect(0, band.top, this.canvas.width, band.height)
+		this.ctx.clearRect(0, band.top, this.canvas.width, band.visibleHeight)
 	}
 
 	update = () => {
@@ -118,14 +118,14 @@ export default class Canvas implements View {
 
 	private drawMinimapBand(band: MinimapBand) {
 		// Do not draw the minimap if left or zoom level have not changed
-		if (band.isDrawn && band.prevLeft === band.left && band.prevZoomLevel === band.zoomLevel) return
+		if (band.isDrawn && band.prevOffsetX === band.offsetX && band.prevZoomLevel === band.zoomLevel) return
 
 		this.clear(band)
 
 		drawRulers(this.ctx, band)
 
 		const minimapCanvas = band.draw()
-		this.ctx.drawImage(minimapCanvas, 0, band.top, props.viewportWidth, band.canvasHeight)
+		this.ctx.drawImage(minimapCanvas, 0, band.top, props.viewportWidth, band.availableHeight)
 
 		band.isDrawn = true
 	}
@@ -143,14 +143,14 @@ export default class Canvas implements View {
 			// Left indicator
 			const indicatorTOP = Math.round(band.config.topOffsetRatio * props.viewportHeight)
 			const leftIndicatorRightX = band.positionAtTimestamp(eventsBand.from)
-			this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.height)
+			this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.visibleHeight)
 
 			// Right indicator
 			const rightIndicatorLeftX = band.positionAtTimestamp(eventsBand.to)
-			this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.height)
+			this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.visibleHeight)
 
 			// Cover the DATE_BAR
-			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.height - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
+			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.visibleHeight - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
 		}
 
 		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .04)`
