@@ -22,7 +22,7 @@ export {
 	MinimapBand,
 }
 
-// FIXME receiving new config
+// TODO expose only API, put the Timeline and it's render in a separate view
 // TODO add async loading of events
 // TODO disambiguate click/scroll
 // TODO add API to constrain by spacial data
@@ -35,7 +35,6 @@ export {
 // TODO add context menu for settings (which bands to show, toggle hor/ver scroll, change colors)
 // TODO add info about how many events below and above current view (show after scroll and hide after x seconds)
 export default class Timeline extends Api {
-	private views: View[]
 	private wrapper: HTMLElement
 
 	constructor(protected config: Config, onChange?, private onSelect?) {
@@ -103,24 +102,5 @@ export default class Timeline extends Api {
 		let children = child.render()
 		if (!Array.isArray(children)) children = [children]
 		children.forEach(c => this.wrapper.appendChild(c))
-	}
-
-	reload = (config?: Config) => {
-		if (config != null) props.init(config)
-		this.resize()
-	}
-
-	resize = () => {
-		props.resize()
-
-		for (const band of props.bands) {
-			band.resize()
-		}
-
-		for (const view of this.views) {
-			view.resize()
-		}
-
-		this.animator.nextFrame()
 	}
 }

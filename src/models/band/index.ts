@@ -100,6 +100,14 @@ export default abstract class Band<T extends BandConfig> {
 		this.setHorizontalProps()
 	}
 
+	updateConfig(props: { [prop: string]: string | number}) {
+		Object.keys(props).forEach(prop => {
+			if (this.config.hasOwnProperty(prop)) {
+				this.config[prop] = props[prop]
+			}
+		})
+	}
+
 	positionAtTimestamp(timestamp: Milliseconds): Pixels {
 		return Math.round((timestamp - this.from) * this.pixelsPerMillisecond)
 	}

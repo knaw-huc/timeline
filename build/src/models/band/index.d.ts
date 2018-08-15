@@ -27,6 +27,9 @@ export default abstract class Band<T extends BandConfig> {
     init(): void;
     resize(): void;
     update(): void;
+    updateConfig(props: {
+        [prop: string]: string | number;
+    }): void;
     positionAtTimestamp(timestamp: Milliseconds): Pixels;
     timestampAtProportion(proportion: Ratio): Milliseconds;
     timestampAtPosition(position: Pixels): Milliseconds;

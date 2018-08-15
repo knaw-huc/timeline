@@ -8,12 +8,9 @@ export { Config as TimelineConfig, orderEvents, OrderedEvents, calcPixelsPerMill
 export default class Timeline extends Api {
     protected config: Config;
     private onSelect?;
-    private views;
     private wrapper;
     constructor(config: Config, onChange?: any, onSelect?: any);
     private render;
     private renderLabels;
     private appendToWrapper;
-    reload: (config?: Config) => void;
-    resize: () => void;
 }

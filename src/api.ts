@@ -1,6 +1,7 @@
 import animator, { Animator } from './animator'
 import { CENTER_CHANGE_DONE, Ratio, Milliseconds, ZOOM_DONE } from './constants'
 import props from './models/props'
+import View from './views';
 
 export interface OnChangeFunctionProps {
 	center: Ratio,
@@ -14,6 +15,7 @@ export interface OnChangeFunctionProps {
 export type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void
 
 export default class Api {
+	protected views: View[]
 	animator: Animator = animator
 
 	constructor(
@@ -40,5 +42,23 @@ export default class Api {
 				zoomLevel: b.zoomLevel
 			}))
 		})
+	}
+
+	protected resize = () => {
+		props.resize()
+
+		for (const band of props.bands) {
+			band.resize()
+		}
+
+		for (const view of this.views) {
+			view.resize()
+		}
+
+		this.animator.nextFrame()
+	}
+
+	reload() {
+		this.resize()
 	}
 }
