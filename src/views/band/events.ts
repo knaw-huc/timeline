@@ -32,13 +32,10 @@ export default class EventsBandView extends BandView {
 	}
 
 	private zoomIn() {
-		// console.error('NOT IMPLEMENTED')
 		this.band.zoomIn()
 	}
 
 	private zoomOut() {
-		// console.error('NOT IMPLEMENTED')
 		this.band.zoomOut()
-		// this.handleChange()
 	} 
 }
