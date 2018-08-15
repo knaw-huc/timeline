@@ -1,5 +1,5 @@
 import props from "./models/props";
-import { Milliseconds, ZOOM_DONE } from "./constants";
+import { Milliseconds, ZOOM_DONE, CENTER_CHANGE_DONE } from "./constants";
 import Band from "./models/band";
 import Canvas from "./views/canvas";
 import Debug from "./views/debug";
@@ -14,9 +14,11 @@ enum Direction {
 }
 
 export class Animator {
-	private activeBand: EventsBand
+	private readonly elapsedTimeThreshold: Milliseconds = 2000
 	private readonly goToDuration: Milliseconds = 300
 	private readonly zoomToDuration: Milliseconds = 300
+
+	private activeBand: EventsBand
 
 	// private readonly interval: number = .00001
 	readonly multipliers: Multiplier[] = [.25, .5, 1, 2, 4, 8, 16]
@@ -118,6 +120,7 @@ export class Animator {
 		}
 
 		this.elapsedTimeTotal += elapsedTime
+		if (this.elapsedTimeTotal > this.elapsedTimeThreshold) this.resetElapsedTimeTotal()
 
 		if (this.isPlaying() || this.zoomMarker != null) {
  			if ((props.center >= props.from && props.center <= props.to) || this.centerMarker != null || this.zoomMarker != null) {
@@ -127,6 +130,11 @@ export class Animator {
 				this.stop()
 			}
 		}
+	}
+
+	private resetElapsedTimeTotal() {
+		this.elapsedTimeTotal = 0
+		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
 	}
 
 	accelerate(): number {
