@@ -9,9 +9,9 @@ import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
 import Label from './views/label'
-import Debug from './views/debug'
-import MinimapBand from './models/band/minimap';
-import EventsBand from './models/band/events';
+import MinimapBand from './models/band/minimap'
+import EventsBand from './models/band/events'
+// import Debug from './views/debug'
 
 export {
 	Config as TimelineConfig,
@@ -22,13 +22,18 @@ export {
 	MinimapBand,
 }
 
+// FIXME receiving new config
+// TODO add async loading of events
+// TODO disambiguate click/scroll
 // TODO add API to constrain by spacial data
 // TODO Add open ranges (ie: people still alive) and EDTF dates
 // TODO zoom in to milliseconds
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline
-// TODO make it possible to have only minimap bands (see index.floods.html)
+// TODO make it possible to have only minimap bands (see examples/floods)
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
+// TODO add context menu for settings (which bands to show, toggle hor/ver scroll, change colors)
+// TODO add info about how many events below and above current view (show after scroll and hide after x seconds)
 export default class Timeline extends Api {
 	private views: View[]
 	private wrapper: HTMLElement
@@ -66,12 +71,11 @@ export default class Timeline extends Api {
 			)
 		this.views.push(new Canvas())
 		this.views.forEach(this.appendToWrapper)	
-		// this.views.forEach(this.appendToWrapper)
 
 		this.renderLabels()
 
 		// @ts-ignore
-		if (process.env.NODE_ENV === 'development') this.appendToWrapper(new Debug())
+		// if (process.env.NODE_ENV === 'development') this.appendToWrapper(new Debug())
 
 		const redLine = createElement('div', 'red-line', [
 			'background-color: rgb(126, 0, 0)',
