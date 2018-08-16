@@ -1,6 +1,6 @@
 import { getGranularity, Granularity, subsequentDate } from '../../utils/dates'
 import props from '../props'
-import { Pixels, Milliseconds, Ratio, DATE_BAR_HEIGHT } from '../../constants'
+import { Pixels, Milliseconds, Ratio, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT } from '../../constants'
 import { visibleRatio } from '../../utils'
 import { BandConfig } from '../config';
 import animator from '../../animator';
@@ -31,6 +31,9 @@ export default abstract class Band<T extends BandConfig> {
 
 	// Visible height of the band
 	visibleHeight: Pixels
+
+	// Number of visible rows
+	visibleRowsCount: number
 
 	nextDate: (d: Milliseconds) => Milliseconds
 
@@ -75,6 +78,7 @@ export default abstract class Band<T extends BandConfig> {
 	private setVerticalProps() {
 		this.visibleHeight = Math.round(this.config.heightRatio * props.viewportHeight)
 		this.availableHeight = this.visibleHeight - DATE_BAR_HEIGHT
+		this.visibleRowsCount = Math.floor(this.availableHeight / EVENT_ROW_HEIGHT) - 1
 		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
 	}
 

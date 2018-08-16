@@ -22,6 +22,9 @@ export {
 	MinimapBand,
 }
 
+// FIXME click event after vertical scroll
+// TODO implement SCROLL_DONE event
+// TODO timeline at speed 1 should be a fixed speed (like one viewport per 10s or something)
 // TODO expose only API, put the Timeline and it's render in a separate view
 // TODO add async loading of events
 // TODO disambiguate click/scroll

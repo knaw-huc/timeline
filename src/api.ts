@@ -36,11 +36,7 @@ export default class Api {
 	private handleChange = () => {
 		this.onChange({
 			center: props.center,
-			bands: props.bands.map(b => ({
-				from: b.from,
-				to: b.to,
-				zoomLevel: b.zoomLevel
-			}))
+			bands: props.bands,
 		})
 	}
 

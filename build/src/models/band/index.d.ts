@@ -10,6 +10,7 @@ export default abstract class Band<T extends BandConfig> {
     granularity: Granularity;
     availableHeight: Pixels;
     visibleHeight: Pixels;
+    visibleRowsCount: number;
     nextDate: (d: Milliseconds) => Milliseconds;
     pixelsPerMillisecond: Pixels;
     prevOffsetX: Pixels;

@@ -12,7 +12,8 @@ export default class EventsBand extends Band<EventsBandConfig> {
 	// Total height of the band (compare this.visibleHeight and this.availableHeight)
 	private height: number
 
-	private visibleRows: [number, number]
+	private lowestVisibleRow: number
+	private highestVisibleRow: number
 
 	events: RawEv3nt[] = []
 	rowCount: number = 0
@@ -32,10 +33,9 @@ export default class EventsBand extends Band<EventsBandConfig> {
 
 		if (this._offsetY > maxOffset) this._offsetY = maxOffset
 
-		// TODO optimize
 		const lowestRow = this._offsetY / EVENT_ROW_HEIGHT
-		const highestRow = lowestRow + (this.availableHeight / EVENT_ROW_HEIGHT)
-		this.visibleRows = [lowestRow, highestRow].map(Math.ceil) as [number, number]
+		this.lowestVisibleRow = Math.ceil(lowestRow)
+		this.highestVisibleRow = this.lowestVisibleRow + this.visibleRowsCount
 	}
 
 	constructor(config: EventsBandConfig) {
@@ -67,7 +67,7 @@ export default class EventsBand extends Band<EventsBandConfig> {
 				// Compare event to this.to and this.from to determine if the event is visible horizontally
 				!(event.from > this.to || event.to < this.from) && 
 				// Compare event to the visible rows to determine if the event is visible vertically
-				event.row >= this.visibleRows[0] && event.row <= this.visibleRows[1]
+				event.row >= this.lowestVisibleRow && event.row <= this.highestVisibleRow 
 			)
 			.map(event => {
 				// event.left (px) === event.from (ms) + band offset (ms)

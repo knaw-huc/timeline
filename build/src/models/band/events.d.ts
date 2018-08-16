@@ -4,7 +4,8 @@ import { Pixels } from '../../constants';
 import { RawEv3nt } from '../event';
 export default class EventsBand extends Band<EventsBandConfig> {
     private height;
-    private visibleRows;
+    private lowestVisibleRow;
+    private highestVisibleRow;
     events: RawEv3nt[];
     rowCount: number;
     visibleEvents: RawEv3nt[];
