@@ -95,10 +95,14 @@ export default class EventsBand extends Band<EventsBandConfig> {
 		const timestamp = this.timestampAtPosition(x)
 
 		const event = this.events.find(e => {
-			if (!(e.from < timestamp && e.from + e.time + e.space > timestamp)) return false
+			if (
+				!(e.from < timestamp && e.from + e.time + e.space > timestamp) ||
+				(e.row < this.lowestVisibleRow || e.row > this.highestVisibleRow)
+			) return false
 
-			const bottomOfDomain = props.viewportOffset + ((this.config.topOffsetRatio + this.config.heightRatio) * props.viewportHeight) - DATE_BAR_HEIGHT
-			const row = Math.floor((bottomOfDomain - y) / (EVENT_HEIGHT + 2))
+			const bottomOfDomain = props.viewportOffset + this.top + this.availableHeight
+			const row = this.lowestVisibleRow + Math.floor((bottomOfDomain - y) / (EVENT_HEIGHT + 2))
+
 			return e.row === row
 		})
 
