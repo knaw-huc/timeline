@@ -11,6 +11,8 @@ import EventsBand from '../../models/band/events';
 export default class BandView implements View { 
 	private dragOffsetX: number
 	private dragOffsetY: number
+	private dragStart: Milliseconds
+	protected lastDragInterval: Milliseconds
 	protected rootElement: HTMLElement
 
 	constructor(public band: Band<MinimapBandConfig | EventsBandConfig>) {}
@@ -39,34 +41,36 @@ export default class BandView implements View {
 
 	private onMouseDown = (ev) => {
 		document.addEventListener('mouseup', this.onMouseUp)
+		this.dragStart = Date.now()
 		this.dragOffsetX = ev.clientX
 		this.dragOffsetY = ev.clientY
 	}
 
 	private onMouseMove = (ev) => {
-		if (this.band instanceof EventsBand && this.dragOffsetY) {
+		if (this.dragOffsetX == null) return
+
+		if (this.band instanceof EventsBand) {
 			this.band.offsetY =  ev.clientY - this.dragOffsetY
 		}
 
-		if (this.dragOffsetX) {
-			// Calculate the difference between the current mouse position and
-			// the previous mouse position. This yields an offset in pixels, which
-			// is converted to milliseconds.
-			const centerChange: Milliseconds = (this.dragOffsetX - ev.clientX) / this.band.pixelsPerMillisecond
-			props.center += centerChange
+		// Calculate the difference between the current mouse position and
+		// the previous mouse position. This yields an offset in pixels, which
+		// is converted to milliseconds.
+		const centerChange: Milliseconds = (this.dragOffsetX - ev.clientX) / this.band.pixelsPerMillisecond
+		props.center += centerChange
 
-			// Request an animation frame from the Animator which updates the
-			// models and the views
-			animator.nextFrame() 
+		// Request an animation frame from the Animator which updates the
+		// models and the views
+		animator.nextFrame() 
 
-			// Update the drag offset, so the next mouse move will be relative
-			// to the previous mouse move
-			this.dragOffsetX = ev.clientX
-			this.dragOffsetY = ev.clientY
-		}
+		// Update the drag offset, so the next mouse move will be relative
+		// to the previous mouse move
+		this.dragOffsetX = ev.clientX
+		this.dragOffsetY = ev.clientY
 	}
 
 	private onMouseUp = (ev) => {
+		this.lastDragInterval = Date.now() - this.dragStart 
 		this.dragOffsetX = null
 		this.dragOffsetY = null
 		document.removeEventListener('mouseup', this.onMouseUp)

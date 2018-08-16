@@ -24,6 +24,8 @@ export default class EventsBandView extends BandView {
 	}
 
 	private onClick = (ev) => {
+		if (this.lastDragInterval > 175) return
+
 		const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY)
 		if (event && this.select) {
 			this.select(event)
