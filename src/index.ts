@@ -11,15 +11,17 @@ import View from './views'
 import Label from './views/label'
 import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
+import { formatDate } from './utils/dates';
 // import Debug from './views/debug'
 
 export {
 	Config as TimelineConfig,
-	orderEvents,
-	OrderedEvents,
-	calcPixelsPerMillisecond,
 	EventsBand,
 	MinimapBand,
+	OrderedEvents,
+	calcPixelsPerMillisecond,
+	formatDate,
+	orderEvents,
 }
 
 // TODO implement SCROLL_DONE event

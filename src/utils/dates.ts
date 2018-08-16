@@ -2,35 +2,79 @@ import { Milliseconds, Ratio } from "../constants"
 import { RawEv3nt } from "../models/event";
 
 export const enum Granularity {
-	HOUR,
-	DAY,
-	WEEK,
-	MONTH,
-	YEAR,
-	YEAR_5, /* 5 YEARS */
-	DECADE,
-	DECADE_5, /* 50 years */
-	CENTURY,
-	CENTURY_5, /* 500 years */
-	MILLENIUM,
+	MILLISECOND = "MILLISECOND",
+	SECOND = "SECOND",
+	MINUTE = "MINUTE",
+	HOUR = "HOUR",
+	DAY = "DAY",
+	WEEK = "WEEK",
+	MONTH = "MONHT",
+	YEAR = "YEAR",
+	YEAR_5 = "YEAR_5", /* 5 YEARS */
+	DECADE = "DECADE",
+	DECADE_5 = "DECADE_5" , /* 50 years */
+	CENTURY = "CENTURY",
+	CENTURY_5 = "CENTURY_5", /* 500 years */
+	MILLENIUM = "MILLENIUM",
 }
 
-export const isEqual = (date1: Date, date2: Date): boolean => date1.getTime() === date2.getTime()
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-// export const format = (date: Date, granularity: Granularity): string => {
-// 	if (date == null) return '∞';
+// export const isEqual = (date1: Date, date2: Date): boolean => date1.getTime() === date2.getTime()
+function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
 
-// 	let displayDate = date.getUTCFullYear().toString();
+function formatMonth(d: Date) { return months[d.getUTCMonth()]}
+function formatDateNumber(d: Date) {
+	const dateNumber = d.getUTCDate()
+	const day = days[d.getUTCDay()]
+	return `${day}, ${dateNumber}${nth(dateNumber)}`
+}
+function formatHours(d: Date) { return d.getUTCHours().toString().padStart(2, '0') }
+function formatMinutes(d: Date) { return d.getUTCMinutes().toString().padStart(2, '0') }
+function formatSeconds(d: Date) { return d.getUTCSeconds().toString().padStart(2, '0') }
+function formatMilliseconds(d: Date) { return d.getUTCMilliseconds().toString().padStart(3, '0') }
 
-// 	if (granularity >= Granularity.MONTH) displayDate = `${months[date.getMonth()]} ${displayDate}`
-// 	if (granularity >= Granularity.DAY) displayDate = `${date.getUTCDate()} ${displayDate}`
-// 	if (granularity === Granularity.HOUR) displayDate = `${date.getUTCHours()}:${date.getUTCMinutes()} ${displayDate}`
+function isYearOrBigger(granularity) {
+	return granularity === Granularity.YEAR ||
+		granularity === Granularity.YEAR_5 ||
+		granularity === Granularity.DECADE ||
+		granularity === Granularity.DECADE_5 ||
+		granularity === Granularity.CENTURY ||
+		granularity === Granularity.CENTURY_5 ||
+		granularity === Granularity.MILLENIUM
+}
 
-// 	return displayDate;
-// }
+export const formatDate = (timestamp: Milliseconds, granularity: Granularity): string => {
+	if (timestamp == null) return '∞'
+
+	const date = new Date(timestamp)
+
+	let label = date.getUTCFullYear().toString()
+	if (isYearOrBigger(granularity)) return label
+
+	label = `${formatMonth(date)} ${label}`
+	if (granularity === Granularity.MONTH) return label
+
+	label = `${formatDateNumber(date)} ${label}`
+	if (granularity === Granularity.DAY) return label
+
+	label = `${label} at ${formatHours(date)}:`
+	if (granularity === Granularity.HOUR) return `${label}00`
+
+	label = `${label}${formatMinutes(date)}`
+	if (granularity === Granularity.MINUTE) return label
+
+	label = `${label}:${formatSeconds(date)}`
+	if (granularity === Granularity.SECOND) return label
+
+	// If none of the above apply, you get the full monty
+	return `${label}.${formatMilliseconds(date)}`
+}
 
 export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRatio: Ratio): Granularity => {
 	const days =  visibleRatio * ((to - from) / 86400000) // 1000ms * 60s * 60m * 24h
+	// TODO add MILLISECONDS, SECONDS, MINUTES
 	if (days < 1) return Granularity.HOUR
 	if (days < 15) return Granularity.DAY
 	if (days < 45) return Granularity.WEEK
@@ -57,13 +101,12 @@ export const getStep = (granularity: Granularity): number => {
 
 // TODOD turn into generator?
 export function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds) {
-	if (granularity >= Granularity.YEAR) {
+	if (isYearOrBigger(granularity)) {
 		const step = getStep(granularity)
 		return (d: Milliseconds) => {
 			let date = new Date(d)
-			const nextYear = date.getFullYear() + step
+			const nextYear = date.getUTCFullYear() + step
 			if (nextYear > -1 && nextYear < 100) {
-				date = new Date(date)
 				date.setUTCFullYear(nextYear)
 				return date.getTime()
 			} else {
@@ -75,28 +118,28 @@ export function subsequentDate(granularity: Granularity): ((date: Milliseconds) 
 	if (granularity === Granularity.MONTH) {
 		return (d: Milliseconds) => {
 			const date = new Date(d)
-			return Date.UTC(date.getFullYear(), date.getMonth() + 1, 1)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1)
 		}
 	}
 
 	if (granularity === Granularity.WEEK) {
 		return (d: Milliseconds) => {
 			const date = new Date(d)
-			return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 7)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 7)
 		}
 	}
 
 	if (granularity === Granularity.DAY) {
 		return (d: Milliseconds) => {
 			const date = new Date(d)
-			return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1)
 		}
 	}
 
 	if (granularity === Granularity.HOUR) {
 		return (d: Milliseconds) => {
 			const date = new Date(d)
-			return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + 1)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
 		}
 	}
 }
@@ -115,9 +158,6 @@ export function byDate(a: RawEv3nt, b: RawEv3nt) {
 	return 0
 }
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-
 const getWeekNumber = (date: Date) => {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   const dayNum = d.getUTCDay() || 7;
@@ -128,29 +168,12 @@ const getWeekNumber = (date: Date) => {
 
 export const labelBody = (d: Milliseconds, granularity: Granularity) => {
 	const date = new Date(d)
-
-	if (granularity >= Granularity.YEAR) {
-		return date.getUTCFullYear().toString()
-	}
-	
-	if (granularity === Granularity.MONTH) {
-		let body = months[date.getUTCMonth()]
-		if (date.getUTCMonth() === 0) body = `${date.getUTCFullYear().toString()}, ${body}`
-		return body
-	}
-	
-	if (granularity === Granularity.WEEK) {
-		return `${months[date.getUTCMonth()]}, week ${getWeekNumber(date)}`
-	}
-	
-	if (granularity === Granularity.DAY) {
-		let body = days[date.getUTCDay()]
-		body = `${body}, ${months[date.getUTCMonth()]} ${date.getUTCDate()}`
-		if (date.getUTCMonth() === 0 && date.getUTCDate() === 1) body = `${body}, ${date.getUTCFullYear().toString()}`
-		return body
-	}
-	
-	if (granularity === Granularity.HOUR) {
-		return `${date.getUTCHours()}:00`
-	}
+	if (isYearOrBigger(granularity)) return date.getUTCFullYear().toString()
+	if (granularity === Granularity.MONTH) return formatMonth(date)
+	if (granularity === Granularity.WEEK) return `${formatMonth(date)}, week ${getWeekNumber(date)}`
+	if (granularity === Granularity.DAY) return `${formatDateNumber(date)} ${formatMonth(date)}`
+	if (granularity === Granularity.HOUR) return `${formatHours(date)}:00`
+	if (granularity === Granularity.MINUTE) return `${formatHours(date)}:${formatMinutes(date)}`
+	if (granularity === Granularity.SECOND) return `${formatHours(date)}:${formatMinutes(date)}:${formatSeconds(date)}`
+	if (granularity === Granularity.MILLISECOND) return `${formatHours(date)}:${formatMinutes(date)}:${formatSeconds(date)}.${formatMilliseconds(date)}`
 }

@@ -1,7 +1,7 @@
 import Band from '.'
 import { EventsBandConfig } from '../config'
 import animator from '../../animator'
-import { Pixels, EVENT_HEIGHT, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT } from '../../constants'
+import { Pixels, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from '../../constants'
 import props from '../props'
 import { RawEv3nt } from '../event'
 import { orderEvents } from '../../utils/events.worker';
