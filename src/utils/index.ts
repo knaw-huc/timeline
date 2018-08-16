@@ -1,6 +1,5 @@
 import { RawEv3nt } from "../models/event";
 import { Milliseconds, Ratio, Pixels } from "../constants";
-import { Granularity, getStep } from "./dates";
 
 export const debounce = (func, wait) => {
 	let timeout
@@ -16,38 +15,6 @@ export const onVisible = (from, to) => (e: RawEv3nt) => {
 	if (eventTo == null) eventTo = eventFrom
 	if (eventFrom == null && eventTo == null) return false
 	return !(eventTo < from || eventFrom > to)
-}
-
-export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granularity): Milliseconds {
-	if (timestamp == null || isNaN(timestamp)) {
-		console.error('[findClosestRulerDate] start timestamp is not defined')
-		return 
-	}
-
-	const date = new Date(timestamp)
-	let year = date.getUTCFullYear()
-
-	if (granularity >= Granularity.YEAR) {
-		const step = getStep(granularity)
-		if (granularity === Granularity.YEAR) year += 1
-		else while(year % step !== 0) { year += 1 }
-		if (year > -1 && year < 100) {
-			const nextDate = new Date(Date.UTC(year, 0, 1))
-			nextDate.setUTCFullYear(year)
-			return nextDate.getTime()
-		}
-		else {
-			return Date.UTC(year, 0, 1)
-		}
-	} else if (granularity === Granularity.MONTH) {
-		return Date.UTC(year, date.getUTCMonth() + 1, 1)
-	} else if (granularity === Granularity.DAY) {
-		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate() + 1)
-	} else if (granularity === Granularity.HOUR) {
-		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
-	}
-
-	return timestamp
 }
 
 /**

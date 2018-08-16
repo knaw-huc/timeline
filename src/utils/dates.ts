@@ -99,7 +99,39 @@ export const getStep = (granularity: Granularity): number => {
 	throw new RangeError("[getStep] Only steps with a granularity greater than 'year' calculated")
 }
 
-// TODOD turn into generator?
+export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granularity): Milliseconds {
+	if (timestamp == null || isNaN(timestamp)) {
+		console.error('[findClosestRulerDate] start timestamp is not defined')
+		return 
+	}
+
+	const date = new Date(timestamp)
+	let year = date.getUTCFullYear()
+
+	if (isYearOrBigger(granularity)) {
+		const step = getStep(granularity)
+		if (granularity === Granularity.YEAR) year += 1
+		else while(year % step !== 0) { year += 1 }
+		if (year > -1 && year < 100) {
+			const nextDate = new Date(Date.UTC(year, 0, 1))
+			nextDate.setUTCFullYear(year)
+			return nextDate.getTime()
+		}
+		else {
+			return Date.UTC(year, 0, 1)
+		}
+	} else if (granularity === Granularity.MONTH) {
+		return Date.UTC(year, date.getUTCMonth() + 1, 1)
+	} else if (granularity === Granularity.DAY) {
+		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate() + 1)
+	} else if (granularity === Granularity.HOUR) {
+		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
+	}
+	// TODO implement MINUTE, SECOND, MILLISECOND
+
+	return timestamp
+}
+
 export function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds) {
 	if (isYearOrBigger(granularity)) {
 		const step = getStep(granularity)

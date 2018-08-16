@@ -1,9 +1,8 @@
 import MinimapBand from "../../models/band/minimap"
 import EventsBand from "../../models/band/events"
-import { findClosestRulerDate } from "../../utils"
 import props from "../../models/props"
 import { Milliseconds } from "../../constants"
-import { labelBody, Granularity } from "../../utils/dates"
+import { labelBody, Granularity, findClosestRulerDate } from "../../utils/dates"
 
 const smallFont: string = "11px sans-serif"
 const bigFont: string = "13px sans-serif"
