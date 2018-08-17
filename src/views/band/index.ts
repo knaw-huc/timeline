@@ -4,14 +4,15 @@ import createElement from '../../utils/create-element'
 import eventBus from '../../event-bus'
 import animator from '../../animator'
 import View from '../index'
-import { Milliseconds } from '../../constants';
+import { Milliseconds, Pixels, SCROLL_DONE } from '../../constants';
 import { MinimapBandConfig, EventsBandConfig } from '../../models/config'
 import EventsBand from '../../models/band/events';
 
 export default class BandView implements View { 
 	private dragOffsetX: number
 	private dragOffsetY: number
-	private dragStart: Milliseconds
+	private dragStartTime: Milliseconds
+	private dragStartPosition: [Pixels, Pixels]
 	protected lastDragInterval: Milliseconds
 	protected rootElement: HTMLElement
 
@@ -41,7 +42,8 @@ export default class BandView implements View {
 
 	private onMouseDown = (ev) => {
 		document.addEventListener('mouseup', this.onMouseUp)
-		this.dragStart = Date.now()
+		this.dragStartTime = Date.now()
+		this.dragStartPosition = [ev.clientX, ev.clientY]
 		this.dragOffsetX = ev.clientX
 		this.dragOffsetY = ev.clientY
 	}
@@ -70,10 +72,32 @@ export default class BandView implements View {
 	}
 
 	private onMouseUp = (ev) => {
-		this.lastDragInterval = Date.now() - this.dragStart 
+		this.lastDragInterval = Date.now() - this.dragStartTime 
+		this.dispatchScrollDoneEvent(ev)
 		this.dragOffsetX = null
 		this.dragOffsetY = null
 		document.removeEventListener('mouseup', this.onMouseUp)
+	}
+
+	/**
+	 * Dispatch the scroll done event when the drag is significant enough
+	 * 
+	 * A drag is significant if the time between mouse down and mouse up
+	 * is greater than 200ms or when the position change (in x or y direction)
+	 * is greater than 5px
+	 *
+	 */
+	private dispatchScrollDoneEvent(ev) {
+		const significantDrag: boolean = [
+			this.dragStartPosition[0] - ev.clientX,
+			this.dragStartPosition[1] - ev.clientY
+		]
+			.map(Math.abs)
+			.some(offset => offset > 5)
+
+		if (this.lastDragInterval > 200 || significantDrag) {
+			document.dispatchEvent(new CustomEvent(SCROLL_DONE))
+		}
 	}
 
 	private onDblClick = (ev) => {
