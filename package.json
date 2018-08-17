@@ -17,8 +17,6 @@
     "watch": "webpack -w --mode development",
     "prebuild": "npm run clean",
     "prebuild:dev": "npm run clean",
-    "prestart": "npm run clean",
-    "prestart:dev": "npm run clean",
     "prewatch": "npm run clean"
   },
   "devDependencies": {

@@ -21,5 +21,5 @@ export declare const getGranularity: (from: number, to: number, visibleRatio: nu
 export declare const getStep: (granularity: Granularity) => number;
 export declare function findClosestRulerDate(timestamp: Milliseconds, granularity: Granularity): Milliseconds;
 export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);
-export declare function byDate(a: RawEv3nt, b: RawEv3nt): 1 | 0 | -1;
+export declare function byDate(a: RawEv3nt, b: RawEv3nt): 0 | 1 | -1;
 export declare const labelBody: (d: number, granularity: Granularity) => string;

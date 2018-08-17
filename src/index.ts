@@ -40,6 +40,7 @@ export {
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO add context menu for settings (which bands to show, toggle hor/ver scroll, change colors)
 // TODO add info about how many events below and above current view (show after scroll and hide after x seconds)
+// TODO rearrange the grid after the events are zoomed in further than the config level (you get a grid per zoom level or event.row is different per zoom level)
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 

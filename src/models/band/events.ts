@@ -71,7 +71,7 @@ export default class EventsBand extends Band<EventsBandConfig> {
 			)
 			.map(event => {
 				// event.left (px) === event.from (ms) + band offset (ms)
-				event.left = this.positionAtTimestamp(event.from) //+ this.left			 // ||<- left ->[   event   ]                 ||  
+				event.left = this.positionAtTimestamp(event.from)						 // ||<- left ->[   event   ]                 ||  
 
 				// event.width (px) === event.time (ms)
 				event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
