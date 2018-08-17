@@ -1,7 +1,7 @@
 import Band from '.'
 import { EventsBandConfig } from '../config'
 import animator from '../../animator'
-import { Pixels, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from '../../constants'
+import { Pixels, EVENT_ROW_HEIGHT } from '../../constants'
 import props from '../props'
 import { RawEv3nt } from '../event'
 import { orderEvents } from '../../utils/events.worker';
@@ -94,16 +94,16 @@ export default class EventsBand extends Band<EventsBandConfig> {
 	getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt {
 		const timestamp = this.timestampAtPosition(x)
 
+		const bottomOfDomain: Pixels = props.viewportOffset + this.top + this.availableHeight + this.offsetY
+		const clickedRow: number = Math.floor((bottomOfDomain - y) / EVENT_ROW_HEIGHT)
+
 		const event = this.events.find(e => {
 			if (
 				!(e.from < timestamp && e.from + e.time + e.space > timestamp) ||
 				(e.row < this.lowestVisibleRow || e.row > this.highestVisibleRow)
 			) return false
 
-			const bottomOfDomain = props.viewportOffset + this.top + this.availableHeight
-			const row = this.lowestVisibleRow + Math.floor((bottomOfDomain - y) / (EVENT_HEIGHT + 2))
-
-			return e.row === row
+			return e.row === clickedRow
 		})
 
 		return event

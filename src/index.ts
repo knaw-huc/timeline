@@ -25,7 +25,6 @@ export {
 }
 
 // FIXME top row is visible when vertical scrolling (see Halicarnassus)
-// FIXME when vertical scrolling and selecting an event an offset is missing in the calcs
 // TODO implement SCROLL_DONE event
 // TODO timeline at speed 1 should be a fixed speed (like one viewport per 10s or something)
 // TODO expose only API, put the Timeline and it's render in a separate view
