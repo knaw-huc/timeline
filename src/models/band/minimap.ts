@@ -4,12 +4,18 @@ import { Pixels } from '../../constants'
 import props from '../props'
 import createElement from '../../utils/create-element'
 
+
+function extendConfig(config: MinimapBandConfig): MinimapBandConfig {
+	const extendedConfig: MinimapBandConfig = { ...new MinimapBandConfig(), ...config }
+	if (!extendedConfig.targets.length) extendedConfig.targets.push(0)
+	return extendedConfig
+}
+
 export default class MinimapBand extends Band<MinimapBandConfig> {
 	private eventHeight: Pixels
 	private maxRowCount: number
 
 	isDrawn: boolean = false
-	// canvasHeight: Pixels
 
 	// This canvas holds the "end product". It's output is
 	// rendered by the main canvas. It's output is also used
@@ -25,17 +31,17 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 	private nextCtx: CanvasRenderingContext2D = this.nextCanvas.getContext('2d')
 
 	constructor(config: MinimapBandConfig) {
-		super({ ...new MinimapBandConfig(), ...config })
+		super(extendConfig(config))
 	}
 
 	init() {
 		super.init()
 
-		// this.canvasHeight = this.visibleHeight - DATE_BAR_HEIGHT
 		this.maxRowCount = this.config.targets.reduce((prev, curr) => {
 			const { rowCount } = props.eventsBands[curr]
 			return Math.max(prev, rowCount)
 		}, 0)
+
 		const eventHeight = this.availableHeight / this.maxRowCount
 		this.eventHeight = eventHeight < 1 ? 1 : Math.round(eventHeight)
 

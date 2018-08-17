@@ -13,68 +13,70 @@
 	<div id="timeline" style="width: 100%; height: 100%"></div>
 	<script src="../build/bundle.js"></script>
 	<script>
-		async function go() {
-			const t = new Timeline.default({
-				events: {
-					domains: [
+		const config = {
+			center: Date.UTC(2016, 7, 14, 19, 25, 9, 750),
+			bands: [
+				new Timeline.EventsBand({
+					heightRatio: .9,
+					events: [
 						{
-							heightRatio: .9,
-							events: [
-								{
-									label: 'Usain Bolt',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 810)
-								},
-								{
-									label: 'Justin Gatlin',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 890)
-								},
-								{
-									label: 'Andre De Grasse',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 910)
-								},
-								{
-									label: 'Yohan Blake',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 930)
-								},
-								{
-									label: 'Akani Simbine',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 940)
-								},
-								{
-									label: 'Ben Youssef Meite',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 960)
-								},
-								{
-									label: 'Jimmy Vicaut',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 10, 040)
-								},
-								{
-									label: 'Trayvon Bromell',
-									date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
-									end_date: Date.UTC(2016, 7, 14, 19, 25, 10, 060)
-								}
-							],
+							label: 'Usain Bolt',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 810)
 						},
+						{
+							label: 'Justin Gatlin',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 890)
+						},
+						{
+							label: 'Andre De Grasse',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 910)
+						},
+						{
+							label: 'Yohan Blake',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 930)
+						},
+						{
+							label: 'Akani Simbine',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 940)
+						},
+						{
+							label: 'Ben Youssef Meite',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 9, 960)
+						},
+						{
+							label: 'Jimmy Vicaut',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 10, 040)
+						},
+						{
+							label: 'Trayvon Bromell',
+							date: Date.UTC(2016, 7, 14, 19, 25, 0, 0),
+							end_date: Date.UTC(2016, 7, 14, 19, 25, 10, 060)
+						}
 					],
-				},
-				minimaps: [
-					{
-						domains: [{
-							topOffsetRatio: .9,
-							heightRatio: .1,
-						}],
-						zoomLevel: 4
-					}
-				],
-				rootElement: document.getElementById('timeline'),
-			}, () => console.log('change'), () => console.log('seelct'))
+					zoomLevel: 4,
+				}),
+				// new Timeline.MinimapBand({
+				// 	topOffsetRatio: .9,
+				// 	heightRatio: .1,
+				// 	zoomLevel: 4
+				// })
+			],
+			rootElement: document.getElementById('timeline'),
+		}
+
+		async function go() {
+			const t = new Timeline.default(
+				config,
+				() => console.log('change'),
+				() => console.log('select')
+			)
 		}
 		go()
 	</script>

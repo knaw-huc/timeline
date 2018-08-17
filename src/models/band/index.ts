@@ -66,7 +66,7 @@ export default abstract class Band<T extends BandConfig> {
 		this.width = Math.round(props.viewportWidth / this.visibleRatio)
 		this.pixelsPerMillisecond = this.width / props.time
 		this.time = this.visibleRatio * props.time
-		this.granularity = getGranularity(props.from, props.to, this.visibleRatio)
+		this.granularity = getGranularity(this.pixelsPerMillisecond)
 		this.nextDate = subsequentDate(this.granularity)
 		this.prevZoomLevel = this.zoomLevel || zoomLevel
 		this._zoomLevel = zoomLevel

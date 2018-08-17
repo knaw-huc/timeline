@@ -2,7 +2,7 @@ import MinimapBand from "../../models/band/minimap"
 import EventsBand from "../../models/band/events"
 import props from "../../models/props"
 import { Milliseconds } from "../../constants"
-import { labelBody, Granularity, findClosestRulerDate } from "../../utils/dates"
+import { labelBody, Granularity } from "../../utils/dates"
 
 const smallFont: string = "11px sans-serif"
 const bigFont: string = "13px sans-serif"
@@ -25,7 +25,8 @@ function drawRuler (ctx: CanvasRenderingContext2D, band: MinimapBand | EventsBan
 export default function drawRulers(ctx: CanvasRenderingContext2D, band: MinimapBand | EventsBand) {
 	if (!band.config.rulers) return
 
-	let date = findClosestRulerDate(band.from, band.granularity)
+	// let date = findClosestRulerDate(band.from, band.granularity)
+	let date = band.nextDate(band.from)
 	const y = band.config.topOffsetRatio * props.viewportHeight
 	const height = band.config.heightRatio * props.viewportHeight
 

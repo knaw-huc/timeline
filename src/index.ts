@@ -27,10 +27,8 @@ export {
 // FIXME top row is visible when vertical scrolling (see Halicarnassus)
 // TODO expose only API, put the Timeline and it's render in a separate view
 // TODO add async loading of events
-// TODO disambiguate click/scroll
 // TODO add API to constrain by spacial data
 // TODO Add open ranges (ie: people still alive) and EDTF dates
-// TODO zoom in to milliseconds
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO flip PiT when on edge of timeline
 // TODO make it possible to have only minimap bands (see examples/floods)

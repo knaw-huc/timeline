@@ -1,8 +1,12 @@
-import { Milliseconds, Ratio } from "../constants"
+import { Milliseconds, Pixels } from "../constants"
 import { RawEv3nt } from "../models/event";
 
 export const enum Granularity {
 	MILLISECOND = "MILLISECOND",
+	MILLISECOND_10 = "MILLISECOND_10", /* 10 MILLISECONDS */
+	MILLISECOND_50 = "MILLISECOND_50", /* 50 MILLISECONDS */
+	MILLISECOND_100 = "MILLISECOND_100", /* 100 MILLISECONDS */
+	MILLISECOND_500 = "MILLISECOND_500", /* 500 MILLISECONDS */
 	SECOND = "SECOND",
 	MINUTE = "MINUTE",
 	HOUR = "HOUR",
@@ -21,7 +25,6 @@ export const enum Granularity {
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-// export const isEqual = (date1: Date, date2: Date): boolean => date1.getTime() === date2.getTime()
 function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
 
 function formatMonth(d: Date) { return months[d.getUTCMonth()]}
@@ -72,19 +75,24 @@ export const formatDate = (timestamp: Milliseconds, granularity: Granularity): s
 	return `${label}.${formatMilliseconds(date)}`
 }
 
-export const getGranularity = (from: Milliseconds, to: Milliseconds, visibleRatio: Ratio): Granularity => {
-	const days =  visibleRatio * ((to - from) / 86400000) // 1000ms * 60s * 60m * 24h
-	// TODO add MILLISECONDS, SECONDS, MINUTES
-	if (days < 1) return Granularity.HOUR
-	if (days < 15) return Granularity.DAY
-	if (days < 45) return Granularity.WEEK
-	if (days < 1.5 * 365) return Granularity.MONTH
-	if (days < 15 * 365) return Granularity.YEAR
-	if (days < 100 * 365) return Granularity.YEAR_5
-	if (days < 200 * 365) return Granularity.DECADE
-	if (days < 400 * 365) return Granularity.DECADE_5
-	if (days < 3000 * 365) return Granularity.CENTURY
-	if (days < 6000 * 365) return Granularity.CENTURY_5
+export const getGranularity = (pixelsPerMillisecond: Pixels): Granularity => {
+	if (pixelsPerMillisecond > 58) return Granularity.MILLISECOND
+	if (pixelsPerMillisecond > 12) return Granularity.MILLISECOND_10
+	if (pixelsPerMillisecond > 2.3) return Granularity.MILLISECOND_50
+	if (pixelsPerMillisecond > 1.5) return Granularity.MILLISECOND_100
+	if (pixelsPerMillisecond > .4) return Granularity.MILLISECOND_500
+	if (pixelsPerMillisecond > 1.12e-3) return Granularity.SECOND
+	if (pixelsPerMillisecond > 1.12e-4) return Granularity.MINUTE
+	if (pixelsPerMillisecond > 1.12e-5) return Granularity.HOUR
+	if (pixelsPerMillisecond > 8e-7) return Granularity.DAY
+	if (pixelsPerMillisecond > 2.6e-7) return Granularity.WEEK
+	if (pixelsPerMillisecond > 2.2e-8) return Granularity.MONTH
+	if (pixelsPerMillisecond > 2.2e-9) return Granularity.YEAR
+	if (pixelsPerMillisecond > 3.3e-10) return Granularity.YEAR_5
+	if (pixelsPerMillisecond > 1.6e-10) return Granularity.DECADE
+	if (pixelsPerMillisecond > 8e-11) return Granularity.DECADE_5
+	if (pixelsPerMillisecond > 1e-11) return Granularity.CENTURY
+	if (pixelsPerMillisecond > 5e-12) return Granularity.CENTURY_5
 	return Granularity.MILLENIUM
 }
 
@@ -96,48 +104,27 @@ export const getStep = (granularity: Granularity): number => {
 	if (granularity === Granularity.CENTURY) return 100
 	if (granularity === Granularity.CENTURY_5) return 500
 	if (granularity === Granularity.MILLENIUM) return 1000
+
+	if (granularity === Granularity.MILLISECOND) return 1
+	if (granularity === Granularity.MILLISECOND_10) return 10
+	if (granularity === Granularity.MILLISECOND_50) return 50
+	if (granularity === Granularity.MILLISECOND_100) return 100
+	if (granularity === Granularity.MILLISECOND_500) return 500
+
 	throw new RangeError("[getStep] Only steps with a granularity greater than 'year' calculated")
-}
-
-export function findClosestRulerDate(timestamp: Milliseconds, granularity: Granularity): Milliseconds {
-	if (timestamp == null || isNaN(timestamp)) {
-		console.error('[findClosestRulerDate] start timestamp is not defined')
-		return 
-	}
-
-	const date = new Date(timestamp)
-	let year = date.getUTCFullYear()
-
-	if (isYearOrBigger(granularity)) {
-		const step = getStep(granularity)
-		if (granularity === Granularity.YEAR) year += 1
-		else while(year % step !== 0) { year += 1 }
-		if (year > -1 && year < 100) {
-			const nextDate = new Date(Date.UTC(year, 0, 1))
-			nextDate.setUTCFullYear(year)
-			return nextDate.getTime()
-		}
-		else {
-			return Date.UTC(year, 0, 1)
-		}
-	} else if (granularity === Granularity.MONTH) {
-		return Date.UTC(year, date.getUTCMonth() + 1, 1)
-	} else if (granularity === Granularity.DAY) {
-		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate() + 1)
-	} else if (granularity === Granularity.HOUR) {
-		return Date.UTC(year, date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
-	}
-	// TODO implement MINUTE, SECOND, MILLISECOND
-
-	return timestamp
 }
 
 export function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds) {
 	if (isYearOrBigger(granularity)) {
-		const step = getStep(granularity)
 		return (d: Milliseconds) => {
 			let date = new Date(d)
-			const nextYear = date.getUTCFullYear() + step
+			let nextYear = date.getUTCFullYear() + 1
+
+			if (granularity !== Granularity.YEAR) {
+				const step = getStep(granularity)
+				while(nextYear % step !== 0) { nextYear += 1 }
+			} 
+
 			if (nextYear > -1 && nextYear < 100) {
 				date.setUTCFullYear(nextYear)
 				return date.getTime()
@@ -174,6 +161,30 @@ export function subsequentDate(granularity: Granularity): ((date: Milliseconds) 
 			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours() + 1)
 		}
 	}
+
+	if (granularity === Granularity.MINUTE) {
+		return (d: Milliseconds) => {
+			const date = new Date(d)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes() + 1)
+		}
+	}
+
+	if (granularity === Granularity.SECOND) {
+		return (d: Milliseconds) => {
+			const date = new Date(d)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds() + 1)
+		}
+	}
+
+	if (granularity.slice(0, "MILLISECOND".length) === "MILLISECOND") {
+		return (d: Milliseconds) => {
+			const step = getStep(granularity)
+			const date = new Date(d)
+			let ms = date.getUTCMilliseconds() + 1
+			if (step > 1) ms = ms + step - (ms % step)
+			return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), ms)
+		}
+	}
 }
 
 export function byDate(a: RawEv3nt, b: RawEv3nt) {
@@ -207,5 +218,8 @@ export const labelBody = (d: Milliseconds, granularity: Granularity) => {
 	if (granularity === Granularity.HOUR) return `${formatHours(date)}:00`
 	if (granularity === Granularity.MINUTE) return `${formatHours(date)}:${formatMinutes(date)}`
 	if (granularity === Granularity.SECOND) return `${formatHours(date)}:${formatMinutes(date)}:${formatSeconds(date)}`
-	if (granularity === Granularity.MILLISECOND) return `${formatHours(date)}:${formatMinutes(date)}:${formatSeconds(date)}.${formatMilliseconds(date)}`
+
+	if (granularity.slice(0, "MILLISECOND".length) === "MILLISECOND") {
+		return `${formatHours(date)}:${formatMinutes(date)}:${formatSeconds(date)}.${formatMilliseconds(date)}`
+	}
 }

@@ -74,7 +74,7 @@ export class Animator {
 			if (this.centerMarker == null && this.zoomMarker == null) {
 				// 7.5 = 60fps x 1/8 of the screen, so at multiplier = 1 and if the browser
 				// gets a sweet 60fps, every second 1/8 of the screen should pass by
-				props.center += (props.eventsBands[1].time / 7.5) * this.multiplier * this.direction
+				props.center += (props.eventsBands[0].time / 7.5) * this.multiplier * this.direction
 
 			// Else if there is a center marker, calculated the speed based on props.center and time remaining
 			} else if (this.centerMarker != null) {
