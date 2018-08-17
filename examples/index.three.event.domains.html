@@ -23,48 +23,54 @@
 			const responseExplorers = await fetch('./data/explorers.json')
 			const eventsExplorers = await responseExplorers.json()
 
-			const t = new Timeline.default({
-				center: Date.UTC(1750),
-				bands: [
-					new Timeline.EventsBand({
-						zoomLevel: 10,
-						events: eventsVOC,
-						heightRatio: .3,
-						label: 'VOC voyages',
-					}),
-					new Timeline.EventsBand({
-						events: eventsPhilosophy,
-						heightRatio: .3,
-						label: 'political philosophers',
-						rulerLabels: false,
-						topOffsetRatio: .3,
-						zoomLevel: 6,
-					}),
-					new Timeline.EventsBand({
-						events: eventsExplorers,
-						heightRatio: .3,
-						label: 'explorers',
-						topOffsetRatio: .6,
-						zoomLevel: 6,
-					}),
-					new Timeline.MinimapBand({
-						heightRatio: .05,
-						indicatorFor: 1,
-						targets: [0, 1, 2],
-						topOffsetRatio: .9,
-						zoomLevel: 2,
-					}),
-					new Timeline.MinimapBand({	
-						heightRatio: .05,
-						indicatorFor: 1,
-						targets: [0, 1, 2],
-						topOffsetRatio: .95,
-					}),
-				],
-				rootElement: document.getElementById('timeline'),
-			},
-			() => {},
-			() => {})
+			const philosophyBand = new Timeline.EventsBand({
+				events: eventsPhilosophy,
+				heightRatio: .3,
+				label: 'political philosophers',
+				rulerLabels: false,
+				topOffsetRatio: .3,
+				zoomLevel: 6,
+			})
+
+			const t = new Timeline.default(
+				{
+					center: Date.UTC(1750),
+					bands: [
+						new Timeline.EventsBand({
+							zoomLevel: 10,
+							events: eventsVOC,
+							heightRatio: .3,
+							label: 'VOC voyages',
+						}),
+						philosophyBand,
+						new Timeline.EventsBand({
+							events: eventsExplorers,
+							heightRatio: .3,
+							label: 'explorers',
+							topOffsetRatio: .6,
+							zoomLevel: 6,
+						}),
+						new Timeline.MinimapBand({
+							heightRatio: .05,
+							indicatorFor: 1,
+							targets: [0, 1, 2],
+							topOffsetRatio: .9,
+							zoomLevel: 2,
+						}),
+						new Timeline.MinimapBand({	
+							heightRatio: .05,
+							indicatorFor: 1,
+							targets: [0, 1, 2],
+							topOffsetRatio: .95,
+						}),
+					],
+					rootElement: document.getElementById('timeline'),
+				},
+				() => {},
+				() => {}
+			)
+			window.timeline = t
+			window.philosophyBand = philosophyBand
 		}
 		go()
 	</script>
