@@ -6,7 +6,8 @@ export default class BandView implements View {
     band: Band<MinimapBandConfig | EventsBandConfig>;
     private dragOffsetX;
     private dragOffsetY;
-    private dragStart;
+    private dragStartTime;
+    private dragStartPosition;
     protected lastDragInterval: Milliseconds;
     protected rootElement: HTMLElement;
     constructor(band: Band<MinimapBandConfig | EventsBandConfig>);
@@ -14,6 +15,7 @@ export default class BandView implements View {
     private onMouseDown;
     private onMouseMove;
     private onMouseUp;
+    private dispatchScrollDoneEvent;
     private onDblClick;
     resize(): void;
 }

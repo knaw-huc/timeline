@@ -5,7 +5,7 @@
   "main": "build/bundle.js",
   "types": "build/src/index.d.ts",
   "author": "Gijsjan Brouwer",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "clean": "rm -rf build",
     "build": "webpack --mode production",

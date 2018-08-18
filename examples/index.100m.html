@@ -60,13 +60,13 @@
 							end_date: Date.UTC(2016, 7, 14, 19, 25, 10, 060)
 						}
 					],
-					zoomLevel: 4,
+					zoomLevel: 0,
 				}),
-				// new Timeline.MinimapBand({
-				// 	topOffsetRatio: .9,
-				// 	heightRatio: .1,
-				// 	zoomLevel: 4
-				// })
+				new Timeline.MinimapBand({
+					topOffsetRatio: .9,
+					heightRatio: .1,
+					zoomLevel: 0
+				})
 			],
 			rootElement: document.getElementById('timeline'),
 		}
