@@ -1,11 +1,11 @@
 import BandView from './index'
-import eventBus from '../../event-bus';
-import EventsBand from '../../models/band/events';
-import { RawEv3nt } from '../../models/event';
-import { logEvent } from '../../utils';
+import eventBus from '../../event-bus'
+import EventsBand from '../../models/band/events'
+import { logEvent } from '../../utils'
+import { OnSelectFunction } from '../../index'
 
 export default class EventsBandView extends BandView {
-	constructor(public band: EventsBand, private select: (e: RawEv3nt) => void) {
+	constructor(public band: EventsBand, private select: OnSelectFunction) {
 		super(band)
 	}
 
@@ -16,14 +16,14 @@ export default class EventsBandView extends BandView {
 		return root
 	}
 
-	private onWheel = (ev) => {
+	private onWheel = (ev: WheelEvent) => {
 		if (Math.abs(ev.deltaX) === 0 && ev.deltaY !== 0) {
 			if (ev.deltaY < 0) this.zoomOut()
 			if (ev.deltaY > 0) this.zoomIn()
 		}
 	}
 
-	private onClick = (ev) => {
+	private onClick = (ev: MouseEvent) => {
 		if (this.lastDragInterval > 175) return
 
 		const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY)

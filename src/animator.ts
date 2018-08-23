@@ -65,7 +65,7 @@ export class Animator {
 		})
 	}
 
-	animate = (timestamp) => {
+	animate = (timestamp: Milliseconds) => {
 		// time elapsed since previous frame
 		const elapsedTime = this.prevTimestamp == null ? 0 : timestamp - this.prevTimestamp
 

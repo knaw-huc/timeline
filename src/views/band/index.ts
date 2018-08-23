@@ -40,7 +40,7 @@ export default class BandView implements View {
 		return this.rootElement
 	}
 
-	private onMouseDown = (ev) => {
+	private onMouseDown = (ev: MouseEvent) => {
 		document.addEventListener('mouseup', this.onMouseUp)
 		this.dragStartTime = Date.now()
 		this.dragStartPosition = [ev.clientX, ev.clientY]
@@ -48,7 +48,7 @@ export default class BandView implements View {
 		this.dragOffsetY = ev.clientY
 	}
 
-	private onMouseMove = (ev) => {
+	private onMouseMove = (ev: MouseEvent) => {
 		if (this.dragOffsetX == null) return
 
 		if (this.band instanceof EventsBand) {
@@ -71,7 +71,7 @@ export default class BandView implements View {
 		this.dragOffsetY = ev.clientY
 	}
 
-	private onMouseUp = (ev) => {
+	private onMouseUp = (ev: MouseEvent) => {
 		this.lastDragInterval = Date.now() - this.dragStartTime 
 		this.dispatchScrollDoneEvent(ev)
 		this.dragOffsetX = null
@@ -87,7 +87,7 @@ export default class BandView implements View {
 	 * is greater than 5px
 	 *
 	 */
-	private dispatchScrollDoneEvent(ev) {
+	private dispatchScrollDoneEvent(ev: MouseEvent) {
 		const significantDrag: boolean = [
 			this.dragStartPosition[0] - ev.clientX,
 			this.dragStartPosition[1] - ev.clientY
@@ -100,7 +100,7 @@ export default class BandView implements View {
 		}
 	}
 
-	private onDblClick = (ev) => {
+	private onDblClick = (ev: MouseEvent) => {
 		const nextCenter = this.band.timestampAtPosition(ev.clientX)
 		animator.goTo(nextCenter)
 	}

@@ -1,21 +1,21 @@
 import { RawEv3nt } from "../models/event";
 import { Milliseconds, Ratio, Pixels } from "../constants";
 
-export const debounce = (func, wait) => {
-	let timeout
+export const debounce = (func: Function, wait: number) => {
+	let timeout: number
 	return () => {
 		clearTimeout(timeout)
 		timeout = setTimeout(func, wait)
 	}
 }
 
-export const onVisible = (from, to) => (e: RawEv3nt) => {
-	const eventFrom = e.date_min || e.date
-	let eventTo = e.end_date_max || e.end_date
-	if (eventTo == null) eventTo = eventFrom
-	if (eventFrom == null && eventTo == null) return false
-	return !(eventTo < from || eventFrom > to)
-}
+// export const onVisible = (from, to) => (e: RawEv3nt) => {
+// 	const eventFrom = e.date_min || e.date
+// 	let eventTo = e.end_date_max || e.end_date
+// 	if (eventTo == null) eventTo = eventFrom
+// 	if (eventFrom == null && eventTo == null) return false
+// 	return !(eventTo < from || eventFrom > to)
+// }
 
 /**
  * Convert a zoom level to a visible ratio
@@ -60,11 +60,11 @@ export function calcPixelsPerMillisecond(viewportWidth: Pixels, zoomLevel: numbe
 	return (viewportWidth / visibleRatio(zoomLevel)) / totalTime
 }
 
-function formatDate(ts) {
+function formatDate(ts: Milliseconds) {
 	if (ts == null) return null
 	const d = new Date(ts)
 	return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
-export function logEvent(event: RawEv3nt, ...rest) {
+export function logEvent(event: RawEv3nt, ...rest: string[]) {
 	console.log(event.label, event, event.left, formatDate(event.from), formatDate(event.to), rest)
 }

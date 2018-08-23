@@ -25,7 +25,7 @@ export const enum Granularity {
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
+function nth(n: number){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
 
 function formatMonth(d: Date) { return months[d.getUTCMonth()]}
 function formatDateNumber(d: Date) {
@@ -33,12 +33,17 @@ function formatDateNumber(d: Date) {
 	const day = days[d.getUTCDay()]
 	return `${day}, ${dateNumber}${nth(dateNumber)}`
 }
+
+// @ts-ignore
 function formatHours(d: Date) { return d.getUTCHours().toString().padStart(2, '0') }
+// @ts-ignore
 function formatMinutes(d: Date) { return d.getUTCMinutes().toString().padStart(2, '0') }
+// @ts-ignore
 function formatSeconds(d: Date) { return d.getUTCSeconds().toString().padStart(2, '0') }
+// @ts-ignore
 function formatMilliseconds(d: Date) { return d.getUTCMilliseconds().toString().padStart(3, '0') }
 
-function isYearOrBigger(granularity) {
+function isYearOrBigger(granularity: Granularity) {
 	return granularity === Granularity.YEAR ||
 		granularity === Granularity.YEAR_5 ||
 		granularity === Granularity.DECADE ||

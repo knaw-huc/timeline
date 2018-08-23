@@ -4,7 +4,7 @@ import BandView from './views/band'
 import createElement from './utils/create-element'
 import { debounce, calcPixelsPerMillisecond } from './utils'
 import { OrderedEvents, orderEvents } from './utils/events.worker'
-import Api from './api'
+import Api, { OnChangeFunction } from './api'
 import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
@@ -12,6 +12,7 @@ import Label from './views/label'
 import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
 import { formatDate } from './utils/dates';
+import { RawEv3nt } from './models/event';
 // import Debug from './views/debug'
 
 export {
@@ -22,7 +23,10 @@ export {
 	calcPixelsPerMillisecond,
 	formatDate,
 	orderEvents,
+	RawEv3nt
 }
+
+export type OnSelectFunction = (e: RawEv3nt) => void
 
 // FIXME top row is visible when vertical scrolling (see Halicarnassus)
 // TODO expose only API, put the Timeline and it's render in a separate view
@@ -42,8 +46,8 @@ export {
 export default class Timeline extends Api {
 	private wrapper: HTMLElement
 
-	constructor(protected config: Config, onChange?, private onSelect?) {
-		super(config.rootElement, onChange)
+	constructor(protected config: Config, onChange?: OnChangeFunction, private onSelect?: OnSelectFunction) {
+		super(onChange)
 
 		props.init(config)
 		config.rootElement.appendChild(this.render())

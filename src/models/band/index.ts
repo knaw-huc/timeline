@@ -107,7 +107,7 @@ export default abstract class Band<T extends BandConfig> {
 	updateConfig(props: { [prop: string]: string | number}) {
 		Object.keys(props).forEach(prop => {
 			if (this.config.hasOwnProperty(prop)) {
-				this.config[prop] = props[prop]
+				(this.config as any)[prop] = props[prop]
 			}
 		})
 	}

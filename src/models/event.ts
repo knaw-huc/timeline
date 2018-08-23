@@ -20,6 +20,9 @@ export class RawEv3nt {
 	from: Milliseconds
 	to: Milliseconds
 
+	tags: string[]
+	locations: any[]
+
 	// The length of time an event took.
 	// A Point in Time has time = 0
 	// For an interval, if something takes 1 year, time = 31536000000

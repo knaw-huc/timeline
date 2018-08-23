@@ -1,26 +1,23 @@
 import animator, { Animator } from './animator'
-import { CENTER_CHANGE_DONE, Ratio, Milliseconds, ZOOM_DONE } from './constants'
+import { CENTER_CHANGE_DONE, Ratio, ZOOM_DONE } from './constants'
 import props from './models/props'
 import View from './views';
+import MinimapBand from './models/band/minimap';
+import EventsBand from './models/band/events';
 
-export interface OnChangeFunctionProps {
+export interface OnChangeProps {
 	center: Ratio,
-	bands: {
-		from: Milliseconds,
-		to: Milliseconds,
-		zoomLevel: number
-	}[]
+	bands: (EventsBand | MinimapBand)[]
 }
 
-export type OnChangeFunction = (props: OnChangeFunctionProps, e?: Event) => void
+export type OnChangeFunction = (props: OnChangeProps, e?: Event) => void
 
 export default class Api {
 	protected views: View[]
 	animator: Animator = animator
 
 	constructor(
-		rootElement: HTMLElement, 
-		private onChange: (changeProps: OnChangeFunctionProps) => void
+		private onChange: (changeProps: OnChangeProps) => void
 	) {
 		document.addEventListener('keydown', (ev) => {
 			if (ev.keyCode === 189) props.eventsBands[0].zoomOut() // -

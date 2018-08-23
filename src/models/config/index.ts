@@ -45,6 +45,8 @@ export class EventsBandConfig extends BandConfig {
 export default class Config {
 	center?: number
 
+	controlBand: EventsBand
+
 	bands: (EventsBand | MinimapBand)[]
 
 	// The HTML element where the Timeline will be attached to. The element should be a

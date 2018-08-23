@@ -1,4 +1,4 @@
-type EventListener = [string, Function, any]
+type EventListener = [string, EventListenerOrEventListenerObject, Target]
 export type Target = Document | Window | HTMLElement
 
 /**
@@ -10,7 +10,7 @@ export type Target = Document | Window | HTMLElement
 export class EventBus {
 	private eventsListeners: EventListener[] = []
 
-	register(type, listener, target: Target = document) {
+	register(type: string, listener: EventListenerOrEventListenerObject, target: Target = document) {
 		target.addEventListener(type, listener)
 		this.eventsListeners.push([type, listener, target])
 	}
