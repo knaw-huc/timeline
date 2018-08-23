@@ -19,11 +19,15 @@ class BandView {
         this.onMouseMove = (ev) => {
             if (this.dragOffsetX == null)
                 return;
+            const yChange = ev.clientY - this.dragOffsetY;
+            const xChange = ev.clientX - this.dragOffsetX;
             if (this.band instanceof events_1.default) {
-                this.band.offsetY = ev.clientY - this.dragOffsetY;
+                if (this.band.offsetY !== 0 || Math.abs(yChange) > Math.abs(xChange)) {
+                    this.band.offsetY = yChange;
+                }
             }
-            const centerChange = (this.dragOffsetX - ev.clientX) / this.band.pixelsPerMillisecond;
-            props_1.default.center += centerChange;
+            const centerChange = xChange / this.band.pixelsPerMillisecond;
+            props_1.default.center -= centerChange;
             animator_1.default.nextFrame();
             this.dragOffsetX = ev.clientX;
             this.dragOffsetY = ev.clientY;

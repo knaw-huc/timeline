@@ -51,15 +51,24 @@ export default class BandView implements View {
 	private onMouseMove = (ev: MouseEvent) => {
 		if (this.dragOffsetX == null) return
 
+		const yChange = ev.clientY - this.dragOffsetY
+		const xChange = ev.clientX - this.dragOffsetX
+
 		if (this.band instanceof EventsBand) {
-			this.band.offsetY =  ev.clientY - this.dragOffsetY
+			// If the band's Y offset is 0, which means the band is "at the bottom",
+			// only move vertical if the yChange is bigger than the xChange. Otherwise,
+			// if scrolling left/right will show/hide the bottom row, which feels yanky.
+			// This makes the band "stick" to the "bottom"
+			if (this.band.offsetY !== 0 || Math.abs(yChange) > Math.abs(xChange)) {
+				this.band.offsetY =  yChange
+			}
 		}
 
 		// Calculate the difference between the current mouse position and
 		// the previous mouse position. This yields an offset in pixels, which
 		// is converted to milliseconds.
-		const centerChange: Milliseconds = (this.dragOffsetX - ev.clientX) / this.band.pixelsPerMillisecond
-		props.center += centerChange
+		const centerChange: Milliseconds = xChange / this.band.pixelsPerMillisecond
+		props.center -= centerChange
 
 		// Request an animation frame from the Animator which updates the
 		// models and the views
