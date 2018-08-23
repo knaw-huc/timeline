@@ -23,6 +23,7 @@ export declare class EventsBandConfig extends BandConfig {
 }
 export default class Config {
     center?: number;
+    controlBand: EventsBand;
     bands: (EventsBand | MinimapBand)[];
     rootElement: HTMLElement;
 }

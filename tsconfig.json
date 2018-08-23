@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "importHelpers": true,
+    "module": "commonjs",
+    "noImplicitAny": true,
     "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "build",
     "removeComments": true,
-    "target": "es2017"
+    "target": "es6"
   },
   "exclude": ["node_modules"],
   "files": ["src/index.ts"]
