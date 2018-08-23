@@ -22,7 +22,7 @@ export declare class Animator {
     registerModel(model: Band<MinimapBandConfig | EventsBandConfig>): void;
     registerView(view: Canvas | Debug): void;
     private adjustMinimapBands;
-    animate: (timestamp: any) => void;
+    animate: (timestamp: number) => void;
     private resetElapsedTimeTotal;
     accelerate(): number;
     decelerate(): number;

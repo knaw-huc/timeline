@@ -16,10 +16,13 @@ export declare class RawEv3nt {
     wikidata_identifier?: string;
     from: Milliseconds;
     to: Milliseconds;
+    tags: string[];
+    locations: any[];
     time?: Milliseconds;
     space?: Milliseconds;
     left?: Pixels;
     padding?: Pixels;
     top?: Pixels;
     width?: Pixels;
+    color?: string;
 }

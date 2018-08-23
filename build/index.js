@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const props_1 = require("./models/props");
+exports.TimelineProps = props_1.Props;
 const index_1 = require("./models/config/index");
 exports.TimelineConfig = index_1.default;
 const band_1 = require("./views/band");

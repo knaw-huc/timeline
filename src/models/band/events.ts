@@ -1,7 +1,7 @@
 import Band from '.'
 import { EventsBandConfig } from '../config'
 import animator from '../../animator'
-import { Pixels, EVENT_ROW_HEIGHT } from '../../constants'
+import { Pixels, EVENT_ROW_HEIGHT, Milliseconds } from '../../constants'
 import props from '../props'
 import { RawEv3nt } from '../event'
 import { orderEvents } from '../../utils/events.worker';
@@ -61,6 +61,33 @@ export default class EventsBand extends Band<EventsBandConfig> {
 		this.updateEvents()
 	}
 
+	private getColor(from: Milliseconds, to: Milliseconds): string {
+		const beforeRGB = [253, 231, 37]
+		const centerRGB = [49, 220, 215]
+		const afterRGB = [204, 104, 232]
+
+		let diff: Milliseconds
+		if (props.center > to) { // event is left of center
+			diff = props.center - to
+		} else if (props.center < from) { // event is right of center
+			diff = from - props.center
+		} else {
+			return `rgb(${centerRGB.join(', ')})`
+		}
+
+		const ratio = diff / (this.time / 2)
+
+		const outerRGB = (props.center > to) ? beforeRGB : afterRGB
+
+		const codes = centerRGB
+			.map((code, i) => {
+				return code + ((outerRGB[i] - code) * ratio)
+			})
+			.join(', ')
+
+		return `rgb(${codes})`
+	}
+
 	private updateEvents() {
 		this.visibleEvents = this.events
 			.filter(event => 
@@ -81,6 +108,8 @@ export default class EventsBand extends Band<EventsBandConfig> {
 				event.padding = Math.round((event.space) * this.pixelsPerMillisecond)    // ||          [   event   ]<- padding ->    ||
 
 				event.top = this.top + this.availableHeight - ((event.row + 1) * EVENT_ROW_HEIGHT) + this.offsetY
+
+				event.color = this.getColor(event.from, event.to)
 
 				return event
 			})

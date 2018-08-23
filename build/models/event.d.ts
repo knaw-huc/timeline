@@ -24,4 +24,5 @@ export declare class RawEv3nt {
     padding?: Pixels;
     top?: Pixels;
     width?: Pixels;
+    color?: string;
 }

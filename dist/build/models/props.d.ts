@@ -7,6 +7,7 @@ export declare class Props {
     bands: (EventsBand | MinimapBand)[];
     eventsBands: EventsBand[];
     minimapBands: MinimapBand[];
+    controlBand: EventsBand;
     from: Milliseconds;
     time: Milliseconds;
     to: Milliseconds;

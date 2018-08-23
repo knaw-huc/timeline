@@ -13,6 +13,7 @@ export default class EventsBand extends Band<EventsBandConfig> {
     offsetY: number;
     constructor(config: EventsBandConfig);
     init(): void;
+    private getColor;
     private updateEvents;
     update(): void;
     getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt;

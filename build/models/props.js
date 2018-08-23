@@ -59,6 +59,7 @@ class Props {
         this.bands = config.bands;
         this.eventsBands = this.bands.filter(onEventsBand);
         this.minimapBands = this.bands.filter(onMinimapBand);
+        this.controlBand = config.controlBand;
         for (const band of this.bands) {
             band.init();
         }

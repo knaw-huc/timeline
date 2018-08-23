@@ -44,6 +44,29 @@ class EventsBand extends _1.default {
         this.offsetY = 0;
         this.updateEvents();
     }
+    getColor(from, to) {
+        const beforeRGB = [253, 231, 37];
+        const centerRGB = [49, 220, 215];
+        const afterRGB = [204, 104, 232];
+        let diff;
+        if (props_1.default.center > to) {
+            diff = props_1.default.center - to;
+        }
+        else if (props_1.default.center < from) {
+            diff = from - props_1.default.center;
+        }
+        else {
+            return `rgb(${centerRGB.join(', ')})`;
+        }
+        const ratio = diff / (this.time / 2);
+        const outerRGB = (props_1.default.center > to) ? beforeRGB : afterRGB;
+        const codes = centerRGB
+            .map((code, i) => {
+            return code + ((outerRGB[i] - code) * ratio);
+        })
+            .join(', ');
+        return `rgb(${codes})`;
+    }
     updateEvents() {
         this.visibleEvents = this.events
             .filter(event => !(event.from > this.to || event.to < this.from) &&
@@ -55,6 +78,7 @@ class EventsBand extends _1.default {
                 event.width = 1;
             event.padding = Math.round((event.space) * this.pixelsPerMillisecond);
             event.top = this.top + this.availableHeight - ((event.row + 1) * constants_1.EVENT_ROW_HEIGHT) + this.offsetY;
+            event.color = this.getColor(event.from, event.to);
             return event;
         });
     }

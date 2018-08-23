@@ -8,10 +8,7 @@ class Api {
         this.onChange = onChange;
         this.animator = animator_1.default;
         this.handleChange = () => {
-            this.onChange({
-                center: props_1.default.center,
-                bands: props_1.default.bands,
-            });
+            this.onChange(props_1.default);
         };
         this.resize = () => {
             props_1.default.resize();

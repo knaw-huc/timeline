@@ -1,4 +1,4 @@
-import props from './models/props'
+import props, { Props } from './models/props'
 import Config from './models/config/index'
 import BandView from './views/band'
 import createElement from './utils/create-element'
@@ -17,6 +17,7 @@ import { RawEv3nt } from './models/event';
 
 export {
 	Config as TimelineConfig,
+	Props as TimelineProps,
 	EventsBand,
 	MinimapBand,
 	OrderedEvents,

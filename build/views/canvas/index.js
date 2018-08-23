@@ -50,23 +50,24 @@ class Canvas {
     drawEventsBand(band) {
         this.clear(band);
         rulers_1.default(this.ctx, band);
-        this.ctx.beginPath();
         for (const event of band.visibleEvents) {
             if (!event.time) {
                 this.ctx.moveTo(event.left, event.top + constants_1.EVENT_HEIGHT / 2);
+                this.ctx.beginPath();
                 this.ctx.arc(event.left, event.top + constants_1.EVENT_HEIGHT / 2, constants_1.EVENT_HEIGHT / 3, 0, 2 * Math.PI);
+                this.ctx.fillStyle = event.color;
+                this.ctx.fill();
             }
             else {
-                this.ctx.rect(event.left, event.top, event.width, constants_1.EVENT_HEIGHT);
+                this.ctx.fillStyle = event.color;
+                this.ctx.fillRect(event.left, event.top, event.width, constants_1.EVENT_HEIGHT);
             }
         }
-        this.ctx.fillStyle = `rgb(216, 178, 178)`;
-        this.ctx.fill();
         this.drawEventsText(band);
     }
     drawEventsText(band) {
         this.ctx.font = '11px sans-serif';
-        this.ctx.fillStyle = `rgb(126, 0, 0)`;
+        this.ctx.fillStyle = `rgb(40, 40, 40)`;
         for (const event of band.visibleEvents) {
             let eventWidth = event.time === 0 ? event.padding : event.width;
             let eventLeft = event.left;
