@@ -124,6 +124,7 @@ export default class Canvas implements View {
 		drawRulers(this.ctx, band)
 
 		const minimapCanvas = band.draw()
+
 		this.ctx.drawImage(minimapCanvas, 0, band.top, props.viewportWidth, band.availableHeight)
 
 		band.isDrawn = true

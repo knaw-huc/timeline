@@ -13,11 +13,11 @@ function extendConfig(config) {
 class MinimapBand extends _1.default {
     constructor(config) {
         super(extendConfig(config));
-        this.isDrawn = false;
         this.canvas = create_element_1.default('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.nextCanvas = create_element_1.default('canvas');
         this.nextCtx = this.nextCanvas.getContext('2d');
+        this.isDrawn = false;
     }
     init() {
         super.init();
@@ -26,11 +26,11 @@ class MinimapBand extends _1.default {
             return Math.max(prev, rowCount);
         }, 0);
         const eventHeight = this.availableHeight / this.maxRowCount;
-        this.eventHeight = eventHeight < 1 ? 1 : Math.round(eventHeight);
+        this.eventHeight = eventHeight < 1 ? 1 : Math.floor(eventHeight);
         this.canvas.width = props_1.default.viewportWidth;
         this.canvas.height = this.maxRowCount * this.eventHeight;
-        this.nextCanvas.width = props_1.default.viewportWidth;
-        this.nextCanvas.height = this.maxRowCount * this.eventHeight;
+        this.nextCanvas.width = this.canvas.width;
+        this.nextCanvas.height = this.canvas.height;
     }
     resize() {
         super.resize();

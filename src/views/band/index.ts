@@ -4,9 +4,9 @@ import createElement from '../../utils/create-element'
 import eventBus from '../../event-bus'
 import animator from '../../animator'
 import View from '../index'
-import { Milliseconds, Pixels, SCROLL_DONE } from '../../constants';
+import { Milliseconds, Pixels, SCROLL_DONE } from '../../constants'
 import { MinimapBandConfig, EventsBandConfig } from '../../models/config'
-import EventsBand from '../../models/band/events';
+import EventsBand from '../../models/band/events'
 
 export default class BandView implements View { 
 	private dragOffsetX: Pixels

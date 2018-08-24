@@ -15,8 +15,6 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 	private eventHeight: Pixels
 	private maxRowCount: number
 
-	isDrawn: boolean = false
-
 	// This canvas holds the "end product". It's output is
 	// rendered by the main canvas. It's output is also used
 	// as input (starting point) for the next canvas
@@ -29,6 +27,8 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 	// and when finished copied on to the "end product" canvas
 	private nextCanvas: HTMLCanvasElement = createElement('canvas')
 	private nextCtx: CanvasRenderingContext2D = this.nextCanvas.getContext('2d')
+
+	isDrawn: boolean = false
 
 	constructor(config: MinimapBandConfig) {
 		super(extendConfig(config))
@@ -43,13 +43,13 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 		}, 0)
 
 		const eventHeight = this.availableHeight / this.maxRowCount
-		this.eventHeight = eventHeight < 1 ? 1 : Math.round(eventHeight)
+		this.eventHeight = eventHeight < 1 ? 1 : Math.floor(eventHeight)
 
 		this.canvas.width = props.viewportWidth
 		this.canvas.height = this.maxRowCount * this.eventHeight
 
-		this.nextCanvas.width = props.viewportWidth
-		this.nextCanvas.height = this.maxRowCount * this.eventHeight
+		this.nextCanvas.width = this.canvas.width
+		this.nextCanvas.height = this.canvas.height
 	}
 
 	resize() {
