@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -9,6 +9,7 @@
   "scripts": {
     "build": "rm -rf build && tsc",
     "dist": "rm -rf dist && webpack && webpack --config webpack.config.prod.js",
+    "release": "./release.sh",
     "test": "jest",
     "start": "webpack-dev-server --config webpack.config.prod.js",
     "start:dev": "webpack-dev-server",

@@ -1,8 +1,9 @@
-import Band from '.';
+import Band, { BandType } from '.';
 import { EventsBandConfig } from '../config';
 import { Pixels } from '../../constants';
 import { RawEv3nt } from '../event';
 export default class EventsBand extends Band<EventsBandConfig> {
+    type: BandType;
     private height;
     private lowestVisibleRow;
     private highestVisibleRow;
