@@ -23,7 +23,7 @@ class Animator {
             const elapsedTime = this.prevTimestamp == null ? 0 : timestamp - this.prevTimestamp;
             if (elapsedTime > 0 || this.prevTimestamp == null) {
                 if (this.centerMarker == null && this.zoomMarker == null) {
-                    props_1.default.center += (props_1.default.eventsBands[0].time / 7.5) * this.multiplier * this.direction;
+                    props_1.default.center += (props_1.default.controlBand.time / 480) * this.multiplier * this.direction;
                 }
                 else if (this.centerMarker != null) {
                     const timeRemaining = this.goToDuration - this.elapsedTimeTotal;
