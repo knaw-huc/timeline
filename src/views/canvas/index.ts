@@ -6,6 +6,7 @@ import animator from '../../animator'
 import EventsBand from '../../models/band/events'
 import View from '../index'
 import drawRulers from './rulers'
+import { BandType } from '../../models/band';
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
@@ -62,10 +63,10 @@ export default class Canvas implements View {
 	update = () => {
 		props.bands
 			.forEach(band => {
-				if (band instanceof EventsBand)
-					this.drawEventsBand(band)
+				if (band.type === BandType.EventsBand)
+					this.drawEventsBand(band as EventsBand)
 				else
-					this.drawMinimapBand(band)
+					this.drawMinimapBand(band as MinimapBand)
 			})
 
 		this.drawIndicators()

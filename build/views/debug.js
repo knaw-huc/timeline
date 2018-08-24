@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const animator_1 = require("../animator");
 const create_element_1 = require("../utils/create-element");
 const props_1 = require("../models/props");
-const minimap_1 = require("../models/band/minimap");
+const band_1 = require("../models/band");
 class Debug {
     constructor() {
         animator_1.default.registerView(this);
@@ -30,7 +30,7 @@ class Debug {
 			${props_1.default.bands
             .map(band => `
 						<table style="margin-bottom: 1em; border-collapse: collapse; border-spacing: 0;">
-							<tr><td style="color: gray" width=40>type</td><td>${band instanceof minimap_1.default ? 'minimap' : 'events'}</td></tr>
+							<tr><td style="color: gray" width=40>type</td><td>${band.type === band_1.BandType.MinimapBand ? 'minimap' : 'events'}</td></tr>
 							<tr><td style="color: gray">zoom</td><td>${band.zoomLevel}</td></tr>
 							<tr><td style="color: gray">px/ms</td><td>${band.pixelsPerMillisecond.toExponential(2)}</td></tr>
 							<tr><td style="color: gray">left</td><td>${Math.round(band.offsetX)}px</td></tr>

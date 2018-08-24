@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const band_1 = require("../../models/band");
 const props_1 = require("../../models/props");
 const create_element_1 = require("../../utils/create-element");
 const event_bus_1 = require("../../event-bus");
 const animator_1 = require("../../animator");
 const constants_1 = require("../../constants");
-const events_1 = require("../../models/band/events");
 class BandView {
     constructor(band) {
         this.band = band;
@@ -21,10 +21,11 @@ class BandView {
                 return;
             const yChange = ev.clientY - this.dragOffsetY;
             const xChange = ev.clientX - this.dragOffsetX;
-            if (this.band instanceof events_1.default) {
-                if (this.band.offsetY !== 0 ||
+            if (this.band.type === band_1.BandType.EventsBand) {
+                const band = this.band;
+                if (band.offsetY !== 0 ||
                     (Math.abs(yChange) > Math.abs(xChange) && Math.abs(yChange) > 5)) {
-                    this.band.offsetY = yChange;
+                    band.offsetY = yChange;
                 }
             }
             const centerChange = xChange / this.band.pixelsPerMillisecond;

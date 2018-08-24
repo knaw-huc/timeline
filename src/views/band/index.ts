@@ -1,4 +1,4 @@
-import Band from '../../models/band'
+import Band, { BandType } from '../../models/band'
 import props from '../../models/props'
 import createElement from '../../utils/create-element'
 import eventBus from '../../event-bus'
@@ -54,17 +54,18 @@ export default class BandView implements View {
 		const yChange = ev.clientY - this.dragOffsetY
 		const xChange = ev.clientX - this.dragOffsetX
 
-		if (this.band instanceof EventsBand) {
+		if (this.band.type === BandType.EventsBand) {
+			const band = this.band as EventsBand
 			// If the band's Y offset is 0, which means the band is "at the bottom",
 			// only move vertical if the yChange is bigger than the xChange
 			// and the change is bigger than 5 pixels (aribtrary number).
 			// Otherwise, if scrolling left/right will show/hide the bottom row, which feels yanky.
 			// This makes the band "stick" to the "bottom"
 			if (
-				this.band.offsetY !== 0 ||
+				band.offsetY !== 0 ||
 				(Math.abs(yChange) > Math.abs(xChange) && Math.abs(yChange) > 5)
 			 ) {
-				this.band.offsetY =  yChange
+				band.offsetY =  yChange
 			}
 		}
 

@@ -4,15 +4,15 @@ const create_element_1 = require("../../utils/create-element");
 const props_1 = require("../../models/props");
 const constants_1 = require("../../constants");
 const animator_1 = require("../../animator");
-const events_1 = require("../../models/band/events");
 const rulers_1 = require("./rulers");
+const band_1 = require("../../models/band");
 class Canvas {
     constructor() {
         this.indicatorsDrawn = false;
         this.update = () => {
             props_1.default.bands
                 .forEach(band => {
-                if (band instanceof events_1.default)
+                if (band.type === band_1.BandType.EventsBand)
                     this.drawEventsBand(band);
                 else
                     this.drawMinimapBand(band);

@@ -23,6 +23,7 @@ const dates_1 = require("./utils/dates");
 exports.formatDate = dates_1.formatDate;
 const event_1 = require("./models/event");
 exports.RawEv3nt = event_1.RawEv3nt;
+const band_2 = require("./models/band");
 class Timeline extends api_1.default {
     constructor(config, onChange, onSelect) {
         super(onChange);
@@ -49,7 +50,7 @@ class Timeline extends api_1.default {
             'width: 100%',
         ]);
         this.views = props_1.default.bands
-            .map(band => (band instanceof events_2.default) ?
+            .map(band => band.type === band_2.BandType.EventsBand ?
             new events_1.default(band, this.onSelect) :
             new band_1.default(band));
         this.views.push(new canvas_1.default());
@@ -69,7 +70,7 @@ class Timeline extends api_1.default {
     }
     renderLabels() {
         props_1.default.bands
-            .filter(band => band instanceof events_2.default && band.config.label != null)
+            .filter(band => band.type === band_2.BandType.EventsBand && band.config.label != null)
             .map(band => new label_1.default(band))
             .forEach(this.appendToWrapper);
     }

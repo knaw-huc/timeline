@@ -11,6 +11,7 @@ const utils_1 = require("../../utils");
 class EventsBand extends _1.default {
     constructor(config) {
         super(Object.assign({}, new config_1.EventsBandConfig(), config));
+        this.type = _1.BandType.EventsBand;
         this.events = [];
         this.rowCount = 0;
         this.visibleEvents = [];

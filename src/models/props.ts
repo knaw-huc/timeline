@@ -1,18 +1,16 @@
 import { CENTER_CHANGE_DONE, Milliseconds, Pixels } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
-// import EventsBand from "./band/events"
 import { debounce } from "../utils"
 import EventsBand from "./band/events";
-// import prepareConfig from '../utils/prepare-config'
-// import { byDate } from "../utils/dates";
+import { BandType } from './band';
 
 function onEventsBand (band: MinimapBand | EventsBand): band is EventsBand {
-	return band instanceof EventsBand
+	return band.type === BandType.EventsBand
 }
 
 function onMinimapBand (band: MinimapBand | EventsBand): band is MinimapBand {
-	return band instanceof MinimapBand
+	return band.type === BandType.MinimapBand
 }
 
 export class Props {
@@ -69,11 +67,12 @@ export class Props {
 		this.dimensions = this.rootElement
 
 		const [froms, tos] = config.bands.reduce((prev, curr) => {
-			if (curr instanceof MinimapBand) return prev
-			const events = curr.config.orderedEvents == null ? curr.config.events : curr.config.orderedEvents.events
+			if (curr.type === BandType.MinimapBand) return prev
+			const band = curr as EventsBand
+			const events = band.config.orderedEvents == null ? band.config.events : band.config.orderedEvents.events
 			prev[0].push(events[0].date_min || events[0].date)
-			prev[1].push(events.reduce((prev, curr) => {
-				return Math.max(prev, curr.end_date || -Infinity, curr.end_date_max || -Infinity)
+			prev[1].push(events.reduce((prev2, curr2) => {
+				return Math.max(prev2, curr2.end_date || -Infinity, curr2.end_date_max || -Infinity)
 			}, -Infinity))
 			return prev
 		}, [[], []])

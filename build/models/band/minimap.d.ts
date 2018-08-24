@@ -1,6 +1,7 @@
-import Band from '.';
+import Band, { BandType } from '.';
 import { MinimapBandConfig } from '../config';
 export default class MinimapBand extends Band<MinimapBandConfig> {
+    type: BandType;
     private eventHeight;
     private maxRowCount;
     private canvas;

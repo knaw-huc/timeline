@@ -2,7 +2,7 @@ import animator from "../animator"
 import View from "./index"
 import createElement from "../utils/create-element";
 import props from "../models/props";
-import MinimapBand from "../models/band/minimap";
+import { BandType } from '../models/band';
 
 export default class Debug implements View {
 	wrapper: HTMLDivElement
@@ -38,7 +38,7 @@ export default class Debug implements View {
 				props.bands
 					.map(band => `
 						<table style="margin-bottom: 1em; border-collapse: collapse; border-spacing: 0;">
-							<tr><td style="color: gray" width=40>type</td><td>${band instanceof MinimapBand ? 'minimap' : 'events'}</td></tr>
+							<tr><td style="color: gray" width=40>type</td><td>${band.type === BandType.MinimapBand ? 'minimap' : 'events'}</td></tr>
 							<tr><td style="color: gray">zoom</td><td>${band.zoomLevel}</td></tr>
 							<tr><td style="color: gray">px/ms</td><td>${band.pixelsPerMillisecond.toExponential(2)}</td></tr>
 							<tr><td style="color: gray">left</td><td>${Math.round(band.offsetX)}px</td></tr>

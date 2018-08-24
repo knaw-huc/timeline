@@ -1,14 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../constants");
-const minimap_1 = require("./band/minimap");
 const utils_1 = require("../utils");
-const events_1 = require("./band/events");
+const band_1 = require("./band");
 function onEventsBand(band) {
-    return band instanceof events_1.default;
+    return band.type === band_1.BandType.EventsBand;
 }
 function onMinimapBand(band) {
-    return band instanceof minimap_1.default;
+    return band.type === band_1.BandType.MinimapBand;
 }
 class Props {
     constructor() {
@@ -41,12 +40,13 @@ class Props {
         this.rootElement = config.rootElement;
         this.dimensions = this.rootElement;
         const [froms, tos] = config.bands.reduce((prev, curr) => {
-            if (curr instanceof minimap_1.default)
+            if (curr.type === band_1.BandType.MinimapBand)
                 return prev;
-            const events = curr.config.orderedEvents == null ? curr.config.events : curr.config.orderedEvents.events;
+            const band = curr;
+            const events = band.config.orderedEvents == null ? band.config.events : band.config.orderedEvents.events;
             prev[0].push(events[0].date_min || events[0].date);
-            prev[1].push(events.reduce((prev, curr) => {
-                return Math.max(prev, curr.end_date || -Infinity, curr.end_date_max || -Infinity);
+            prev[1].push(events.reduce((prev2, curr2) => {
+                return Math.max(prev2, curr2.end_date || -Infinity, curr2.end_date_max || -Infinity);
             }, -Infinity));
             return prev;
         }, [[], []]);

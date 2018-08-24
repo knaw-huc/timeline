@@ -1,4 +1,4 @@
-import Band from '.'
+import Band, { BandType } from '.'
 import { EventsBandConfig } from '../config'
 import animator from '../../animator'
 import { Pixels, EVENT_ROW_HEIGHT, Milliseconds } from '../../constants'
@@ -9,6 +9,8 @@ import { byDate } from '../../utils/dates';
 import { calcPixelsPerMillisecond } from '../../utils';
 
 export default class EventsBand extends Band<EventsBandConfig> {
+	type = BandType.EventsBand
+
 	// Total height of the band (compare this.visibleHeight and this.availableHeight)
 	private height: number
 

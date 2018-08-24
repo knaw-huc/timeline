@@ -1,4 +1,4 @@
-import Band from '.'
+import Band, { BandType } from '.'
 import { MinimapBandConfig } from '../config'
 import { Pixels } from '../../constants'
 import props from '../props'
@@ -12,6 +12,8 @@ function extendConfig(config: MinimapBandConfig): MinimapBandConfig {
 }
 
 export default class MinimapBand extends Band<MinimapBandConfig> {
+	type = BandType.MinimapBand
+
 	private eventHeight: Pixels
 	private maxRowCount: number
 

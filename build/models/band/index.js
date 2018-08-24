@@ -5,6 +5,11 @@ const props_1 = require("../props");
 const constants_1 = require("../../constants");
 const utils_1 = require("../../utils");
 const animator_1 = require("../../animator");
+var BandType;
+(function (BandType) {
+    BandType[BandType["EventsBand"] = 0] = "EventsBand";
+    BandType[BandType["MinimapBand"] = 1] = "MinimapBand";
+})(BandType = exports.BandType || (exports.BandType = {}));
 class Band {
     constructor(config) {
         this.config = config;

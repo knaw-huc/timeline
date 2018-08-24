@@ -13,6 +13,7 @@ import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
 import { formatDate } from './utils/dates';
 import { RawEv3nt } from './models/event';
+import { BandType } from './models/band';
 // import Debug from './views/debug'
 
 export {
@@ -74,8 +75,8 @@ export default class Timeline extends Api {
 		// Render bands
 		this.views = props.bands
 			.map(band =>
-				(band instanceof EventsBand) ?
-					new EventsBandView(band, this.onSelect) :
+				band.type === BandType.EventsBand ?
+					new EventsBandView(band as EventsBand, this.onSelect) :
 					new BandView(band)
 			)
 		this.views.push(new Canvas())
@@ -103,7 +104,7 @@ export default class Timeline extends Api {
 
 	private renderLabels() {
 		props.bands
-			.filter(band => band instanceof EventsBand && band.config.label != null)
+			.filter(band => band.type === BandType.EventsBand && (band as EventsBand).config.label != null)
 			.map(band => new Label(band as EventsBand))
 			.forEach(this.appendToWrapper)
 	}

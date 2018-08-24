@@ -1,8 +1,13 @@
 import { Granularity } from '../../utils/dates';
 import { Pixels, Milliseconds, Ratio } from '../../constants';
 import { BandConfig } from '../config';
+export declare enum BandType {
+    EventsBand = 0,
+    MinimapBand = 1
+}
 export default abstract class Band<T extends BandConfig> {
     config: T;
+    abstract type: BandType;
     protected readonly defaultZoomLevel: number;
     from: Milliseconds;
     to: Milliseconds;

@@ -5,13 +5,20 @@ import { visibleRatio } from '../../utils'
 import { BandConfig } from '../config';
 import animator from '../../animator';
 
+export enum BandType {
+	EventsBand,
+	MinimapBand,
+}
 /**
  * A Band is a collection of domains. All the domains in the Band
  * have an equal position, width, from, to, zoom level, granularity, etc.
  * Easiest way to think of it is: they scroll together.
  */
-
 export default abstract class Band<T extends BandConfig> {
+	// instanceof operator fails miserably (don't ask me why, thank you JS)
+	// use a fixed property to determine the band type
+	public abstract type: BandType
+
 	protected readonly defaultZoomLevel = 0
 
 	// Timestamp of the visible start of the events domains

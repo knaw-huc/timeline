@@ -13,6 +13,7 @@ function extendConfig(config) {
 class MinimapBand extends _1.default {
     constructor(config) {
         super(extendConfig(config));
+        this.type = _1.BandType.MinimapBand;
         this.canvas = create_element_1.default('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.nextCanvas = create_element_1.default('canvas');
