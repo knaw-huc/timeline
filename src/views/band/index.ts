@@ -9,8 +9,8 @@ import { MinimapBandConfig, EventsBandConfig } from '../../models/config'
 import EventsBand from '../../models/band/events';
 
 export default class BandView implements View { 
-	private dragOffsetX: number
-	private dragOffsetY: number
+	private dragOffsetX: Pixels
+	private dragOffsetY: Pixels
 	private dragStartTime: Milliseconds
 	private dragStartPosition: [Pixels, Pixels]
 	protected lastDragInterval: Milliseconds
@@ -56,10 +56,14 @@ export default class BandView implements View {
 
 		if (this.band instanceof EventsBand) {
 			// If the band's Y offset is 0, which means the band is "at the bottom",
-			// only move vertical if the yChange is bigger than the xChange. Otherwise,
-			// if scrolling left/right will show/hide the bottom row, which feels yanky.
+			// only move vertical if the yChange is bigger than the xChange
+			// and the change is bigger than 5 pixels (aribtrary number).
+			// Otherwise, if scrolling left/right will show/hide the bottom row, which feels yanky.
 			// This makes the band "stick" to the "bottom"
-			if (this.band.offsetY !== 0 || Math.abs(yChange) > Math.abs(xChange)) {
+			if (
+				this.band.offsetY !== 0 ||
+				(Math.abs(yChange) > Math.abs(xChange) && Math.abs(yChange) > 5)
+			 ) {
 				this.band.offsetY =  yChange
 			}
 		}

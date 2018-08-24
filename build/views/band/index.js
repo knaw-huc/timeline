@@ -22,7 +22,8 @@ class BandView {
             const yChange = ev.clientY - this.dragOffsetY;
             const xChange = ev.clientX - this.dragOffsetX;
             if (this.band instanceof events_1.default) {
-                if (this.band.offsetY !== 0 || Math.abs(yChange) > Math.abs(xChange)) {
+                if (this.band.offsetY !== 0 ||
+                    (Math.abs(yChange) > Math.abs(xChange) && Math.abs(yChange) > 5)) {
                     this.band.offsetY = yChange;
                 }
             }
