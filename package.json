@@ -12,12 +12,10 @@
     "test": "jest",
     "start": "webpack-dev-server --config webpack.config.prod.js",
     "start:dev": "webpack-dev-server",
-    "start:dev:browsersync": "browser-sync start -s --no-open -f \"build\" \"index.html\"",
     "watch": "rm -rf build && tsc -w"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
-    "browser-sync": "^2.24.6",
     "jest": "^23.5.0",
     "pg": "^7.4.3",
     "ts-jest": "^23.1.4",
