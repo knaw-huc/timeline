@@ -11,8 +11,8 @@ export default class Api {
 
 	constructor(private onChange: OnChangeFunction) {
 		document.addEventListener('keydown', (ev) => {
-			if (ev.keyCode === 189) props.eventsBands[0].zoomOut() // -
-			if (ev.keyCode === 187) props.eventsBands[0].zoomIn() // +
+			if (ev.keyCode === 189) props.controlBand.zoomOut() // -
+			if (ev.keyCode === 187) props.controlBand.zoomIn() // +
 		})
 
 		if (this.onChange != null && typeof this.onChange === 'function') {

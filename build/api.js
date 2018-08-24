@@ -22,9 +22,9 @@ class Api {
         };
         document.addEventListener('keydown', (ev) => {
             if (ev.keyCode === 189)
-                props_1.default.eventsBands[0].zoomOut();
+                props_1.default.controlBand.zoomOut();
             if (ev.keyCode === 187)
-                props_1.default.eventsBands[0].zoomIn();
+                props_1.default.controlBand.zoomIn();
         });
         if (this.onChange != null && typeof this.onChange === 'function') {
             document.addEventListener(constants_1.CENTER_CHANGE_DONE, this.handleChange);
