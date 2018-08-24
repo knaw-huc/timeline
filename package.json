@@ -13,8 +13,7 @@
     "start": "webpack-dev-server --config webpack.config.prod.js",
     "start:dev": "webpack-dev-server",
     "start:dev:browsersync": "browser-sync start -s --no-open -f \"build\" \"index.html\"",
-    "watch": "rm -rf build && webpack -w",
-    "watch:prod": "rm -rf dist && webpack -w --config webpack.config.prod.js"
+    "watch": "rm -rf build && tsc -w"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
