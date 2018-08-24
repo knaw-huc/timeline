@@ -78,7 +78,7 @@ export default abstract class Band<T extends BandConfig> {
 	private setVerticalProps() {
 		this.visibleHeight = Math.round(this.config.heightRatio * props.viewportHeight)
 		this.availableHeight = this.visibleHeight - DATE_BAR_HEIGHT
-		this.visibleRowsCount = Math.floor(this.availableHeight / EVENT_ROW_HEIGHT)
+		this.visibleRowsCount = Math.floor(this.availableHeight / EVENT_ROW_HEIGHT) - 1
 		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
 	}
 

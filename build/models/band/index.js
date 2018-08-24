@@ -32,7 +32,7 @@ class Band {
     setVerticalProps() {
         this.visibleHeight = Math.round(this.config.heightRatio * props_1.default.viewportHeight);
         this.availableHeight = this.visibleHeight - constants_1.DATE_BAR_HEIGHT;
-        this.visibleRowsCount = Math.floor(this.availableHeight / constants_1.EVENT_ROW_HEIGHT);
+        this.visibleRowsCount = Math.floor(this.availableHeight / constants_1.EVENT_ROW_HEIGHT) - 1;
         this.top = Math.round(this.config.topOffsetRatio * props_1.default.viewportHeight);
     }
     setHorizontalProps() {
