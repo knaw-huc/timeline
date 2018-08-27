@@ -102,9 +102,18 @@ export default class EventsBand extends Band<EventsBandConfig> {
 				// event.left (px) === event.from (ms) + band offset (ms)
 				event.left = this.positionAtTimestamp(event.from)						 // ||<- left ->[   event   ]                 ||  
 
+
 				// event.width (px) === event.time (ms)
 				event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
 				if (event.time && event.width < 1) event.width = 1
+
+				event.width_uncertain_from = (event.date_min != null) ?
+					(event.date - event.date_min) * this.pixelsPerMillisecond :
+					0
+
+				event.width_uncertain_to = (event.end_date_max != null) ?
+					(event.end_date_max - event.end_date) * this.pixelsPerMillisecond :
+					0
 
 				// event.padding (px) === event.space (ms)
 				event.padding = Math.round((event.space) * this.pixelsPerMillisecond)    // ||          [   event   ]<- padding ->    ||

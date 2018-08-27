@@ -37,6 +37,8 @@ export class RawEv3nt {
 	padding?: Pixels
 	top?: Pixels
 	width?: Pixels
+	width_uncertain_from?: Pixels
+	width_uncertain_to?: Pixels
 	color?: string
 
 	// textWidth?: Pixels

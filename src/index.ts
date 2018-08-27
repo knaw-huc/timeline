@@ -30,13 +30,11 @@ export {
 
 export type OnSelectFunction = (e: RawEv3nt) => void
 
-// FIXME top row is visible when vertical scrolling (see Halicarnassus)
 // TODO expose only API, put the Timeline and it's render in a separate view
 // TODO add async loading of events
 // TODO add API to constrain by spacial data
-// TODO Add open ranges (ie: people still alive) and EDTF dates
+// TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
-// TODO flip PiT when on edge of timeline
 // TODO make it possible to have only minimap bands (see examples/floods)
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO add context menu for settings (which bands to show, toggle hor/ver scroll, change colors)

@@ -87,8 +87,34 @@ export default class Canvas implements View {
 			
 			// Else if interval, draw rectangle
 			} else {
+				let left = event.left
+				let width = event.width
+
+				if (event.width_uncertain_from > 1) {
+					const gradient = this.ctx.createLinearGradient(event.left, 0, event.left + event.width_uncertain_from, 0)
+					gradient.addColorStop(0, 'white')
+					gradient.addColorStop(1, event.color)
+					this.ctx.fillStyle = gradient
+					this.ctx.fillRect(event.left, event.top, event.width_uncertain_from, EVENT_HEIGHT)
+
+					left = event.left + event.width_uncertain_from
+					width -= event.width_uncertain_from
+				}
+
+				if (event.width_uncertain_to > 1) {
+					width -= event.width_uncertain_to
+
+					const gradientLeft = left + width
+					const gradientWidth = gradientLeft + event.width_uncertain_to
+					const gradient = this.ctx.createLinearGradient(gradientLeft, 0, gradientWidth, 0)
+					gradient.addColorStop(0, event.color)
+					gradient.addColorStop(1, 'white')
+					this.ctx.fillStyle = gradient
+					this.ctx.fillRect(gradientLeft, event.top, event.width_uncertain_to, EVENT_HEIGHT)
+				}
+
 				this.ctx.fillStyle = event.color
-				this.ctx.fillRect(event.left, event.top, event.width, EVENT_HEIGHT)
+				this.ctx.fillRect(left, event.top, width, EVENT_HEIGHT)
 			}
 		}
 
@@ -105,13 +131,13 @@ export default class Canvas implements View {
 
 			if (event.left < 0 && event.time !== 0) {
 				eventWidth = event.width + event.left
-				eventLeft = 0
+				eventLeft = -event.width_uncertain_from 
 			}
 
 			let eventLabelLength = event.label.length * PIXELS_PER_LETTER
 			if (eventLabelLength <= eventWidth) {
 				const paddingLeft = event.time ? 3 : 8
-				this.ctx.fillText(event.label, eventLeft + paddingLeft, event.top + EVENT_HEIGHT - 3)
+				this.ctx.fillText(event.label, eventLeft + paddingLeft + event.width_uncertain_from, event.top + EVENT_HEIGHT - 3)
 			}
 		}
 	}
