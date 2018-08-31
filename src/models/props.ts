@@ -1,4 +1,4 @@
-import { CENTER_CHANGE_DONE, Milliseconds, Pixels } from "../constants"
+import { CENTER_CHANGE_DONE, Milliseconds, Pixels, DEFAULT_IMAGE_PATH } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
 import { debounce } from "../utils"
@@ -21,6 +21,8 @@ export class Props {
 	minimapBands: MinimapBand[]
 	controlBand: EventsBand
 	// minimapBands: MinimapBand[]
+
+	imagePath: string
 
 	// Timestamp of the start date of the timeline
 	from: Milliseconds
@@ -63,6 +65,7 @@ export class Props {
 	init(config: Config) {
 		if (config.rootElement == null) console.error('[init] No rootElement found')
 
+		this.imagePath = config.imagePath != null ? config.imagePath : DEFAULT_IMAGE_PATH
 		this.rootElement = config.rootElement
 		this.dimensions = this.rootElement
 

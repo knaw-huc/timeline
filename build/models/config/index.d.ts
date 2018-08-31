@@ -25,5 +25,6 @@ export default class Config {
     center?: number;
     controlBand: EventsBand;
     bands: (EventsBand | MinimapBand)[];
+    imagePath?: string;
     rootElement: HTMLElement;
 }

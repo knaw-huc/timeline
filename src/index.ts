@@ -30,13 +30,14 @@ export {
 
 export type OnSelectFunction = (e: RawEv3nt) => void
 
+// TODO sort intervals first and than the points in time on top
+// TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO expose only API, put the Timeline and it's render in a separate view
 // TODO add async loading of events
 // TODO add API to constrain by spacial data
 // TODO Add open ranges (ie: people still alive)
 // TODO If event granularity is equal to band granularity a point in time should be rendered as an interval (as unsure?)
 // TODO make it possible to have only minimap bands (see examples/floods)
-// TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO add context menu for settings (which bands to show, toggle hor/ver scroll, change colors)
 // TODO add info about how many events below and above current view (show after scroll and hide after x seconds)
 // TODO rearrange the grid after the events are zoomed in further than the config level (you get a grid per zoom level or event.row is different per zoom level)

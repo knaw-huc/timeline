@@ -90,7 +90,9 @@
 	{
 		"label": "Karl Marx",
 		"date": -4785955200000,
-		"end_date": -2739225600000
+		"end_date": -2739225600000,
+		"has_image": "jpg",
+		"wikidata_identifier": "Q9061"
 	},
 	{
 		"label": "Friedrich Engels",
@@ -100,7 +102,9 @@
 	{
 		"label": "John Rawls",
 		"date": -1541894400000,
-		"end_date": 1038096000000
+		"end_date": 1038096000000,
+		"has_image": "jpg",
+		"wikidata_identifier": "Q172544"
 	},
 	{
 		"label": "Jeremy Bentham",
@@ -110,7 +114,9 @@
 	{
 		"label": "Michel Foucault",
 		"date": -1363737600000,
-		"end_date": 456969600000
+		"end_date": 456969600000,
+		"has_image": "jpg",
+		"wikidata_identifier": "Q44272"
 	},
 	{
 		"label": "David Hume",
@@ -125,12 +131,16 @@
 	{
 		"label": "Immanuel Kant",
 		"date": -7753363200000,
-		"end_date": -5234889600000
+		"end_date": -5234889600000,
+		"has_image": "jpg",
+		"wikidata_identifier": "Q9312"
 	},
 	{
 		"label": "Peter Kropotkin",
 		"date": -4009737600000,
-		"end_date": -1543017600000
+		"end_date": -1543017600000,
+		"has_image": "jpg",
+		"wikidata_identifier": "Q5752"
 	},
 	{
 		"label": "John Stuart Mill",

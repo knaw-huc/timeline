@@ -8,6 +8,7 @@ export declare class Props {
     eventsBands: EventsBand[];
     minimapBands: MinimapBand[];
     controlBand: EventsBand;
+    imagePath: string;
     from: Milliseconds;
     time: Milliseconds;
     to: Milliseconds;

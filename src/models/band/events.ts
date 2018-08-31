@@ -49,9 +49,11 @@ export default class EventsBand extends Band<EventsBandConfig> {
 		super.init()
 
 		const pixelsPerMillisecond = calcPixelsPerMillisecond(props.viewportWidth, this.config.zoomLevel || 0, props.time)
+		const t0 = performance.now()
 		const orderedEvents = this.config.orderedEvents == null ?
 			orderEvents(this.config.events, pixelsPerMillisecond) :
 			this.config.orderedEvents
+		const t1 = performance.now(); console.log('Performance: ', `${t1 - t0}ms`)
 		this.events = orderedEvents.events
 		this.rowCount = orderedEvents.row_count
 

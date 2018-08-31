@@ -8,6 +8,7 @@ exports.CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE';
 exports.ZOOM_DONE = 'ZOOM_DONE';
 exports.SCROLL_DONE = 'SCROLL_DONE';
 exports.PIXELS_PER_LETTER = 8;
+exports.DEFAULT_IMAGE_PATH = '/images';
 class RawSegment {
 }
 exports.RawSegment = RawSegment;

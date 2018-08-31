@@ -1,5 +1,12 @@
 import { Milliseconds, Pixels } from '../constants';
 import { Granularity } from '../utils/dates';
+export declare enum ImageFileType {
+    NONE = "none",
+    JPG = "jpg",
+    SVG = "svg",
+    GIF = "gif",
+    PNG = "png"
+}
 export declare class RawEv3nt {
     date: Milliseconds;
     date_granularity?: Granularity;
@@ -16,6 +23,8 @@ export declare class RawEv3nt {
     wikidata_identifier?: string;
     from: Milliseconds;
     to: Milliseconds;
+    imageFrom: Milliseconds;
+    imageTo: Milliseconds;
     tags: string[];
     locations: any[];
     time?: Milliseconds;
@@ -24,5 +33,9 @@ export declare class RawEv3nt {
     padding?: Pixels;
     top?: Pixels;
     width?: Pixels;
+    width_uncertain_from?: Pixels;
+    width_uncertain_to?: Pixels;
     color?: string;
+    has_image?: ImageFileType;
+    image_url?: string;
 }

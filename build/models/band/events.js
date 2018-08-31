@@ -36,9 +36,12 @@ class EventsBand extends _1.default {
     init() {
         super.init();
         const pixelsPerMillisecond = utils_1.calcPixelsPerMillisecond(props_1.default.viewportWidth, this.config.zoomLevel || 0, props_1.default.time);
+        const t0 = performance.now();
         const orderedEvents = this.config.orderedEvents == null ?
             events_worker_1.orderEvents(this.config.events, pixelsPerMillisecond) :
             this.config.orderedEvents;
+        const t1 = performance.now();
+        console.log('Performance: ', `${t1 - t0}ms`);
         this.events = orderedEvents.events;
         this.rowCount = orderedEvents.row_count;
         this.height = constants_1.EVENT_ROW_HEIGHT * this.rowCount;
@@ -77,6 +80,12 @@ class EventsBand extends _1.default {
             event.width = Math.round((event.time) * this.pixelsPerMillisecond);
             if (event.time && event.width < 1)
                 event.width = 1;
+            event.width_uncertain_from = (event.date_min != null) ?
+                (event.date - event.date_min) * this.pixelsPerMillisecond :
+                0;
+            event.width_uncertain_to = (event.end_date_max != null) ?
+                (event.end_date_max - event.end_date) * this.pixelsPerMillisecond :
+                0;
             event.padding = Math.round((event.space) * this.pixelsPerMillisecond);
             event.top = this.top + this.availableHeight - ((event.row + 1) * constants_1.EVENT_ROW_HEIGHT) + this.offsetY;
             event.color = this.getColor(event.from, event.to);

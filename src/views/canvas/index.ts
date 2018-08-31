@@ -1,12 +1,13 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { EVENT_HEIGHT, PIXELS_PER_LETTER, DATE_BAR_HEIGHT } from '../../constants'
+import { EVENT_HEIGHT, DATE_BAR_HEIGHT, ZOOM_DONE, SCROLL_DONE } from '../../constants'
 import MinimapBand from '../../models/band/minimap'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
 import View from '../index'
 import drawRulers from './rulers'
-import { BandType } from '../../models/band';
+import eventBus from '../../event-bus'
+import { RawEv3nt } from '../..';
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
@@ -22,6 +23,68 @@ export default class Canvas implements View {
 
 	constructor() {
 		animator.registerView(this)
+
+		eventBus.register(ZOOM_DONE, this.onAnimationDone)
+		eventBus.register(SCROLL_DONE, this.onAnimationDone)
+	}
+
+	private async updateImages() {
+		for (const band of props.eventsBands) {
+			for (const event of band.visibleEvents) {
+				if (event.has_image == null || event.has_image === 'none') continue
+				if (event.image_url == null) {
+					const path = `${props.imagePath}/${event.wikidata_identifier}__32.${event.has_image}`
+					const response = await fetch(path)
+					const blob = await response.blob()
+					const url = URL.createObjectURL(blob)
+					event.image_url = url
+				}
+				this.loadImage(event)
+			}
+		}
+	}
+
+	private drawImage = (img: HTMLImageElement, event: RawEv3nt) => {
+		const callback = () => {
+			img.removeEventListener('load', callback)
+
+			this.ctx.strokeStyle = event.color
+
+			let x, y
+			if (event.time) {
+				x = event.left + 4
+				y = event.top - img.height
+				this.ctx.lineWidth = 4
+				this.ctx.strokeRect(event.left + 2, y, img.width + 4, img.height)
+			} else {
+				x = event.left - (img.width / 2)
+				y = event.top - img.height - 4
+				this.ctx.strokeStyle = event.color
+				this.ctx.lineWidth = 3
+				this.ctx.strokeRect(x, y, img.width, img.height)
+
+				this.ctx.beginPath()
+				this.ctx.moveTo(event.left - 8, y + img.height)
+				this.ctx.lineTo(event.left, y + img.height + 8)
+				this.ctx.lineTo(event.left + 8, y + img.height)
+				this.ctx.fillStyle = event.color
+				this.ctx.fill()
+			}
+
+			this.ctx.drawImage(img, x, y)
+		}
+
+		return callback
+	}
+
+	private loadImage(event: RawEv3nt) {
+		const img = new Image()
+		img.addEventListener('load', this.drawImage(img, event))
+		img.src = event.image_url
+	}
+
+	private onAnimationDone = () => {
+		this.updateImages()
 	}
 
 	render() {
@@ -42,6 +105,7 @@ export default class Canvas implements View {
 		this.indicatorsCtx = this.indicatorsCanvas.getContext('2d')
 
 		this.update()
+		this.updateImages()
 
 		return [this.canvas, this.indicatorsCanvas]
 	}
@@ -61,13 +125,13 @@ export default class Canvas implements View {
 	}
 
 	update = () => {
-		props.bands
-			.forEach(band => {
-				if (band.type === BandType.EventsBand)
-					this.drawEventsBand(band as EventsBand)
-				else
-					this.drawMinimapBand(band as MinimapBand)
-			})
+		for (const band of props.eventsBands) {
+			this.drawEventsBand(band)
+		}
+
+		for (const band of props.minimapBands) {
+			this.drawMinimapBand(band)
+		}
 
 		this.drawIndicators()
 	}
@@ -126,19 +190,19 @@ export default class Canvas implements View {
 		this.ctx.fillStyle = `rgb(40, 40, 40)`
 
 		for (const event of band.visibleEvents) {
-			let eventWidth = event.time === 0 ? event.padding : event.width
+			// let eventWidth = event.time === 0 ? event.padding : event.width
 			let eventLeft = event.left
 
 			if (event.left < 0 && event.time !== 0) {
-				eventWidth = event.width + event.left
+				// eventWidth = event.width + event.left
 				eventLeft = -event.width_uncertain_from 
 			}
 
-			let eventLabelLength = event.label.length * PIXELS_PER_LETTER
-			if (eventLabelLength <= eventWidth) {
+			// let eventLabelLength = event.label.length * PIXELS_PER_LETTER
+			// if (eventLabelLength <= eventWidth) {
 				const paddingLeft = event.time ? 3 : 8
 				this.ctx.fillText(event.label, eventLeft + paddingLeft + event.width_uncertain_from, event.top + EVENT_HEIGHT - 3)
-			}
+			// }
 		}
 	}
 

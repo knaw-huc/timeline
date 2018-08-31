@@ -14,6 +14,8 @@ export const SCROLL_DONE = 'SCROLL_DONE'
 
 export const PIXELS_PER_LETTER = 8
 
+export const DEFAULT_IMAGE_PATH = '/images'
+
 export type Milliseconds = number
 export type Grid = [Milliseconds, Milliseconds][][]
 

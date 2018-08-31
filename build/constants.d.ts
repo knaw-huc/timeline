@@ -7,6 +7,7 @@ export declare const CENTER_CHANGE_DONE = "CENTER_CHANGE_DONE";
 export declare const ZOOM_DONE = "ZOOM_DONE";
 export declare const SCROLL_DONE = "SCROLL_DONE";
 export declare const PIXELS_PER_LETTER = 8;
+export declare const DEFAULT_IMAGE_PATH = "/images";
 export declare type Milliseconds = number;
 export declare type Grid = [Milliseconds, Milliseconds][][];
 export declare type Ratio = number;

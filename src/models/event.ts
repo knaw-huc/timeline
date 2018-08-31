@@ -2,6 +2,14 @@ import { Milliseconds, Pixels } from '../constants';
 import { Granularity } from '../utils/dates';
 // import Band from './band';
 
+export enum ImageFileType {
+	NONE = 'none',
+	JPG = 'jpg',
+	SVG = 'svg',
+	GIF = 'gif',
+	PNG = 'png',
+}
+
 export class RawEv3nt {
 	date: Milliseconds
 	date_granularity?: Granularity = Granularity.DAY
@@ -19,6 +27,8 @@ export class RawEv3nt {
 
 	from: Milliseconds
 	to: Milliseconds
+	imageFrom: Milliseconds
+	imageTo: Milliseconds
 
 	tags: string[]
 	locations: any[]
@@ -40,6 +50,9 @@ export class RawEv3nt {
 	width_uncertain_from?: Pixels
 	width_uncertain_to?: Pixels
 	color?: string
+
+	has_image?: ImageFileType
+	image_url?: string
 
 	// textWidth?: Pixels
 }

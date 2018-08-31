@@ -37,6 +37,7 @@ class Props {
     init(config) {
         if (config.rootElement == null)
             console.error('[init] No rootElement found');
+        this.imagePath = config.imagePath != null ? config.imagePath : constants_1.DEFAULT_IMAGE_PATH;
         this.rootElement = config.rootElement;
         this.dimensions = this.rootElement;
         const [froms, tos] = config.bands.reduce((prev, curr) => {

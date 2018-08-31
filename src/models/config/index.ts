@@ -49,6 +49,8 @@ export default class Config {
 
 	bands: (EventsBand | MinimapBand)[]
 
+	imagePath?: string
+
 	// The HTML element where the Timeline will be attached to. The element should be a
 	// block element with a width and height.
 	rootElement: HTMLElement
