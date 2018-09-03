@@ -23,8 +23,6 @@ export declare class RawEv3nt {
     wikidata_identifier?: string;
     from: Milliseconds;
     to: Milliseconds;
-    imageFrom: Milliseconds;
-    imageTo: Milliseconds;
     tags: string[];
     locations: any[];
     time?: Milliseconds;
@@ -37,5 +35,5 @@ export declare class RawEv3nt {
     width_uncertain_to?: Pixels;
     color?: string;
     has_image?: ImageFileType;
-    image_url?: string;
+    image: HTMLImageElement;
 }

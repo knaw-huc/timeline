@@ -7,34 +7,23 @@ const constants_1 = require("../../constants");
 const animator_1 = require("../../animator");
 const rulers_1 = require("./rulers");
 const event_bus_1 = require("../../event-bus");
+const BORDER_WIDTH = 2;
 class Canvas {
     constructor() {
         this.indicatorsDrawn = false;
-        this.drawImage = (img, event) => {
+        this.drawImageOnCanvas = (event) => {
             const callback = () => {
-                img.removeEventListener('load', callback);
-                this.ctx.strokeStyle = event.color;
-                let x, y;
-                if (event.time) {
-                    x = event.left + 4;
-                    y = event.top - img.height;
-                    this.ctx.lineWidth = 4;
-                    this.ctx.strokeRect(event.left + 2, y, img.width + 4, img.height);
+                event.image.removeEventListener('load', callback);
+                const boundingBox = constants_1.EVENT_ROW_HEIGHT * 2;
+                if (event.image.width > event.image.height) {
+                    event.image.height = event.image.height * (boundingBox / event.image.width);
+                    event.image.width = boundingBox;
                 }
                 else {
-                    x = event.left - (img.width / 2);
-                    y = event.top - img.height - 4;
-                    this.ctx.strokeStyle = event.color;
-                    this.ctx.lineWidth = 3;
-                    this.ctx.strokeRect(x, y, img.width, img.height);
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(event.left - 8, y + img.height);
-                    this.ctx.lineTo(event.left, y + img.height + 8);
-                    this.ctx.lineTo(event.left + 8, y + img.height);
-                    this.ctx.fillStyle = event.color;
-                    this.ctx.fill();
+                    event.image.width = event.image.width * (boundingBox / event.image.height);
+                    event.image.height = boundingBox;
                 }
-                this.ctx.drawImage(img, x, y);
+                this.loadImage(event);
             };
             return callback;
         };
@@ -58,24 +47,27 @@ class Canvas {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             for (const band of props_1.default.eventsBands) {
                 for (const event of band.visibleEvents) {
-                    if (event.has_image == null || event.has_image === 'none')
+                    if (event.has_image == null)
                         continue;
-                    if (event.image_url == null) {
+                    if (event.image == null) {
                         const path = `${props_1.default.imagePath}/${event.wikidata_identifier}__32.${event.has_image}`;
-                        const response = yield fetch(path);
-                        const blob = yield response.blob();
-                        const url = URL.createObjectURL(blob);
-                        event.image_url = url;
+                        event.image = new Image();
+                        event.image.addEventListener('load', this.drawImageOnCanvas(event));
+                        event.image.src = path;
                     }
-                    this.loadImage(event);
+                    else {
+                        this.loadImage(event);
+                    }
                 }
             }
         });
     }
     loadImage(event) {
-        const img = new Image();
-        img.addEventListener('load', this.drawImage(img, event));
-        img.src = event.image_url;
+        const x = event.time ? event.left : event.left - (event.image.width / 2) - BORDER_WIDTH;
+        const y = event.top - event.image.height;
+        this.ctx.fillStyle = event.color;
+        this.ctx.fillRect(x, y - BORDER_WIDTH * 2, event.image.width + BORDER_WIDTH * 2, event.image.height + BORDER_WIDTH * 2);
+        this.ctx.drawImage(event.image, x + BORDER_WIDTH, y - BORDER_WIDTH);
     }
     render() {
         this.canvas = create_element_1.default('canvas', 'main', [

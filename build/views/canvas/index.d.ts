@@ -7,7 +7,7 @@ export default class Canvas implements View {
     private indicatorsDrawn;
     constructor();
     private updateImages;
-    private drawImage;
+    private drawImageOnCanvas;
     private loadImage;
     private onAnimationDone;
     render(): HTMLCanvasElement[];

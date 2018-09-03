@@ -14,6 +14,7 @@ import EventsBand from './models/band/events'
 import { formatDate } from './utils/dates';
 import { RawEv3nt } from './models/event';
 import { BandType } from './models/band';
+// import orderEvents2 from './utils/order-events'
 // import Debug from './views/debug'
 
 export {

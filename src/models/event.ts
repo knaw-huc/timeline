@@ -27,8 +27,8 @@ export class RawEv3nt {
 
 	from: Milliseconds
 	to: Milliseconds
-	imageFrom: Milliseconds
-	imageTo: Milliseconds
+	// imageFrom: Milliseconds
+	// imageTo: Milliseconds
 
 	tags: string[]
 	locations: any[]
@@ -42,6 +42,7 @@ export class RawEv3nt {
 	// Point in Time = label width + padding
 	// Interval = padding
 	space?: Milliseconds
+	// spaceTo?: Milliseconds
 
 	left?: Pixels
 	padding?: Pixels
@@ -52,7 +53,9 @@ export class RawEv3nt {
 	color?: string
 
 	has_image?: ImageFileType
-	image_url?: string
+	// imageCanvas?: HTMLCanvasElement
+	image: HTMLImageElement
+	// imageBorder?: [Pixels, Pixels, Pixels, Pixels]
 
 	// textWidth?: Pixels
 }

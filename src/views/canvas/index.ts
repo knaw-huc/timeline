@@ -1,6 +1,6 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { EVENT_HEIGHT, DATE_BAR_HEIGHT, ZOOM_DONE, SCROLL_DONE } from '../../constants'
+import { EVENT_HEIGHT, DATE_BAR_HEIGHT, ZOOM_DONE, SCROLL_DONE, EVENT_ROW_HEIGHT, Pixels } from '../../constants'
 import MinimapBand from '../../models/band/minimap'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
@@ -8,6 +8,8 @@ import View from '../index'
 import drawRulers from './rulers'
 import eventBus from '../../event-bus'
 import { RawEv3nt } from '../..';
+
+const BORDER_WIDTH = 2
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
@@ -31,56 +33,113 @@ export default class Canvas implements View {
 	private async updateImages() {
 		for (const band of props.eventsBands) {
 			for (const event of band.visibleEvents) {
-				if (event.has_image == null || event.has_image === 'none') continue
-				if (event.image_url == null) {
+				if (event.has_image == null) continue
+				if (event.image == null) {
 					const path = `${props.imagePath}/${event.wikidata_identifier}__32.${event.has_image}`
-					const response = await fetch(path)
-					const blob = await response.blob()
-					const url = URL.createObjectURL(blob)
-					event.image_url = url
+					event.image = new Image()
+					event.image.addEventListener('load', this.drawImageOnCanvas(event))
+					event.image.src = path
+				} else {
+					this.loadImage(event)
 				}
-				this.loadImage(event)
 			}
 		}
 	}
 
-	private drawImage = (img: HTMLImageElement, event: RawEv3nt) => {
+	private drawImageOnCanvas = (event: RawEv3nt) => {
 		const callback = () => {
-			img.removeEventListener('load', callback)
+			event.image.removeEventListener('load', callback)
 
-			this.ctx.strokeStyle = event.color
+			// The bounding box is the box where the image must fit within.
+			// In this case the image should not be higher or wider than
+			// 2 times the event row height
+			const boundingBox: Pixels = EVENT_ROW_HEIGHT * 2
 
-			let x, y
-			if (event.time) {
-				x = event.left + 4
-				y = event.top - img.height
-				this.ctx.lineWidth = 4
-				this.ctx.strokeRect(event.left + 2, y, img.width + 4, img.height)
+			if (event.image.width > event.image.height) {
+				// First set the height, so we can use the old width
+				event.image.height = event.image.height * (boundingBox / event.image.width)
+				event.image.width = boundingBox
 			} else {
-				x = event.left - (img.width / 2)
-				y = event.top - img.height - 4
-				this.ctx.strokeStyle = event.color
-				this.ctx.lineWidth = 3
-				this.ctx.strokeRect(x, y, img.width, img.height)
-
-				this.ctx.beginPath()
-				this.ctx.moveTo(event.left - 8, y + img.height)
-				this.ctx.lineTo(event.left, y + img.height + 8)
-				this.ctx.lineTo(event.left + 8, y + img.height)
-				this.ctx.fillStyle = event.color
-				this.ctx.fill()
+				// First set the width, so we can use the old height
+				event.image.width = event.image.width * (boundingBox / event.image.height)
+				event.image.height = boundingBox
 			}
 
-			this.ctx.drawImage(img, x, y)
+			this.loadImage(event)
+
+			// const canvas = createElement('canvas')
+			// canvas.width = (EVENT_ROW_HEIGHT * 2) - (BORDER_WIDTH * 2)
+			// canvas.height = (EVENT_ROW_HEIGHT * 2) - (BORDER_WIDTH * 2)
+			// const ctx = canvas.getContext('2d')
+
+			// ctx.lineWidth = 2
+			// const xOffset = 0 // Stroke and image always stick to the left. KEEP FOR DOCUMENTATION PURPOSES
+
+			// The stroke x, y, width, height are the points in the middel of the ctx.lineWidth
+			// Thus a stroke at 0, 0 with a line width of 2 will start at -1 and stop at 1
+			// const borderX = ctx.lineWidth / 2 // xOffset + ctx.lineWidth / 2
+			// const borderY = yOffset + ctx.lineWidth / 2
+			// const borderWidth = img.width - ctx.lineWidth
+			// const strokeHeight = img.height - ctx.lineWidth
+			// event.imageBorder = [borderX, borderY, borderWidth, strokeHeight]
+
+			// The image is positioned inside the stroke (the border)
+			// const imgX = ctx.lineWidth // xOffset + ctx.lineWidth
+			// const imgY = yOffset + ctx.lineWidth
+			// const imgWidth = img.width - ctx.lineWidth * 2
+			// const imgHeight = img.height - ctx.lineWidth * 2
+
+			// Image
+
+			// if (img.width > img.height) {
+			// 	img.width = canvas.width
+			// 	img.height = canvas.height * (canvas.width / img.width)
+			// } else {
+			// 	img.height = canvas.height
+			// 	img.width = canvas.width * (canvas.height / img.height)
+			// }
+
+			// // const yOffset = canvas.height - img.height
+			// // ctx.drawImage(img, 0, yOffset, img.width, img.height)
+
+			// ctx.fillStyle = 'rgb(255, 0, 0)'
+			// console.log(canvas.width, canvas.height)
+			// ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+			// event.imageCanvas = canvas
+
+
+			// console.log(imgLeft, imgTop, imgWidth, imgHeight, canvas.width, canvas.height)
+			// let x, y
+			// if (event.time) {
+			// 	x = event.left + 4
+			// 	y = event.top - img.height
+			// 	ctx.strokeRect(event.left + 2, y, img.width + 4, img.height)
+			// } else {
+			// 	x = event.left - (img.width / 2)
+			// 	y = event.top - img.height - 4
+			// 	this.ctx.strokeStyle = event.color
+			// 	this.ctx.strokeRect(x, y, img.width, img.height)
+
+			// 	this.ctx.beginPath()
+			// 	this.ctx.moveTo(event.left - 8, y + img.height)
+			// 	this.ctx.lineTo(event.left, y + img.height + 8)
+			// 	this.ctx.lineTo(event.left + 8, y + img.height)
+			// 	this.ctx.fillStyle = event.color
+			// 	this.ctx.fill()
+			// }
 		}
 
 		return callback
 	}
 
 	private loadImage(event: RawEv3nt) {
-		const img = new Image()
-		img.addEventListener('load', this.drawImage(img, event))
-		img.src = event.image_url
+		const x = event.time ? event.left : event.left - (event.image.width / 2) - BORDER_WIDTH
+		const y = event.top - event.image.height
+		// Border uses fillRect instead of strokeRect, because strokeRect gives a different color. Don't ask me why.
+		this.ctx.fillStyle = event.color
+		this.ctx.fillRect(x, y - BORDER_WIDTH * 2, event.image.width + BORDER_WIDTH * 2, event.image.height + BORDER_WIDTH * 2)
+		this.ctx.drawImage(event.image, x + BORDER_WIDTH, y - BORDER_WIDTH)
 	}
 
 	private onAnimationDone = () => {

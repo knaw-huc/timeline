@@ -36,12 +36,9 @@ class EventsBand extends _1.default {
     init() {
         super.init();
         const pixelsPerMillisecond = utils_1.calcPixelsPerMillisecond(props_1.default.viewportWidth, this.config.zoomLevel || 0, props_1.default.time);
-        const t0 = performance.now();
         const orderedEvents = this.config.orderedEvents == null ?
             events_worker_1.orderEvents(this.config.events, pixelsPerMillisecond) :
             this.config.orderedEvents;
-        const t1 = performance.now();
-        console.log('Performance: ', `${t1 - t0}ms`);
         this.events = orderedEvents.events;
         this.rowCount = orderedEvents.row_count;
         this.height = constants_1.EVENT_ROW_HEIGHT * this.rowCount;
