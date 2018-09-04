@@ -1,10 +1,9 @@
 import { RawEv3nt } from "./models/event";
 
-export const imageSizes = [16, 32, 64, 128, 256]
+export const IMAGE_SIZES = [16, 32, 64, 128, 256]
 
 // The height of an event. This is best seen by the height of an interval
 export const EVENT_HEIGHT = 16
-
 
 // Function for letter width is lineair: letter_width(event_height) = 7.5/40 * event_height + 3.5
 // - font size = 72 => letter width = 17
@@ -30,7 +29,7 @@ export const DATE_BAR_HEIGHT = EVENT_ROW_HEIGHT
 // 2 times the event row height
 export const IMAGE_BOUNDING_BOX = (EVENT_ROW_HEIGHT * 2) - ROW_SPACING * 2
 export const IMAGE_BORDER_SIZE = Math.round(ROW_SPACING / 2)
-export const IMAGE_SIZE = imageSizes.reduce((prev, curr) => Math.abs(curr - IMAGE_BOUNDING_BOX) < Math.abs(prev - IMAGE_BOUNDING_BOX) ? curr : prev)
+export const IMAGE_SIZE = IMAGE_SIZES.reduce((prev, curr) => Math.abs(curr - IMAGE_BOUNDING_BOX) < Math.abs(prev - IMAGE_BOUNDING_BOX) ? curr : prev)
 
 export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
 export const ZOOM_DONE = 'ZOOM_DONE'

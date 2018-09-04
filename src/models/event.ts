@@ -41,11 +41,10 @@ export class RawEv3nt {
 	space?: Milliseconds
 
 	left?: Pixels
-	padding?: Pixels
 	top?: Pixels
 	width?: Pixels
-	width_uncertain_from?: Pixels
-	width_uncertain_to?: Pixels
+	uncertain_from_width?: Pixels
+	uncertain_to_width?: Pixels
 	color?: string
 
 	has_image?: ImageFileType

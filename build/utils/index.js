@@ -34,9 +34,9 @@ function formatDate(ts) {
     if (ts == null)
         return null;
     const d = new Date(ts);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    return d.toUTCString();
 }
 function logEvent(event, ...rest) {
-    console.log(event.label, event, event.left, formatDate(event.from), formatDate(event.to), rest);
+    console.log(event.label, event, formatDate(event.from), formatDate(event.to), rest);
 }
 exports.logEvent = logEvent;

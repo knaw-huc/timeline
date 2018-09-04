@@ -116,24 +116,24 @@ class Canvas {
             else {
                 let left = event.left;
                 let width = event.width;
-                if (event.width_uncertain_from > 1) {
-                    const gradient = this.ctx.createLinearGradient(event.left, 0, event.left + event.width_uncertain_from, 0);
+                if (event.uncertain_from_width > 1) {
+                    const gradient = this.ctx.createLinearGradient(event.left, 0, event.left + event.uncertain_from_width, 0);
                     gradient.addColorStop(0, 'white');
                     gradient.addColorStop(1, event.color);
                     this.ctx.fillStyle = gradient;
-                    this.ctx.fillRect(event.left, event.top, event.width_uncertain_from, constants_1.EVENT_HEIGHT);
-                    left = event.left + event.width_uncertain_from;
-                    width -= event.width_uncertain_from;
+                    this.ctx.fillRect(event.left, event.top, event.uncertain_from_width, constants_1.EVENT_HEIGHT);
+                    left = event.left + event.uncertain_from_width;
+                    width -= event.uncertain_from_width;
                 }
-                if (event.width_uncertain_to > 1) {
-                    width -= event.width_uncertain_to;
+                if (event.uncertain_to_width > 1) {
+                    width -= event.uncertain_to_width;
                     const gradientLeft = left + width;
-                    const gradientWidth = gradientLeft + event.width_uncertain_to;
+                    const gradientWidth = gradientLeft + event.uncertain_to_width;
                     const gradient = this.ctx.createLinearGradient(gradientLeft, 0, gradientWidth, 0);
                     gradient.addColorStop(0, event.color);
                     gradient.addColorStop(1, 'white');
                     this.ctx.fillStyle = gradient;
-                    this.ctx.fillRect(gradientLeft, event.top, event.width_uncertain_to, constants_1.EVENT_HEIGHT);
+                    this.ctx.fillRect(gradientLeft, event.top, event.uncertain_to_width, constants_1.EVENT_HEIGHT);
                 }
                 this.ctx.fillStyle = event.color;
                 this.ctx.fillRect(left, event.top, width, constants_1.EVENT_HEIGHT);
@@ -147,10 +147,10 @@ class Canvas {
         for (const event of band.visibleEvents) {
             let eventLeft = event.left;
             if (event.left < 0 && event.time !== 0) {
-                eventLeft = -event.width_uncertain_from;
+                eventLeft = -event.uncertain_from_width;
             }
             const paddingLeft = event.time ? constants_1.FONT_SIZE / 3 : constants_1.FONT_SIZE / 1.2;
-            const x = eventLeft + paddingLeft + event.width_uncertain_from;
+            const x = eventLeft + paddingLeft + event.uncertain_from_width;
             const y = event.top + constants_1.FONT_SIZE + ((constants_1.EVENT_HEIGHT - constants_1.FONT_SIZE) / 2) - 2;
             this.ctx.fillText(event.label, Math.round(x), Math.round(y));
         }

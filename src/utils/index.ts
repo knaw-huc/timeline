@@ -9,14 +9,6 @@ export const debounce = (func: Function, wait: number) => {
 	}
 }
 
-// export const onVisible = (from, to) => (e: RawEv3nt) => {
-// 	const eventFrom = e.date_min || e.date
-// 	let eventTo = e.end_date_max || e.end_date
-// 	if (eventTo == null) eventTo = eventFrom
-// 	if (eventFrom == null && eventTo == null) return false
-// 	return !(eventTo < from || eventFrom > to)
-// }
-
 /**
  * Convert a zoom level to a visible ratio
  * 0 = 1 (2^0), the whole timeline is visible
@@ -63,8 +55,9 @@ export function calcPixelsPerMillisecond(viewportWidth: Pixels, zoomLevel: numbe
 function formatDate(ts: Milliseconds) {
 	if (ts == null) return null
 	const d = new Date(ts)
-	return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+	return d.toUTCString()
+	// return `${d.getUTCFullYear()}-${d.getUTClMonth() + 1}-${d.getDate()}`
 }
 export function logEvent(event: RawEv3nt, ...rest: string[]) {
-	console.log(event.label, event, event.left, formatDate(event.from), formatDate(event.to), rest)
+	console.log(event.label, event, formatDate(event.from), formatDate(event.to), rest)
 }

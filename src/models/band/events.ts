@@ -107,16 +107,39 @@ export default class EventsBand extends Band<EventsBandConfig> {
 				event.width = Math.round((event.time) * this.pixelsPerMillisecond)       // ||          [<- width ->]                 ||
 				if (event.time && event.width < 1) event.width = 1
 
-				event.width_uncertain_from = (event.date_min != null) ?
-					(event.date - event.date_min) * this.pixelsPerMillisecond :
-					0
+				event.uncertain_from_width = 0
+				if (event.date_min != null) {
+					let uncertain_from_to
+					if (event.date != null) {
+						uncertain_from_to = event.date
+					}
+					else if (event.end_date != null) {
+						uncertain_from_to = event.end_date
+					} else if (event.end_date_max != null) {
+						uncertain_from_to = event.date_min + (event.end_date_max - event.date_min) / 2
+					} else {
+						throw Error(['updateEvents', 'Width uncertain from is not definable', JSON.stringify(event)].join('\n'))
+					}
 
-				event.width_uncertain_to = (event.end_date_max != null) ?
-					(event.end_date_max - event.end_date) * this.pixelsPerMillisecond :
-					0
+					event.uncertain_from_width = (uncertain_from_to - event.date_min) * this.pixelsPerMillisecond
+				}
 
-				// event.padding (px) === event.space (ms)
-				event.padding = Math.round((event.space) * this.pixelsPerMillisecond)    // ||          [   event   ]<- padding ->    ||
+				event.uncertain_to_width = 0
+				if (event.end_date_max != null) {
+					let uncertain_to_from
+					if (event.end_date != null) {
+						uncertain_to_from = event.end_date
+					}
+					else if (event.date != null) {
+						uncertain_to_from = event.date
+					} else if (event.date_min != null) {
+						uncertain_to_from = event.date_min + (event.end_date_max - event.date_min) / 2
+					} else {
+						throw Error(['updateEvents', 'Width uncertain to is not definable', JSON.stringify(event)].join('\n'))
+					}
+
+					event.uncertain_to_width = (event.end_date_max - uncertain_to_from) * this.pixelsPerMillisecond
+				}
 
 				event.top = this.top + this.availableHeight - ((event.row + 1) * EVENT_ROW_HEIGHT) + this.offsetY
 

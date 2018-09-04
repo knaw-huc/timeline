@@ -1,5 +1,5 @@
 import { RawEv3nt } from "./models/event";
-export declare const imageSizes: number[];
+export declare const IMAGE_SIZES: number[];
 export declare const EVENT_HEIGHT = 16;
 export declare const LETTER_WIDTH: number;
 export declare const FONT_SIZE: number;
