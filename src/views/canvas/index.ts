@@ -35,13 +35,12 @@ export default class Canvas implements View {
 				if (event.image == null) {
 					const path = `${props.imagePath}/${event.wikidata_identifier}__${IMAGE_SIZE}.${event.has_image}`
 					event.image = new Image()
-
 					const onLoad = this.onLoad(event)
 					event.image.addEventListener('load', onLoad)
 					event.image.addEventListener('error', onLoad)
 					event.image.src = path
 				} else {
-					this.loadImage(event)
+					this.drawImage(event)
 				}
 			}
 		}
@@ -67,23 +66,24 @@ export default class Canvas implements View {
 				event.image.height = IMAGE_BOUNDING_BOX
 			}
 
-			this.loadImage(event)
+			this.drawImage(event)
 		}
 
 		return callback
 	}
 
-	private loadImage(event: RawEv3nt) {
+	// Border uses fillRect instead of strokeRect, because strokeRect gives a different color. Don't ask me why.
+	private drawImage(event: RawEv3nt) {
 		const x = event.time ? event.left : event.left - (event.image.width / 2) - IMAGE_BORDER_SIZE
 		const y = event.top - event.image.height
-		// Border uses fillRect instead of strokeRect, because strokeRect gives a different color. Don't ask me why.
+
 		this.ctx.fillStyle = event.color
 		this.ctx.fillRect(x, y - IMAGE_BORDER_SIZE * 2, event.image.width + IMAGE_BORDER_SIZE * 2, event.image.height + IMAGE_BORDER_SIZE * 2)
 		this.ctx.drawImage(event.image, x + IMAGE_BORDER_SIZE, y - IMAGE_BORDER_SIZE, event.image.width, event.image.height)
 	}
 
 	private onAnimationDone = () => {
-		this.updateImages()
+		// this.updateImages()
 	}
 
 	render() {
@@ -104,7 +104,6 @@ export default class Canvas implements View {
 		this.indicatorsCtx = this.indicatorsCanvas.getContext('2d')
 
 		this.update()
-		this.updateImages()
 
 		return [this.canvas, this.indicatorsCanvas]
 	}
@@ -133,6 +132,7 @@ export default class Canvas implements View {
 		}
 
 		this.drawIndicators()
+		this.updateImages()
 	}
 
 	private drawEventsBand(band: EventsBand) {

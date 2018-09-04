@@ -1,4 +1,4 @@
-import { Milliseconds, EVENT_HEIGHT, EVENT_ROW_HEIGHT } from "../constants"
+import { Milliseconds, EVENT_ROW_HEIGHT, LETTER_WIDTH } from "../constants"
 import { RawEv3nt } from "../models/event";
 
 export class OrderedEvents {
@@ -6,14 +6,10 @@ export class OrderedEvents {
 	row_count: number = 0
 }
 
-const PIXELS_PER_LETTER = 8
-
 export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Milliseconds): OrderedEvents { 
 	if (!events.length) return new OrderedEvents()
 
 	const rows: number[] = [-Infinity]
-
-	const paddingRight = Math.round(EVENT_HEIGHT * 2 / pixelsPerMillisecond)
 
 	const imageSize: Milliseconds = Math.round(EVENT_ROW_HEIGHT * 2 / pixelsPerMillisecond)
 
@@ -28,10 +24,9 @@ export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Millisecon
 		if (event.to == null) event.to = event.from
 		event.time = event.to == null ? 0 : event.to - event.from
 
-		const space = ((event.label.length * PIXELS_PER_LETTER) / pixelsPerMillisecond) + paddingRight
+		const space = (event.label.length * LETTER_WIDTH) / pixelsPerMillisecond
 		event.space = space > event.time ? space - event.time : 0
-
-		const eventRight = event.from + event.time + event.space
+		const eventRight = Math.round(event.from + event.time + event.space)
 
 		let row: number
 		if (event.has_image) {
