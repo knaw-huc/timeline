@@ -74,6 +74,8 @@ export default class Canvas implements View {
 
 	// Border uses fillRect instead of strokeRect, because strokeRect gives a different color. Don't ask me why.
 	private drawImage(event: RawEv3nt) {
+		if (event.image == null || !event.image.complete || !event.image.naturalWidth) return
+
 		const x = event.time ? event.left : event.left - (event.image.width / 2) - IMAGE_BORDER_SIZE
 		const y = event.top - event.image.height
 

@@ -53,15 +53,18 @@ class MinimapBand extends _1.default {
             for (const event of targetBand.events) {
                 if (event.from > to || event.to < from)
                     continue;
+                const x = this.positionAtTimestamp(event.from);
+                const y = this.availableHeight - ((event.row + 2) * this.eventHeight);
                 const eventWidth = Math.round(event.time * this.pixelsPerMillisecond);
-                const eventLeft = this.positionAtTimestamp(event.date_min != null ? event.date_min : event.date);
-                const y = this.maxRowCount - ((event.row + 1) * this.eventHeight);
                 const width = eventWidth < 1 ? 1 : eventWidth;
-                this.nextCtx.rect(eventLeft, y, width, this.eventHeight);
+                this.nextCtx.fillStyle = `rgb(190, 190, 190)`;
+                this.nextCtx.fillRect(x, y, width, this.eventHeight);
+                if (event.has_image) {
+                    this.nextCtx.fillStyle = `rgb(240, 240, 240)`;
+                    this.nextCtx.fillRect(x, y - this.eventHeight * 2, this.eventHeight * 2, this.eventHeight * 2);
+                }
             }
         });
-        this.nextCtx.fillStyle = `rgb(190, 190, 190)`;
-        this.nextCtx.fill();
     }
     updateNextCanvas() {
         const leftOffset = Math.round(this.offsetX - this.prevOffsetX);

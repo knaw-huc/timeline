@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const props_1 = require("../../models/props");
+const constants_1 = require("../../constants");
 const dates_1 = require("../../utils/dates");
-const smallFont = "11px sans-serif";
-const bigFont = "13px sans-serif";
 function isSpecialRuler(date, band) {
     if (band.granularity === "CENTURY" && new Date(date).getUTCFullYear() % 1000 === 0)
         return true;
@@ -36,7 +35,7 @@ function drawRulers(ctx, band) {
         date = band.nextDate(date);
     }
     ctx.beginPath();
-    ctx.font = smallFont;
+    ctx.font = `${constants_1.FONT_SIZE}px sans-serif`;
     ctx.fillStyle = `rgb(205, 205, 205)`;
     for (const date of normalRulerDates) {
         drawRuler(ctx, band, date, y, y + height);
@@ -44,7 +43,7 @@ function drawRulers(ctx, band) {
     ctx.strokeStyle = `rgb(235, 235, 235)`;
     ctx.stroke();
     ctx.beginPath();
-    ctx.font = bigFont;
+    ctx.font = `${constants_1.FONT_SIZE * 1.2}px sans-serif`;
     ctx.fillStyle = `rgb(120, 120, 120)`;
     for (const date of specialRulerDates) {
         drawRuler(ctx, band, date, y, y + height);

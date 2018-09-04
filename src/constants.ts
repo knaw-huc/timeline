@@ -3,7 +3,7 @@ import { RawEv3nt } from "./models/event";
 export const imageSizes = [16, 32, 64, 128, 256]
 
 // The height of an event. This is best seen by the height of an interval
-export const EVENT_HEIGHT = 32
+export const EVENT_HEIGHT = 16
 
 
 // Function for letter width is lineair: letter_width(event_height) = 7.5/40 * event_height + 3.5

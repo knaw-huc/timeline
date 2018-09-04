@@ -1,8 +1,14 @@
 import { RawEv3nt } from "./models/event";
-export declare const EVENT_HEIGHT = 14;
-export declare const EVENT_ROW_HEIGHT = 16;
-export declare const DATE_BAR_HEIGHT = 16;
-export declare const RULER_LABELS_HEIGHT = 60;
+export declare const imageSizes: number[];
+export declare const EVENT_HEIGHT = 16;
+export declare const LETTER_WIDTH: number;
+export declare const FONT_SIZE: number;
+export declare const ROW_SPACING: number;
+export declare const EVENT_ROW_HEIGHT: number;
+export declare const DATE_BAR_HEIGHT: number;
+export declare const IMAGE_BOUNDING_BOX: number;
+export declare const IMAGE_BORDER_SIZE: number;
+export declare const IMAGE_SIZE: number;
 export declare const CENTER_CHANGE_DONE = "CENTER_CHANGE_DONE";
 export declare const ZOOM_DONE = "ZOOM_DONE";
 export declare const SCROLL_DONE = "SCROLL_DONE";

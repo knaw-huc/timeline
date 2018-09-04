@@ -77,7 +77,7 @@ exports.getGranularity = (pixelsPerMillisecond) => {
         return "DECADE";
     if (pixelsPerMillisecond > 8e-11)
         return "DECADE_5";
-    if (pixelsPerMillisecond > 1e-11)
+    if (pixelsPerMillisecond > 1.5e-11)
         return "CENTURY";
     if (pixelsPerMillisecond > 5e-12)
         return "CENTURY_5";

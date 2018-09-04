@@ -1,9 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EVENT_HEIGHT = 14;
-exports.EVENT_ROW_HEIGHT = 16;
+exports.imageSizes = [16, 32, 64, 128, 256];
+exports.EVENT_HEIGHT = 16;
+exports.LETTER_WIDTH = Math.round(exports.EVENT_HEIGHT * .1875 + 3.5);
+exports.FONT_SIZE = Math.round(exports.EVENT_HEIGHT * .3125 + 6);
+exports.ROW_SPACING = Math.round(exports.EVENT_HEIGHT / 3);
+exports.EVENT_ROW_HEIGHT = exports.EVENT_HEIGHT + exports.ROW_SPACING;
 exports.DATE_BAR_HEIGHT = exports.EVENT_ROW_HEIGHT;
-exports.RULER_LABELS_HEIGHT = 60;
+exports.IMAGE_BOUNDING_BOX = (exports.EVENT_ROW_HEIGHT * 2) - exports.ROW_SPACING * 2;
+exports.IMAGE_BORDER_SIZE = Math.round(exports.ROW_SPACING / 2);
+exports.IMAGE_SIZE = exports.imageSizes.reduce((prev, curr) => Math.abs(curr - exports.IMAGE_BOUNDING_BOX) < Math.abs(prev - exports.IMAGE_BOUNDING_BOX) ? curr : prev);
 exports.CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE';
 exports.ZOOM_DONE = 'ZOOM_DONE';
 exports.SCROLL_DONE = 'SCROLL_DONE';

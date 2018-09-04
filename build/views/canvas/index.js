@@ -7,28 +7,30 @@ const constants_1 = require("../../constants");
 const animator_1 = require("../../animator");
 const rulers_1 = require("./rulers");
 const event_bus_1 = require("../../event-bus");
-const BORDER_WIDTH = 2;
 class Canvas {
     constructor() {
         this.indicatorsDrawn = false;
-        this.drawImageOnCanvas = (event) => {
-            const callback = () => {
+        this.onLoad = (event) => {
+            const callback = (ev) => {
                 event.image.removeEventListener('load', callback);
-                const boundingBox = constants_1.EVENT_ROW_HEIGHT * 2;
+                event.image.removeEventListener('error', callback);
+                if (ev.type === 'error') {
+                    event.image = null;
+                    return;
+                }
                 if (event.image.width > event.image.height) {
-                    event.image.height = event.image.height * (boundingBox / event.image.width);
-                    event.image.width = boundingBox;
+                    event.image.height = Math.round(event.image.height * (constants_1.IMAGE_BOUNDING_BOX / event.image.width));
+                    event.image.width = constants_1.IMAGE_BOUNDING_BOX;
                 }
                 else {
-                    event.image.width = event.image.width * (boundingBox / event.image.height);
-                    event.image.height = boundingBox;
+                    event.image.width = Math.round(event.image.width * (constants_1.IMAGE_BOUNDING_BOX / event.image.height));
+                    event.image.height = constants_1.IMAGE_BOUNDING_BOX;
                 }
-                this.loadImage(event);
+                this.drawImage(event);
             };
             return callback;
         };
         this.onAnimationDone = () => {
-            this.updateImages();
         };
         this.update = () => {
             for (const band of props_1.default.eventsBands) {
@@ -38,6 +40,7 @@ class Canvas {
                 this.drawMinimapBand(band);
             }
             this.drawIndicators();
+            this.updateImages();
         };
         animator_1.default.registerView(this);
         event_bus_1.default.register(constants_1.ZOOM_DONE, this.onAnimationDone);
@@ -50,24 +53,28 @@ class Canvas {
                     if (event.has_image == null)
                         continue;
                     if (event.image == null) {
-                        const path = `${props_1.default.imagePath}/${event.wikidata_identifier}__32.${event.has_image}`;
+                        const path = `${props_1.default.imagePath}/${event.wikidata_identifier}__${constants_1.IMAGE_SIZE}.${event.has_image}`;
                         event.image = new Image();
-                        event.image.addEventListener('load', this.drawImageOnCanvas(event));
+                        const onLoad = this.onLoad(event);
+                        event.image.addEventListener('load', onLoad);
+                        event.image.addEventListener('error', onLoad);
                         event.image.src = path;
                     }
                     else {
-                        this.loadImage(event);
+                        this.drawImage(event);
                     }
                 }
             }
         });
     }
-    loadImage(event) {
-        const x = event.time ? event.left : event.left - (event.image.width / 2) - BORDER_WIDTH;
+    drawImage(event) {
+        if (event.image == null || !event.image.complete || !event.image.naturalWidth)
+            return;
+        const x = event.time ? event.left : event.left - (event.image.width / 2) - constants_1.IMAGE_BORDER_SIZE;
         const y = event.top - event.image.height;
         this.ctx.fillStyle = event.color;
-        this.ctx.fillRect(x, y - BORDER_WIDTH * 2, event.image.width + BORDER_WIDTH * 2, event.image.height + BORDER_WIDTH * 2);
-        this.ctx.drawImage(event.image, x + BORDER_WIDTH, y - BORDER_WIDTH);
+        this.ctx.fillRect(x, y - constants_1.IMAGE_BORDER_SIZE * 2, event.image.width + constants_1.IMAGE_BORDER_SIZE * 2, event.image.height + constants_1.IMAGE_BORDER_SIZE * 2);
+        this.ctx.drawImage(event.image, x + constants_1.IMAGE_BORDER_SIZE, y - constants_1.IMAGE_BORDER_SIZE, event.image.width, event.image.height);
     }
     render() {
         this.canvas = create_element_1.default('canvas', 'main', [
@@ -83,7 +90,6 @@ class Canvas {
         this.indicatorsCanvas.height = props_1.default.viewportHeight;
         this.indicatorsCtx = this.indicatorsCanvas.getContext('2d');
         this.update();
-        this.updateImages();
         return [this.canvas, this.indicatorsCanvas];
     }
     resize() {
@@ -136,15 +142,17 @@ class Canvas {
         this.drawEventsText(band);
     }
     drawEventsText(band) {
-        this.ctx.font = '11px sans-serif';
+        this.ctx.font = `${constants_1.FONT_SIZE}px sans-serif`;
         this.ctx.fillStyle = `rgb(40, 40, 40)`;
         for (const event of band.visibleEvents) {
             let eventLeft = event.left;
             if (event.left < 0 && event.time !== 0) {
                 eventLeft = -event.width_uncertain_from;
             }
-            const paddingLeft = event.time ? 3 : 8;
-            this.ctx.fillText(event.label, eventLeft + paddingLeft + event.width_uncertain_from, event.top + constants_1.EVENT_HEIGHT - 3);
+            const paddingLeft = event.time ? constants_1.FONT_SIZE / 3 : constants_1.FONT_SIZE / 1.2;
+            const x = eventLeft + paddingLeft + event.width_uncertain_from;
+            const y = event.top + constants_1.FONT_SIZE + ((constants_1.EVENT_HEIGHT - constants_1.FONT_SIZE) / 2) - 2;
+            this.ctx.fillText(event.label, Math.round(x), Math.round(y));
         }
     }
     drawMinimapBand(band) {
@@ -168,7 +176,7 @@ class Canvas {
             this.indicatorsCtx.rect(0, indicatorTOP, leftIndicatorRightX, band.visibleHeight);
             const rightIndicatorLeftX = band.positionAtTimestamp(eventsBand.to);
             this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props_1.default.viewportWidth, band.visibleHeight);
-            this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.visibleHeight - constants_1.DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, constants_1.DATE_BAR_HEIGHT);
+            this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.availableHeight, rightIndicatorLeftX - leftIndicatorRightX, band.visibleHeight - band.availableHeight);
         }
         this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .04)`;
         this.indicatorsCtx.fill();
