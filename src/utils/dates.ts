@@ -96,7 +96,7 @@ export const getGranularity = (pixelsPerMillisecond: Pixels): Granularity => {
 	if (pixelsPerMillisecond > 3.3e-10) return Granularity.YEAR_5
 	if (pixelsPerMillisecond > 1.6e-10) return Granularity.DECADE
 	if (pixelsPerMillisecond > 8e-11) return Granularity.DECADE_5
-	if (pixelsPerMillisecond > 1e-11) return Granularity.CENTURY
+	if (pixelsPerMillisecond > 1.5e-11) return Granularity.CENTURY
 	if (pixelsPerMillisecond > 5e-12) return Granularity.CENTURY_5
 	return Granularity.MILLENIUM
 }

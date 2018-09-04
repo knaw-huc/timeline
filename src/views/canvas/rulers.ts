@@ -1,11 +1,8 @@
 import MinimapBand from "../../models/band/minimap"
 import EventsBand from "../../models/band/events"
 import props from "../../models/props"
-import { Milliseconds } from "../../constants"
+import { Milliseconds, FONT_SIZE } from "../../constants"
 import { labelBody, Granularity } from "../../utils/dates"
-
-const smallFont: string = "11px sans-serif"
-const bigFont: string = "13px sans-serif"
 
 function isSpecialRuler(date: Milliseconds, band: MinimapBand | EventsBand) {
 	if (band.granularity === Granularity.CENTURY && new Date(date).getUTCFullYear() % 1000 === 0) return true
@@ -25,7 +22,6 @@ function drawRuler (ctx: CanvasRenderingContext2D, band: MinimapBand | EventsBan
 export default function drawRulers(ctx: CanvasRenderingContext2D, band: MinimapBand | EventsBand) {
 	if (!band.config.rulers) return
 
-	// let date = findClosestRulerDate(band.from, band.granularity)
 	let date = band.nextDate(band.from)
 	const y = band.config.topOffsetRatio * props.viewportHeight
 	const height = band.config.heightRatio * props.viewportHeight
@@ -43,7 +39,7 @@ export default function drawRulers(ctx: CanvasRenderingContext2D, band: MinimapB
 	}
 
 	ctx.beginPath()
-	ctx.font = smallFont
+	ctx.font = `${FONT_SIZE}px sans-serif`
 	// Normal ruler font fill
 	ctx.fillStyle = `rgb(205, 205, 205)`
 
@@ -56,7 +52,7 @@ export default function drawRulers(ctx: CanvasRenderingContext2D, band: MinimapB
 	ctx.stroke()
 
 	ctx.beginPath()
-	ctx.font = bigFont
+	ctx.font = `${FONT_SIZE * 1.2}px sans-serif`
 	// Special ruler font fill
 	ctx.fillStyle = `rgb(120, 120, 120)`
 

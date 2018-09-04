@@ -1,6 +1,5 @@
 import { Milliseconds, Pixels } from '../constants';
 import { Granularity } from '../utils/dates';
-// import Band from './band';
 
 export enum ImageFileType {
 	NONE = 'none',
@@ -27,8 +26,6 @@ export class RawEv3nt {
 
 	from: Milliseconds
 	to: Milliseconds
-	// imageFrom: Milliseconds
-	// imageTo: Milliseconds
 
 	tags: string[]
 	locations: any[]
@@ -42,7 +39,6 @@ export class RawEv3nt {
 	// Point in Time = label width + padding
 	// Interval = padding
 	space?: Milliseconds
-	// spaceTo?: Milliseconds
 
 	left?: Pixels
 	padding?: Pixels
@@ -53,33 +49,5 @@ export class RawEv3nt {
 	color?: string
 
 	has_image?: ImageFileType
-	// imageCanvas?: HTMLCanvasElement
 	image: HTMLImageElement
-	// imageBorder?: [Pixels, Pixels, Pixels, Pixels]
-
-	// textWidth?: Pixels
 }
-
-// class Ev3nt extends RawEv3nt {
-// 	left: Pixels
-// 	width: Pixels
-
-// 	constructor(rawEvent: RawEv3nt, band: Band) {
-// 		super()
-
-// 		Object.keys(rawEvent).forEach(k => this[k] = rawEvent[k])
-
-// 		this.left = band.positionAtDate(this.date)
-// 		this.width = this.isInterval() ?
-// 			(this.end_date - this.date) * band.pixelsPerMillisecond :
-// 			0
-// 		this.row = rawEvent.row
-// 		// this.flip = this.left + Constants.EVENT_MIN_SPACE > visibleDomain.width
-// 	}
-
-// 	isInterval(): boolean {
-// 		return this.end_date != null
-// 	}
-// }
-
-// export default Ev3nt;

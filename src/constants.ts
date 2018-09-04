@@ -1,12 +1,29 @@
 import { RawEv3nt } from "./models/event";
 
-export const EVENT_HEIGHT = 14
+export const imageSizes = [16, 32, 64, 128, 256]
+
+// The height of an event. This is best seen by the height of an interval
+export const EVENT_HEIGHT = 48
+
+// Function for font size is lineair: font_size(event_height) = 5/16 * event_height + 6
+// Taken from two points:
+// - event height = 16 => font size = 11
+// - event height = 32 => font size = 16
+export const FONT_SIZE = Math.round(EVENT_HEIGHT * .3125 + 6)
+
+// The vertical space between two events. This is best seen between two intervals
+export const ROW_SPACING = Math.round(EVENT_HEIGHT / 3)
 
 // The height (in px) of a row of events.
-export const EVENT_ROW_HEIGHT = 16 
-
+export const EVENT_ROW_HEIGHT = EVENT_HEIGHT + ROW_SPACING
 export const DATE_BAR_HEIGHT = EVENT_ROW_HEIGHT 
-export const RULER_LABELS_HEIGHT = 60
+
+// The bounding box is the box where the image must fit within.
+// In this case the image should not be higher or wider than
+// 2 times the event row height
+export const IMAGE_BOUNDING_BOX = (EVENT_ROW_HEIGHT * 2) - ROW_SPACING * 2
+export const IMAGE_BORDER_SIZE = Math.round(ROW_SPACING / 2)
+export const IMAGE_SIZE = imageSizes.reduce((prev, curr) => Math.abs(curr - IMAGE_BOUNDING_BOX) < Math.abs(prev - IMAGE_BOUNDING_BOX) ? curr : prev)
 
 export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
 export const ZOOM_DONE = 'ZOOM_DONE'
