@@ -44,8 +44,8 @@ export default abstract class Band<T extends BandConfig> {
 
 	nextDate: (d: Milliseconds) => Milliseconds
 
-	// The amount of pixels taken by one day. Metric used for calculating 
-	// the x-position of an event or ruler on the timeline.
+	// The amount of pixels taken by one millisecond. Metric used to convert
+	// milliseconds to pixels and vice versa (px = ms / ppm and ms = px * ppm)
 	pixelsPerMillisecond: Pixels
 
 	prevOffsetX: Pixels
@@ -85,6 +85,7 @@ export default abstract class Band<T extends BandConfig> {
 	private setVerticalProps() {
 		this.visibleHeight = Math.round(this.config.heightRatio * props.viewportHeight)
 		this.availableHeight = this.visibleHeight - DATE_BAR_HEIGHT
+		if (this.availableHeight / this.visibleHeight < .666) this.availableHeight = this.visibleHeight * .666
 		this.visibleRowsCount = Math.floor(this.availableHeight / EVENT_ROW_HEIGHT) - 1
 		this.top = Math.round(this.config.topOffsetRatio * props.viewportHeight)
 	}

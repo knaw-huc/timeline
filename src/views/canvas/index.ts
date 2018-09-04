@@ -1,6 +1,6 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { EVENT_HEIGHT, DATE_BAR_HEIGHT, ZOOM_DONE, SCROLL_DONE, FONT_SIZE, IMAGE_BOUNDING_BOX, IMAGE_SIZE, IMAGE_BORDER_SIZE } from '../../constants'
+import { EVENT_HEIGHT, ZOOM_DONE, SCROLL_DONE, FONT_SIZE, IMAGE_BOUNDING_BOX, IMAGE_SIZE, IMAGE_BORDER_SIZE } from '../../constants'
 import MinimapBand from '../../models/band/minimap'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
@@ -237,7 +237,7 @@ export default class Canvas implements View {
 			this.indicatorsCtx.rect(rightIndicatorLeftX, indicatorTOP, props.viewportWidth, band.visibleHeight)
 
 			// Cover the DATE_BAR
-			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.visibleHeight - DATE_BAR_HEIGHT, rightIndicatorLeftX - leftIndicatorRightX, DATE_BAR_HEIGHT)
+			this.indicatorsCtx.rect(leftIndicatorRightX, indicatorTOP + band.availableHeight, rightIndicatorLeftX - leftIndicatorRightX, band.visibleHeight - band.availableHeight)
 		}
 
 		this.indicatorsCtx.fillStyle = `rgba(0, 0, 0, .04)`
