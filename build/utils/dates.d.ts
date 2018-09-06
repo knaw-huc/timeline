@@ -11,7 +11,7 @@ export declare const enum Granularity {
     HOUR = "HOUR",
     DAY = "DAY",
     WEEK = "WEEK",
-    MONTH = "MONHT",
+    MONTH = "MONTH",
     YEAR = "YEAR",
     YEAR_5 = "YEAR_5",
     DECADE = "DECADE",
@@ -24,5 +24,5 @@ export declare const formatDate: (timestamp: number, granularity: Granularity) =
 export declare const getGranularity: (pixelsPerMillisecond: number) => Granularity;
 export declare const getStep: (granularity: Granularity) => number;
 export declare function subsequentDate(granularity: Granularity): ((date: Milliseconds) => Milliseconds);
-export declare function byDate(a: RawEv3nt, b: RawEv3nt): 0 | 1 | -1;
+export declare function byDate(a: RawEv3nt, b: RawEv3nt): 1 | 0 | -1;
 export declare const labelBody: (d: number, granularity: Granularity) => string;

@@ -30,7 +30,7 @@ exports.formatDate = (timestamp, granularity) => {
     if (isYearOrBigger(granularity))
         return label;
     label = `${formatMonth(date)} ${label}`;
-    if (granularity === "MONHT")
+    if (granularity === "MONTH")
         return label;
     label = `${formatDateNumber(date)} ${label}`;
     if (granularity === "DAY")
@@ -68,7 +68,7 @@ exports.getGranularity = (pixelsPerMillisecond) => {
     if (pixelsPerMillisecond > 2.6e-7)
         return "WEEK";
     if (pixelsPerMillisecond > 2.2e-8)
-        return "MONHT";
+        return "MONTH";
     if (pixelsPerMillisecond > 2.2e-9)
         return "YEAR";
     if (pixelsPerMillisecond > 3.3e-10)
@@ -130,7 +130,7 @@ function subsequentDate(granularity) {
             }
         };
     }
-    if (granularity === "MONHT") {
+    if (granularity === "MONTH") {
         return (d) => {
             const date = new Date(d);
             return Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);
@@ -205,7 +205,7 @@ exports.labelBody = (d, granularity) => {
     const date = new Date(d);
     if (isYearOrBigger(granularity))
         return date.getUTCFullYear().toString();
-    if (granularity === "MONHT")
+    if (granularity === "MONTH")
         return formatMonth(date);
     if (granularity === "WEEK")
         return `${formatMonth(date)}, week ${getWeekNumber(date)}`;

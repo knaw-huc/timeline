@@ -12,7 +12,7 @@ export const enum Granularity {
 	HOUR = "HOUR",
 	DAY = "DAY",
 	WEEK = "WEEK",
-	MONTH = "MONHT",
+	MONTH = "MONTH",
 	YEAR = "YEAR",
 	YEAR_5 = "YEAR_5", /* 5 YEARS */
 	DECADE = "DECADE",

@@ -48,5 +48,5 @@ export class RawEv3nt {
 	color?: string
 
 	has_image?: ImageFileType
-	image: HTMLImageElement
+	image?: HTMLImageElement
 }

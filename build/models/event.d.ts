@@ -34,5 +34,5 @@ export declare class RawEv3nt {
     uncertain_to_width?: Pixels;
     color?: string;
     has_image?: ImageFileType;
-    image: HTMLImageElement;
+    image?: HTMLImageElement;
 }
