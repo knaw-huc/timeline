@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 const event_bus_1 = require("../../event-bus");
 const utils_1 = require("../../utils");
+const props_1 = require("../../models/props");
 class EventsBandView extends index_1.default {
     constructor(band, select) {
         super(band);
@@ -21,7 +22,7 @@ class EventsBandView extends index_1.default {
                 return;
             const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY);
             if (event && this.select) {
-                this.select(event);
+                this.select(event, this.band, props_1.default);
                 utils_1.logEvent(event);
             }
         };

@@ -9,11 +9,12 @@ import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
 import Label from './views/label'
+import Popup from './views/popup'
 import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
-import { formatDate } from './utils/dates';
-import { RawEv3nt } from './models/event';
-import { BandType } from './models/band';
+import { formatDate } from './utils/dates'
+import { RawEv3nt } from './models/event'
+import { BandType } from './models/band'
 // import Debug from './views/debug'
 
 export {
@@ -28,7 +29,7 @@ export {
 	RawEv3nt
 }
 
-export type OnSelectFunction = (e: RawEv3nt) => void
+export type OnSelectFunction = (e: RawEv3nt, band: EventsBand, props: Props) => void
 
 // TODO sort intervals first and than the points in time on top
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
@@ -45,7 +46,8 @@ export type OnSelectFunction = (e: RawEv3nt) => void
 // TODO add a popup to an event
 // TODO make option for fixed minimap, no zoom when events band get's zoomed
 export default class Timeline extends Api {
-	private wrapper: HTMLElement
+	private wrapper: HTMLDivElement
+	private popup: Popup
 
 	constructor(protected config: Config, onChange?: OnChangeFunction, private onSelect?: OnSelectFunction) {
 		super(onChange)
@@ -53,10 +55,20 @@ export default class Timeline extends Api {
 		props.init(config)
 		config.rootElement.appendChild(this.render())
 
+		this.popup = new Popup(this.wrapper)
+
 		const debouncedResize = debounce(this.resize, 600)
 		window.addEventListener('resize', debouncedResize)
 	}
 
+	hidePopup() {
+		this.popup.hide()
+	}
+
+	showPopup(event: RawEv3nt) {
+		this.popup.show(event)
+	}
+	
 	private render() {
 		this.wrapper = createElement(
 			'div',

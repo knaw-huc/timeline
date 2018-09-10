@@ -3,6 +3,7 @@ import eventBus from '../../event-bus'
 import EventsBand from '../../models/band/events'
 import { logEvent } from '../../utils'
 import { OnSelectFunction } from '../../index'
+import props from '../../models/props';
 
 export default class EventsBandView extends BandView {
 	constructor(public band: EventsBand, private select: OnSelectFunction) {
@@ -28,7 +29,7 @@ export default class EventsBandView extends BandView {
 
 		const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY)
 		if (event && this.select) {
-			this.select(event)
+			this.select(event, this.band, props)
 			logEvent(event)
 		}
 	}

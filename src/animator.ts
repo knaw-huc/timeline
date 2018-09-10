@@ -5,6 +5,7 @@ import Canvas from "./views/canvas";
 import Debug from "./views/debug";
 import { MinimapBandConfig, EventsBandConfig } from "./models/config";
 import EventsBand from "./models/band/events";
+import Popup from './views/popup';
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -42,7 +43,7 @@ export class Animator {
 	private elapsedTimeTotal: Milliseconds = 0
 
 	private models: Band<MinimapBandConfig | EventsBandConfig>[] = []
-	private views: (Canvas | Debug)[] = []
+	private views: (Canvas | Debug | Popup)[] = []
 
 	private zoomMarker: number
 
@@ -50,7 +51,7 @@ export class Animator {
 		this.models.push(model)
 	}
 
-	registerView(view: Canvas | Debug) {
+	registerView(view: Canvas | Debug | Popup) {
 		this.views.push(view)
 	}
 

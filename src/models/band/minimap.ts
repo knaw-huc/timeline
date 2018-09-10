@@ -79,7 +79,7 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 			for (const event of targetBand.events) {
 				if (event.from > to || event.to < from) continue
 				const x = this.positionAtTimestamp(event.from)
-				const y = this.availableHeight - ((event.row + 2) * this.eventHeight)
+				const y = this.maxRowCount - ((event.row + 2) * this.eventHeight)
 
 				const eventWidth = Math.round(event.time * this.pixelsPerMillisecond)
 				const width = eventWidth < 1 ? 1 : eventWidth

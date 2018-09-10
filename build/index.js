@@ -15,6 +15,7 @@ const api_1 = require("./api");
 const events_1 = require("./views/band/events");
 const canvas_1 = require("./views/canvas");
 const label_1 = require("./views/label");
+const popup_1 = require("./views/popup");
 const minimap_1 = require("./models/band/minimap");
 exports.MinimapBand = minimap_1.default;
 const events_2 = require("./models/band/events");
@@ -37,8 +38,15 @@ class Timeline extends api_1.default {
         };
         props_1.default.init(config);
         config.rootElement.appendChild(this.render());
+        this.popup = new popup_1.default(this.wrapper);
         const debouncedResize = utils_1.debounce(this.resize, 600);
         window.addEventListener('resize', debouncedResize);
+    }
+    hidePopup() {
+        this.popup.hide();
+    }
+    showPopup(event) {
+        this.popup.show(event);
     }
     render() {
         this.wrapper = create_element_1.default('div', 'wrapper', [

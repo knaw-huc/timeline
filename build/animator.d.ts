@@ -4,6 +4,7 @@ import Canvas from "./views/canvas";
 import Debug from "./views/debug";
 import { MinimapBandConfig, EventsBandConfig } from "./models/config";
 import EventsBand from "./models/band/events";
+import Popup from './views/popup';
 export declare type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16;
 export declare class Animator {
     private readonly elapsedTimeThreshold;
@@ -20,7 +21,7 @@ export declare class Animator {
     private views;
     private zoomMarker;
     registerModel(model: Band<MinimapBandConfig | EventsBandConfig>): void;
-    registerView(view: Canvas | Debug): void;
+    registerView(view: Canvas | Debug | Popup): void;
     private adjustMinimapBands;
     animate: (timestamp: number) => void;
     private resetElapsedTimeTotal;
