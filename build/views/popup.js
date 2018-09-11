@@ -10,13 +10,13 @@ function template(event) {
     return `
 		<img alt="noimage" src="" />
 		<div class="metadata">
-			<h2 class="label">${event.label}</h2>
-			<div class="description">${event.description || ''}</div>
+			<h2 class="label">${event.lbl}</h2>
+			<div class="description">${event.dsc || ''}</div>
 			<br />
 			<br />
-			<div class="from">${dates_1.formatDate(event.from, event.date_min_granularity || event.date_granularity)}</div>
+			<div class="from">${dates_1.formatDate(event.from, event.dmin_g || event.d_g)}</div>
 			${event.time ?
-        `<div class="to">${dates_1.formatDate(event.to, event.end_date_max_granularity || event.end_date_granularity)}</div>` :
+        `<div class="to">${dates_1.formatDate(event.to, event.dmax_g || event.ed_g)}</div>` :
         ''}
 		</div>
 		<div id="popup-close">✖</div>
@@ -86,8 +86,8 @@ class Popup {
         const label = this.el.querySelector('.label');
         label.style.color = event.color;
         const img = this.el.querySelector('img');
-        if (event.has_image) {
-            img.setAttribute('alt', `Image of ${event.label}`);
+        if (event.img) {
+            img.setAttribute('alt', `Image of ${event.lbl}`);
             img.addEventListener('load', this.loadImage);
             img.src = event.image.src.replace('32', '128');
         }

@@ -31,9 +31,9 @@ export default class Canvas implements View {
 	private async updateImages() {
 		for (const band of props.eventsBands) {
 			for (const event of band.visibleEvents) {
-				if (event.has_image == null) continue
+				if (event.img == null) continue
 				if (event.image == null) {
-					const path = `${props.imagePath}/${event.wikidata_identifier}__${IMAGE_SIZE}.${event.has_image}`
+					const path = `${props.imagePath}/${event.wid}__${IMAGE_SIZE}.${event.img}`
 					event.image = new Image()
 					const onLoad = this.onLoad(event)
 					event.image.addEventListener('load', onLoad)
@@ -200,7 +200,7 @@ export default class Canvas implements View {
 			const paddingLeft = event.time ? FONT_SIZE / 3 : FONT_SIZE / 1.2
 			const x = eventLeft + paddingLeft + event.uncertain_from_width
 			const y = event.top + FONT_SIZE + ((EVENT_HEIGHT - FONT_SIZE) / 2) - 2
-			this.ctx.fillText(event.label, Math.round(x), Math.round(y))
+			this.ctx.fillText(event.lbl, Math.round(x), Math.round(y))
 		}
 	}
 

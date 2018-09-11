@@ -37,6 +37,6 @@ function formatDate(ts) {
     return d.toUTCString();
 }
 function logEvent(event, ...rest) {
-    console.log(event.label, event, formatDate(event.from), formatDate(event.to), rest);
+    console.log(event.lbl, event, formatDate(event.from), formatDate(event.to), rest);
 }
 exports.logEvent = logEvent;

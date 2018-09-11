@@ -11,14 +11,14 @@ function template(event: RawEv3nt) {
 	return `
 		<img alt="noimage" src="" />
 		<div class="metadata">
-			<h2 class="label">${event.label}</h2>
-			<div class="description">${event.description || ''}</div>
+			<h2 class="label">${event.lbl}</h2>
+			<div class="description">${event.dsc || ''}</div>
 			<br />
 			<br />
-			<div class="from">${formatDate(event.from, event.date_min_granularity || event.date_granularity)}</div>
+			<div class="from">${formatDate(event.from, event.dmin_g || event.d_g)}</div>
 			${
 				event.time ?
-					`<div class="to">${formatDate(event.to, event.end_date_max_granularity || event.end_date_granularity)}</div>` :
+					`<div class="to">${formatDate(event.to, event.dmax_g || event.ed_g)}</div>` :
 					''
 			}
 		</div>
@@ -105,8 +105,8 @@ export default class Popup {
 		label.style.color = event.color
 
 		const img = this.el.querySelector('img') as HTMLImageElement
-		if (event.has_image) {
-			img.setAttribute('alt', `Image of ${event.label}`)
+		if (event.img) {
+			img.setAttribute('alt', `Image of ${event.lbl}`)
 			img.addEventListener('load', this.loadImage)
 			img.src = event.image.src.replace('32', '128')
 		} else {

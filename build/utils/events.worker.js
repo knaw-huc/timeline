@@ -17,18 +17,18 @@ function orderEvents(events, pixelsPerMillisecond) {
         return (rows[row + 1] == null || rows[row + 1] < imageFrom) && (rows[row + 2] == null || rows[row + 2] < imageFrom);
     }
     function addRow(event) {
-        if (event.label == null)
-            event.label = 'NO LABEL';
-        event.from = event.date_min || event.date;
-        event.to = event.end_date_max || event.end_date;
+        if (event.lbl == null)
+            event.lbl = 'NO LABEL';
+        event.from = event.dmin || event.d;
+        event.to = event.dmax || event.ed;
         if (event.to == null)
             event.to = event.from;
         event.time = event.to == null ? 0 : event.to - event.from;
-        const space = (event.label.length * constants_1.LETTER_WIDTH) / pixelsPerMillisecond;
+        const space = (event.lbl.length * constants_1.LETTER_WIDTH) / pixelsPerMillisecond;
         event.space = space > event.time ? space - event.time : 0;
         const eventRight = Math.round(event.from + event.time + event.space);
         let row;
-        if (event.has_image) {
+        if (event.img) {
             const imageFrom = event.time ? event.from : event.from - imageSize / 2;
             const imageTo = event.time ? event.from + imageSize : event.from + imageSize / 2;
             row = rows.findIndex(r => imageFrom > r);

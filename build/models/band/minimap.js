@@ -59,7 +59,7 @@ class MinimapBand extends _1.default {
                 const width = eventWidth < 1 ? 1 : eventWidth;
                 this.nextCtx.fillStyle = `rgb(190, 190, 190)`;
                 this.nextCtx.fillRect(x, y, width, this.eventHeight);
-                if (event.has_image) {
+                if (event.img) {
                     this.nextCtx.fillStyle = `rgb(240, 240, 240)`;
                     this.nextCtx.fillRect(x, y - this.eventHeight * 2, this.eventHeight * 2, this.eventHeight * 2);
                 }

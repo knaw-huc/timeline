@@ -6,8 +6,8 @@ import Api, { OnChangeFunction } from './api';
 import MinimapBand from './models/band/minimap';
 import EventsBand from './models/band/events';
 import { formatDate } from './utils/dates';
-import { RawEv3nt } from './models/event';
-export { Config as TimelineConfig, Props as TimelineProps, EventsBand, MinimapBand, OrderedEvents, calcPixelsPerMillisecond, formatDate, orderEvents, RawEv3nt };
+import { Ev3ntLocation, RawEv3nt } from './models/event';
+export { Config as TimelineConfig, Props as TimelineProps, EventsBand, MinimapBand, OrderedEvents, calcPixelsPerMillisecond, formatDate, orderEvents, RawEv3nt, Ev3ntLocation };
 export declare type OnSelectFunction = (e: RawEv3nt, band: EventsBand, props: Props) => void;
 export default class Timeline extends Api {
     protected config: Config;

@@ -59,5 +59,5 @@ function formatDate(ts: Milliseconds) {
 	// return `${d.getUTCFullYear()}-${d.getUTClMonth() + 1}-${d.getDate()}`
 }
 export function logEvent(event: RawEv3nt, ...rest: string[]) {
-	console.log(event.label, event, formatDate(event.from), formatDate(event.to), rest)
+	console.log(event.lbl, event, formatDate(event.from), formatDate(event.to), rest)
 }

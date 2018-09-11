@@ -13,7 +13,7 @@ import Popup from './views/popup'
 import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
 import { formatDate } from './utils/dates'
-import { RawEv3nt } from './models/event'
+import { Ev3ntLocation, RawEv3nt } from './models/event'
 import { BandType } from './models/band'
 // import Debug from './views/debug'
 
@@ -26,7 +26,8 @@ export {
 	calcPixelsPerMillisecond,
 	formatDate,
 	orderEvents,
-	RawEv3nt
+	RawEv3nt,
+	Ev3ntLocation
 }
 
 export type OnSelectFunction = (e: RawEv3nt, band: EventsBand, props: Props) => void

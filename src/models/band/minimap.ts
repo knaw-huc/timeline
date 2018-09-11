@@ -87,7 +87,7 @@ export default class MinimapBand extends Band<MinimapBandConfig> {
 				this.nextCtx.fillStyle = `rgb(190, 190, 190)`
 				this.nextCtx.fillRect(x, y, width, this.eventHeight)
 
-				if (event.has_image) {
+				if (event.img) {
 					this.nextCtx.fillStyle = `rgb(240, 240, 240)`
 					this.nextCtx.fillRect(x, y - this.eventHeight * 2, this.eventHeight * 2, this.eventHeight * 2)
 				}

@@ -193,13 +193,13 @@ export function subsequentDate(granularity: Granularity): ((date: Milliseconds) 
 }
 
 export function byDate(a: RawEv3nt, b: RawEv3nt) {
-	const aFrom = a.date_min != null ? a.date_min : a.date
-	const bFrom = b.date_min != null ? b.date_min : b.date
+	const aFrom = a.dmin != null ? a.dmin : a.d
+	const bFrom = b.dmin != null ? b.dmin : b.d
 	if (aFrom < bFrom) return -1
 	if (aFrom > bFrom) return 1
 
-	const aTo = a.end_date_max != null ? a.end_date_max : a.end_date
-	const bTo = b.end_date_max != null ? b.end_date_max : b.end_date
+	const aTo = a.dmax != null ? a.dmax : a.ed
+	const bTo = b.dmax != null ? b.dmax : b.ed
 	if (aTo < bTo) return -1
 	if (aTo > bTo) return 1
 

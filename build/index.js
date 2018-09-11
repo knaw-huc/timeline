@@ -23,6 +23,7 @@ exports.EventsBand = events_2.default;
 const dates_1 = require("./utils/dates");
 exports.formatDate = dates_1.formatDate;
 const event_1 = require("./models/event");
+exports.Ev3ntLocation = event_1.Ev3ntLocation;
 exports.RawEv3nt = event_1.RawEv3nt;
 const band_2 = require("./models/band");
 class Timeline extends api_1.default {

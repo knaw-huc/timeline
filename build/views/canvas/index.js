@@ -50,10 +50,10 @@ class Canvas {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             for (const band of props_1.default.eventsBands) {
                 for (const event of band.visibleEvents) {
-                    if (event.has_image == null)
+                    if (event.img == null)
                         continue;
                     if (event.image == null) {
-                        const path = `${props_1.default.imagePath}/${event.wikidata_identifier}__${constants_1.IMAGE_SIZE}.${event.has_image}`;
+                        const path = `${props_1.default.imagePath}/${event.wid}__${constants_1.IMAGE_SIZE}.${event.img}`;
                         event.image = new Image();
                         const onLoad = this.onLoad(event);
                         event.image.addEventListener('load', onLoad);
@@ -152,7 +152,7 @@ class Canvas {
             const paddingLeft = event.time ? constants_1.FONT_SIZE / 3 : constants_1.FONT_SIZE / 1.2;
             const x = eventLeft + paddingLeft + event.uncertain_from_width;
             const y = event.top + constants_1.FONT_SIZE + ((constants_1.EVENT_HEIGHT - constants_1.FONT_SIZE) / 2) - 2;
-            this.ctx.fillText(event.label, Math.round(x), Math.round(y));
+            this.ctx.fillText(event.lbl, Math.round(x), Math.round(y));
         }
     }
     drawMinimapBand(band) {

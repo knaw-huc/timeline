@@ -9,26 +9,44 @@ export enum ImageFileType {
 	PNG = 'png',
 }
 
+class Point {
+	type: "Point"
+	coordinates: [number, number]
+}
+
+export class Ev3ntLocation {
+	coor: Point
+	coor4326: Point
+	dmin: Milliseconds
+	dmin_g: Granularity
+	d: Milliseconds
+	d_g: Granularity
+	ed: Milliseconds
+	ed_g: Granularity
+	dmax: Milliseconds
+	dmax_g: Granularity
+}
+
 export class RawEv3nt {
-	date: Milliseconds
-	date_granularity?: Granularity = Granularity.DAY
-	date_min?: Milliseconds
-	date_min_granularity?: Granularity
-	description?: string
-	end_date?: Milliseconds
-	end_date_granularity?: Granularity
-	end_date_max?: Milliseconds
-	end_date_max_granularity?: Granularity
+	d: Milliseconds
+	d_g?: Granularity = Granularity.DAY
+	dmin?: Milliseconds
+	dmin_g?: Granularity
+	dsc?: string
+	ed?: Milliseconds
+	ed_g?: Granularity
+	dmax?: Milliseconds
+	dmax_g?: Granularity
 	id?: string
-	label?: string
+	lbl?: string
 	row?: number
-	wikidata_identifier?: string
+	wid?: string
+	locs: Ev3ntLocation[]
 
 	from: Milliseconds
 	to: Milliseconds
 
-	tags: string[]
-	locations: any[]
+	// tags: string[]
 
 	// The length of time an event took.
 	// A Point in Time has time = 0
@@ -47,6 +65,6 @@ export class RawEv3nt {
 	uncertain_to_width?: Pixels
 	color?: string
 
-	has_image?: ImageFileType
+	img?: ImageFileType
 	image?: HTMLImageElement
 }

@@ -1,150 +1,150 @@
 [
 	{
-		"label": "Plato",
-		"date_min": -75673612800000,
-		"date": -75484224000001,
-		"end_date": -73149004800000,
-		"end_date_max": -73085846400001
+		"lbl": "Plato",
+		"dmin": -75673612800000,
+		"d": -75484224000001,
+		"ed": -73149004800000,
+		"dmax": -73085846400001
 
 	},
 	{
-		"label": "Confucius",
-		"date": -79555046400000,
-		"end_date": -77251536000000
+		"lbl": "Confucius",
+		"d": -79555046400000,
+		"ed": -77251536000000
 	},
 	{
-		"label": "Aristotle",
-		"date": -74285078400000,
-		"end_date": -72297014400000
+		"lbl": "Aristotle",
+		"d": -74285078400000,
+		"ed": -72297014400000
 	},
 	{
-		"label": "Alexander the Great",
-		"date": -73384099200000,
-		"end_date": -72346089600000
+		"lbl": "Alexander the Great",
+		"d": -73384099200000,
+		"ed": -72346089600000
 	},
 	{
-		"label": "Socrates",
-		"date": -76998988800000,
-		"end_date": -74726928000000
+		"lbl": "Socrates",
+		"d": -76998988800000,
+		"ed": -74726928000000
 	},
 	{
-		"label": "Cicero",
-		"date": -65512022400000,
-		"end_date": -63494755200000
+		"lbl": "Cicero",
+		"d": -65512022400000,
+		"ed": -63494755200000
 	},
 	{
-		"label": "Augustine of Hippo",
-		"date": -50968742400000,
-		"end_date": -48577017600000
+		"lbl": "Augustine of Hippo",
+		"d": -50968742400000,
+		"ed": -48577017600000
 	},
 	{
-		"label": "Thomas Aquinas",
-		"date_min": -23509872000000,
-		"date": -23478336000001,
-		"end_date": -21957955200000
+		"lbl": "Thomas Aquinas",
+		"dmin": -23509872000000,
+		"d": -23478336000001,
+		"ed": -21957955200000
 	},
 	{
-		"label": "Ibn Khaldun",
-		"date": -20120659200000,
-		"end_date": -17791660800000
+		"lbl": "Ibn Khaldun",
+		"d": -20120659200000,
+		"ed": -17791660800000
 	},
 	{
-		"label": "Avicenna",
-		"date": -31221158400000,
-		"end_date": -29427840000000
+		"lbl": "Avicenna",
+		"d": -31221158400000,
+		"ed": -29427840000000
 	},
 	{
-		"label": "Magna Carta",
-		"date": -23811235200000
+		"lbl": "Magna Carta",
+		"d": -23811235200000
 	},
 	{
-		"label": "Niccolò Machiavelli",
-		"date": -15799449600000,
-		"end_date": -13965004800000
+		"lbl": "Niccolò Machiavelli",
+		"d": -15799449600000,
+		"ed": -13965004800000
 	},
 	{
-		"label": "Jean-Jacques Rousseau",
-		"date": -8126265600000,
-		"end_date": -6043161600000
+		"lbl": "Jean-Jacques Rousseau",
+		"d": -8126265600000,
+		"ed": -6043161600000
 	},
 	{
-		"label": "Thomas Hobbes",
-		"date": -12046579200000,
-		"end_date": -9153907200000
+		"lbl": "Thomas Hobbes",
+		"d": -12046579200000,
+		"ed": -9153907200000
 	},
 	{
-		"label": "John Locke",
-		"date": -10645430400000,
-		"end_date": -8368185600000
+		"lbl": "John Locke",
+		"d": -10645430400000,
+		"ed": -8368185600000
 	},
 	{
-		"label": "Montesquieu",
-		"date": -8865936000000,
-		"end_date": -6781276800000
+		"lbl": "Montesquieu",
+		"d": -8865936000000,
+		"ed": -6781276800000
 	},
 	{
-		"label": "Voltaire",
-		"date": -8681644800000,
-		"end_date": -6046012800000
+		"lbl": "Voltaire",
+		"d": -8681644800000,
+		"ed": -6046012800000
 	},
 	{
-		"label": "Karl Marx",
-		"date": -4785955200000,
-		"end_date": -2739225600000,
-		"has_image": "jpg",
-		"wikidata_identifier": "Q9061"
+		"lbl": "Karl Marx",
+		"d": -4785955200000,
+		"ed": -2739225600000,
+		"img": "jpg",
+		"wid": "Q9061"
 	},
 	{
-		"label": "Friedrich Engels",
-		"date": -4704912000000,
-		"end_date": -2348092800000
+		"lbl": "Friedrich Engels",
+		"d": -4704912000000,
+		"ed": -2348092800000
 	},
 	{
-		"label": "John Rawls",
-		"date": -1541894400000,
-		"end_date": 1038096000000,
-		"has_image": "jpg",
-		"wikidata_identifier": "Q172544"
+		"lbl": "John Rawls",
+		"d": -1541894400000,
+		"ed": 1038096000000,
+		"img": "jpg",
+		"wid": "Q172544"
 	},
 	{
-		"label": "Jeremy Bentham",
-		"date": -7001769600000,
-		"end_date": -4341340800000
+		"lbl": "Jeremy Bentham",
+		"d": -7001769600000,
+		"ed": -4341340800000
 	},
 	{
-		"label": "Michel Foucault",
-		"date": -1363737600000,
-		"end_date": 456969600000,
-		"has_image": "jpg",
-		"wikidata_identifier": "Q44272"
+		"lbl": "Michel Foucault",
+		"d": -1363737600000,
+		"ed": 456969600000,
+		"img": "jpg",
+		"wid": "Q44272"
 	},
 	{
-		"label": "David Hume",
-		"date": -8162380800000,
-		"end_date": -6101568000000
+		"lbl": "David Hume",
+		"d": -8162380800000,
+		"ed": -6101568000000
 	},
 	{
-		"label": "Thomas Jefferson",
-		"date": -7154611200000,
-		"end_date": -4528310400000
+		"lbl": "Thomas Jefferson",
+		"d": -7154611200000,
+		"ed": -4528310400000
 	},
 	{
-		"label": "Immanuel Kant",
-		"date": -7753363200000,
-		"end_date": -5234889600000,
-		"has_image": "jpg",
-		"wikidata_identifier": "Q9312"
+		"lbl": "Immanuel Kant",
+		"d": -7753363200000,
+		"ed": -5234889600000,
+		"img": "jpg",
+		"wid": "Q9312"
 	},
 	{
-		"label": "Peter Kropotkin",
-		"date": -4009737600000,
-		"end_date": -1543017600000,
-		"has_image": "jpg",
-		"wikidata_identifier": "Q5752"
+		"lbl": "Peter Kropotkin",
+		"d": -4009737600000,
+		"ed": -1543017600000,
+		"img": "jpg",
+		"wid": "Q5752"
 	},
 	{
-		"label": "John Stuart Mill",
-		"date": -5163350400000,
-		"end_date": -3050006400000
+		"lbl": "John Stuart Mill",
+		"d": -5163350400000,
+		"ed": -3050006400000
 	}
 ]

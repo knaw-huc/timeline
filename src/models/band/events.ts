@@ -108,37 +108,37 @@ export default class EventsBand extends Band<EventsBandConfig> {
 				if (event.time && event.width < 1) event.width = 1
 
 				event.uncertain_from_width = 0
-				if (event.date_min != null) {
+				if (event.dmin != null) {
 					let uncertain_from_to
-					if (event.date != null) {
-						uncertain_from_to = event.date
+					if (event.d != null) {
+						uncertain_from_to = event.d
 					}
-					else if (event.end_date != null) {
-						uncertain_from_to = event.end_date
-					} else if (event.end_date_max != null) {
-						uncertain_from_to = event.date_min + (event.end_date_max - event.date_min) / 2
+					else if (event.ed != null) {
+						uncertain_from_to = event.ed
+					} else if (event.dmax != null) {
+						uncertain_from_to = event.dmin + (event.dmax - event.dmin) / 2
 					} else {
 						throw Error(['updateEvents', 'Width uncertain from is not definable', JSON.stringify(event)].join('\n'))
 					}
 
-					event.uncertain_from_width = (uncertain_from_to - event.date_min) * this.pixelsPerMillisecond
+					event.uncertain_from_width = (uncertain_from_to - event.dmin) * this.pixelsPerMillisecond
 				}
 
 				event.uncertain_to_width = 0
-				if (event.end_date_max != null) {
+				if (event.dmax != null) {
 					let uncertain_to_from
-					if (event.end_date != null) {
-						uncertain_to_from = event.end_date
+					if (event.ed != null) {
+						uncertain_to_from = event.ed
 					}
-					else if (event.date != null) {
-						uncertain_to_from = event.date
-					} else if (event.date_min != null) {
-						uncertain_to_from = event.date_min + (event.end_date_max - event.date_min) / 2
+					else if (event.d != null) {
+						uncertain_to_from = event.d
+					} else if (event.dmin != null) {
+						uncertain_to_from = event.dmin + (event.dmax - event.dmin) / 2
 					} else {
 						throw Error(['updateEvents', 'Width uncertain to is not definable', JSON.stringify(event)].join('\n'))
 					}
 
-					event.uncertain_to_width = (event.end_date_max - uncertain_to_from) * this.pixelsPerMillisecond
+					event.uncertain_to_width = (event.dmax - uncertain_to_from) * this.pixelsPerMillisecond
 				}
 
 				event.top = this.top + this.availableHeight - ((event.row + 1) * EVENT_ROW_HEIGHT) + this.offsetY

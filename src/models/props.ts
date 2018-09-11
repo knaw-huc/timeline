@@ -73,9 +73,9 @@ export class Props {
 			if (curr.type === BandType.MinimapBand) return prev
 			const band = curr as EventsBand
 			const events = band.config.orderedEvents == null ? band.config.events : band.config.orderedEvents.events
-			prev[0].push(events[0].date_min || events[0].date)
+			prev[0].push(events[0].dmin || events[0].d)
 			prev[1].push(events.reduce((prev2, curr2) => {
-				return Math.max(prev2, curr2.end_date || -Infinity, curr2.end_date_max || -Infinity)
+				return Math.max(prev2, curr2.ed || -Infinity, curr2.dmax || -Infinity)
 			}, -Infinity))
 			return prev
 		}, [[], []])
