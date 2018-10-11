@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const props_1 = require("./models/props");
 const constants_1 = require("./constants");
+const event_bus_1 = require("./event-bus");
 var Direction;
 (function (Direction) {
     Direction[Direction["Backward"] = -1] = "Backward";
@@ -47,7 +48,7 @@ class Animator {
                                 band.zoomLevel = this.zoomMarker + (band.config.zoomLevel - this.activeBand.config.zoomLevel);
                         });
                         this.adjustMinimapBands();
-                        document.dispatchEvent(new CustomEvent(constants_1.ZOOM_DONE));
+                        event_bus_1.default.dispatch(constants_1.EventType.ZoomDone);
                         this.stop();
                     }
                     else {
@@ -89,7 +90,7 @@ class Animator {
     }
     resetElapsedTimeTotal() {
         this.elapsedTimeTotal = 0;
-        document.dispatchEvent(new CustomEvent(constants_1.CENTER_CHANGE_DONE));
+        event_bus_1.default.dispatch(constants_1.EventType.CenterChange);
     }
     accelerate() {
         const index = this.multipliers.indexOf(this.multiplier);
@@ -145,14 +146,17 @@ class Animator {
         requestAnimationFrame(this.animate);
     }
     playForward() {
+        event_bus_1.default.dispatch(constants_1.EventType.Play);
         this.direction = Direction.Forward;
         this.nextFrame();
     }
     playBackward() {
+        event_bus_1.default.dispatch(constants_1.EventType.Play);
         this.direction = Direction.Backward;
         this.nextFrame();
     }
     stop() {
+        event_bus_1.default.dispatch(constants_1.EventType.Pause);
         this.direction = Direction.Stop;
         this.activeBand = null;
         this.centerMarker = null;

@@ -1,7 +1,26 @@
-import { Milliseconds } from "../constants";
-import { RawEv3nt } from "../models/event";
-export declare class OrderedEvents {
+import { Milliseconds, Pixels } from "../constants";
+import { Ev3nt, RawEv3nt } from "../models/event";
+interface InputBand {
     events: RawEv3nt[];
-    row_count: number;
+    zoomLevel: number;
 }
-export declare function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Milliseconds): OrderedEvents;
+export interface OrderedBand {
+    events: Ev3nt[];
+    pixelsPerMillisecond?: Pixels;
+    rowCount: number;
+    zoomLevel: number;
+}
+interface Options {
+    parent?: RawEv3nt;
+    bands: InputBand[];
+    viewportWidth: Pixels;
+}
+export declare class OrderedTimeline {
+    bands: OrderedBand[];
+    from: Milliseconds;
+    parent: Ev3nt;
+    time: Milliseconds;
+    to: Milliseconds;
+}
+export declare function orderEvents(options: Options): OrderedTimeline;
+export {};

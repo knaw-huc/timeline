@@ -1,13 +1,13 @@
-import { RawEv3nt } from '../models/event';
+import { Ev3nt } from '../models/event';
 export default class Popup {
     private rootElement;
     el: HTMLDivElement;
-    event: RawEv3nt;
+    event: Ev3nt;
     constructor(rootElement: HTMLDivElement);
     update: () => void;
     hide(): void;
     private setWidth;
     private setPosition;
     private loadImage;
-    show(event: RawEv3nt): void;
+    show(event: Ev3nt): void;
 }

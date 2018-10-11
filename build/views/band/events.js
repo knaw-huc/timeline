@@ -2,13 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 const event_bus_1 = require("../../event-bus");
-const utils_1 = require("../../utils");
-const props_1 = require("../../models/props");
+const constants_1 = require("../../constants");
 class EventsBandView extends index_1.default {
-    constructor(band, select) {
+    constructor(band) {
         super(band);
         this.band = band;
-        this.select = select;
         this.onWheel = (ev) => {
             if (Math.abs(ev.deltaX) === 0 && ev.deltaY !== 0) {
                 if (ev.deltaY < 0)
@@ -21,10 +19,7 @@ class EventsBandView extends index_1.default {
             if (this.lastDragInterval > 175)
                 return;
             const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY);
-            if (event && this.select) {
-                this.select(event, this.band, props_1.default);
-                utils_1.logEvent(event);
-            }
+            event_bus_1.default.dispatch(constants_1.EventType.Select, event);
         };
     }
     render() {

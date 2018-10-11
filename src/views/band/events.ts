@@ -1,12 +1,13 @@
 import BandView from './index'
 import eventBus from '../../event-bus'
 import EventsBand from '../../models/band/events'
-import { logEvent } from '../../utils'
-import { OnSelectFunction } from '../../index'
-import props from '../../models/props';
+import { EventType } from '../../constants';
+// import { logEvent } from '../../utils'
+// import { OnSelectFunction } from '../../index'
+// import props from '../../models/props';
 
 export default class EventsBandView extends BandView {
-	constructor(public band: EventsBand, private select: OnSelectFunction) {
+	constructor(public band: EventsBand) {
 		super(band)
 	}
 
@@ -28,10 +29,8 @@ export default class EventsBandView extends BandView {
 		if (this.lastDragInterval > 175) return
 
 		const event = this.band.getEventByCoordinates(ev.clientX, ev.clientY)
-		if (event && this.select) {
-			this.select(event, this.band, props)
-			logEvent(event)
-		}
+
+		eventBus.dispatch(EventType.Select, event)
 	}
 
 	private zoomIn() {

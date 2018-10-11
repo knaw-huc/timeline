@@ -9,9 +9,14 @@ export declare const DATE_BAR_HEIGHT: number;
 export declare const IMAGE_BOUNDING_BOX: number;
 export declare const IMAGE_BORDER_SIZE: number;
 export declare const IMAGE_SIZE: number;
-export declare const CENTER_CHANGE_DONE = "CENTER_CHANGE_DONE";
-export declare const ZOOM_DONE = "ZOOM_DONE";
-export declare const SCROLL_DONE = "SCROLL_DONE";
+export declare enum EventType {
+    CenterChange = "CenterChange",
+    ZoomDone = "ZoomDone",
+    ScrollDone = "ScrollDone",
+    Pause = "Pause",
+    Play = "Play",
+    Select = "Select"
+}
 export declare const PIXELS_PER_LETTER = 8;
 export declare const DEFAULT_IMAGE_PATH = "/images";
 export declare type Milliseconds = number;

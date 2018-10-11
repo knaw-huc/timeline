@@ -5,9 +5,7 @@ const config_1 = require("../config");
 const animator_1 = require("../../animator");
 const constants_1 = require("../../constants");
 const props_1 = require("../props");
-const events_worker_1 = require("../../utils/events.worker");
 const dates_1 = require("../../utils/dates");
-const utils_1 = require("../../utils");
 class EventsBand extends _1.default {
     constructor(config) {
         super(Object.assign({}, new config_1.EventsBandConfig(), config));
@@ -33,14 +31,10 @@ class EventsBand extends _1.default {
         this.lowestVisibleRow = Math.ceil(lowestRow);
         this.highestVisibleRow = this.lowestVisibleRow + this.visibleRowsCount;
     }
-    init() {
+    init(orderedBand) {
         super.init();
-        const pixelsPerMillisecond = utils_1.calcPixelsPerMillisecond(props_1.default.viewportWidth, this.config.zoomLevel || 0, props_1.default.time);
-        const orderedEvents = this.config.orderedEvents == null ?
-            events_worker_1.orderEvents(this.config.events, pixelsPerMillisecond) :
-            this.config.orderedEvents;
-        this.events = orderedEvents.events;
-        this.rowCount = orderedEvents.row_count;
+        this.events = orderedBand.events;
+        this.rowCount = orderedBand.rowCount;
         this.height = constants_1.EVENT_ROW_HEIGHT * this.rowCount;
         this.offsetY = 0;
         this.updateEvents();
@@ -125,7 +119,7 @@ class EventsBand extends _1.default {
         const bottomOfDomain = props_1.default.viewportOffset + this.top + this.availableHeight + this.offsetY;
         const clickedRow = Math.floor((bottomOfDomain - y) / constants_1.EVENT_ROW_HEIGHT);
         const event = this.events.find(e => {
-            if (!(e.from < timestamp && e.from + e.time + e.space > timestamp) ||
+            if (!(e.from < timestamp && e.screenTo > timestamp) ||
                 (e.row < this.lowestVisibleRow || e.row > this.highestVisibleRow))
                 return false;
             return e.row === clickedRow;

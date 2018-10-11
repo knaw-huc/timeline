@@ -35,9 +35,10 @@
 					imagePath: '/examples/images',
 					rootElement: document.getElementById('timeline'),
 				},
-				() => console.log('change'),
-				event => t.showPopup(event)
 			)
+			t.on('select', (event) => {
+				t.showPopup(event)
+			})
 		}
 		go()
 	</script>

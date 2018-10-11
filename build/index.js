@@ -9,7 +9,7 @@ const create_element_1 = require("./utils/create-element");
 const utils_1 = require("./utils");
 exports.calcPixelsPerMillisecond = utils_1.calcPixelsPerMillisecond;
 const events_worker_1 = require("./utils/events.worker");
-exports.OrderedEvents = events_worker_1.OrderedEvents;
+exports.OrderedTimeline = events_worker_1.OrderedTimeline;
 exports.orderEvents = events_worker_1.orderEvents;
 const api_1 = require("./api");
 const events_1 = require("./views/band/events");
@@ -25,12 +25,14 @@ exports.formatDate = dates_1.formatDate;
 const event_1 = require("./models/event");
 exports.Ev3ntLocation = event_1.Ev3ntLocation;
 exports.RawEv3nt = event_1.RawEv3nt;
+exports.Ev3nt = event_1.Ev3nt;
+exports.Voyage = event_1.Voyage;
 const band_2 = require("./models/band");
+const constants_1 = require("./constants");
+exports.EventType = constants_1.EventType;
 class Timeline extends api_1.default {
-    constructor(config, onChange, onSelect) {
-        super(onChange);
-        this.config = config;
-        this.onSelect = onSelect;
+    constructor(config) {
+        super();
         this.appendToWrapper = (child) => {
             let children = child.render();
             if (!Array.isArray(children))
@@ -60,7 +62,7 @@ class Timeline extends api_1.default {
         ]);
         this.views = props_1.default.bands
             .map(band => band.type === band_2.BandType.EventsBand ?
-            new events_1.default(band, this.onSelect) :
+            new events_1.default(band) :
             new band_1.default(band));
         this.views.push(new canvas_1.default());
         this.views.forEach(this.appendToWrapper);

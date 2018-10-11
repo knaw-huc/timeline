@@ -31,9 +31,14 @@ export const IMAGE_BOUNDING_BOX = (EVENT_ROW_HEIGHT * 2) - ROW_SPACING * 2
 export const IMAGE_BORDER_SIZE = Math.round(ROW_SPACING / 2)
 export const IMAGE_SIZE = IMAGE_SIZES.reduce((prev, curr) => Math.abs(curr - IMAGE_BOUNDING_BOX) < Math.abs(prev - IMAGE_BOUNDING_BOX) ? curr : prev)
 
-export const CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE'
-export const ZOOM_DONE = 'ZOOM_DONE'
-export const SCROLL_DONE = 'SCROLL_DONE'
+export enum EventType {
+	CenterChange = 'CenterChange',
+	ZoomDone = 'ZoomDone',
+	ScrollDone = 'ScrollDone',
+	Pause = 'Pause',
+	Play = 'Play',
+	Select = 'Select'
+}
 
 export const PIXELS_PER_LETTER = 8
 

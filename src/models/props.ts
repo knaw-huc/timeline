@@ -1,9 +1,11 @@
-import { CENTER_CHANGE_DONE, Milliseconds, Pixels, DEFAULT_IMAGE_PATH } from "../constants"
+import { Milliseconds, Pixels, DEFAULT_IMAGE_PATH, EventType } from "../constants"
 import Config from "./config"
 import MinimapBand from "./band/minimap"
-import { debounce } from "../utils"
-import EventsBand from "./band/events";
-import { BandType } from './band';
+import EventsBand from "./band/events"
+import { BandType } from './band'
+import { RawEv3nt } from './event';
+import { orderEvents } from '..';
+import eventBus from '../event-bus';
 
 function onEventsBand (band: MinimapBand | EventsBand): band is EventsBand {
 	return band.type === BandType.EventsBand
@@ -15,6 +17,8 @@ function onMinimapBand (band: MinimapBand | EventsBand): band is MinimapBand {
 
 export class Props {
 	private readonly defaultCenterRatio = .5
+
+	parent: RawEv3nt
 
 	bands: (EventsBand | MinimapBand)[]
 	eventsBands: EventsBand[]
@@ -47,7 +51,7 @@ export class Props {
 		if (n < this.from) this._center = this.from 
 		else if (n > this.to) this._center = this.to
 		else this._center = n
-		this.centerChangeDone()
+		eventBus.dispatch(EventType.CenterChange)
 	}
 
 	set dimensions(rootElement: HTMLElement) {
@@ -58,10 +62,6 @@ export class Props {
 		this.viewportWidth = parseInt(style.getPropertyValue('width'), 10)
 	}
 
-	private centerChangeDone = debounce(() => {
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
-	}, 300)
-
 	init(config: Config) {
 		if (config.rootElement == null) console.error('[init] No rootElement found')
 
@@ -69,32 +69,38 @@ export class Props {
 		this.rootElement = config.rootElement
 		this.dimensions = this.rootElement
 
-		const [froms, tos] = config.bands.reduce((prev, curr) => {
-			if (curr.type === BandType.MinimapBand) return prev
-			const band = curr as EventsBand
-			const events = band.config.orderedEvents == null ? band.config.events : band.config.orderedEvents.events
-			prev[0].push(events[0].dmin || events[0].d)
-			prev[1].push(events.reduce((prev2, curr2) => {
-				return Math.max(prev2, curr2.ed || -Infinity, curr2.dmax || -Infinity)
-			}, -Infinity))
-			return prev
-		}, [[], []])
-
-		this.from = Math.min(...froms) 
-		this.to = Math.max(...tos)
-
-		this.time = this.to - this.from
-
-		this.center = (config.center != null) ?
-			config.center :
-			this.from + (this.defaultCenterRatio * this.time)
-
 		this.bands = config.bands
 		this.eventsBands = this.bands.filter(onEventsBand)
 		this.minimapBands = this.bands.filter(onMinimapBand)
 		this.controlBand = config.controlBand != null ? config.controlBand : this.eventsBands[0]
 
-		for (const band of this.bands) {
+		const t0 = performance.now()
+		const options = {
+			bands: this.eventsBands
+				.map(band => ({
+					events: band.config.events,
+					zoomLevel: band.config.zoomLevel
+				})),
+			parent: config.parent,
+			viewportWidth: this.viewportWidth
+		}
+		const orderResult = orderEvents(options)
+		this.parent = orderResult.parent
+		this.from = orderResult.from
+		this.to = orderResult.to
+		this.time = orderResult.time
+		const t1 = performance.now();
+		console.log('Performance: ', `${t1 - t0}ms\n[from] ${new Date(this.from).toUTCString()}\n[ to ] ${new Date(this.to).toUTCString()}`)
+
+		this.center = (config.center != null) ?
+			config.center :
+			this.from + (this.defaultCenterRatio * this.time)
+
+		for (const [index, band] of this.eventsBands.entries()) {
+			band.init(orderResult.bands[index])
+		}
+
+		for (const band of this.minimapBands) {
 			band.init()
 		}
 	}

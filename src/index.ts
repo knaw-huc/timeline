@@ -3,8 +3,8 @@ import Config from './models/config/index'
 import BandView from './views/band'
 import createElement from './utils/create-element'
 import { debounce, calcPixelsPerMillisecond } from './utils'
-import { OrderedEvents, orderEvents } from './utils/events.worker'
-import Api, { OnChangeFunction } from './api'
+import { OrderedTimeline, orderEvents } from './utils/events.worker'
+import Api from './api'
 import EventsBandView from './views/band/events'
 import Canvas from './views/canvas'
 import View from './views'
@@ -13,25 +13,30 @@ import Popup from './views/popup'
 import MinimapBand from './models/band/minimap'
 import EventsBand from './models/band/events'
 import { formatDate } from './utils/dates'
-import { Ev3ntLocation, RawEv3nt } from './models/event'
+import { Ev3ntLocation, RawEv3nt, Ev3nt, Voyage } from './models/event'
 import { BandType } from './models/band'
+import { EventType } from './constants';
 // import Debug from './views/debug'
 
 export {
 	Config as TimelineConfig,
-	Props as TimelineProps,
+	Ev3nt,
+	Ev3ntLocation,
 	EventsBand,
+	EventType,
 	MinimapBand,
-	OrderedEvents,
+	OrderedTimeline,
+	Props as TimelineProps,
+	RawEv3nt,
 	calcPixelsPerMillisecond,
 	formatDate,
 	orderEvents,
-	RawEv3nt,
-	Ev3ntLocation
+	Voyage,
 }
 
-export type OnSelectFunction = (e: RawEv3nt, band: EventsBand, props: Props) => void
+export type OnSelectFunction = (e: Ev3nt, band: EventsBand, props: Props) => void
 
+// FIX config without events
 // TODO sort intervals first and than the points in time on top
 // TODO use available vertical space (not fixed to EVENT_HEIGHT), see examples/100m 
 // TODO expose only API, put the Timeline and it's render in a separate view
@@ -46,12 +51,17 @@ export type OnSelectFunction = (e: RawEv3nt, band: EventsBand, props: Props) => 
 // TODO add a picture to an event
 // TODO add a popup to an event
 // TODO make option for fixed minimap, no zoom when events band get's zoomed
+// interface Options {
+// 	config: Config,
+// 	onSelect?: OnSelectFunction
+// }
 export default class Timeline extends Api {
 	private wrapper: HTMLDivElement
 	private popup: Popup
 
-	constructor(protected config: Config, onChange?: OnChangeFunction, private onSelect?: OnSelectFunction) {
-		super(onChange)
+	// constructor(protected config: Config, onChange?: OnChangeFunction, private onSelect?: OnSelectFunction) {
+	constructor(config: Config) {
+		super()
 
 		props.init(config)
 		config.rootElement.appendChild(this.render())
@@ -66,7 +76,7 @@ export default class Timeline extends Api {
 		this.popup.hide()
 	}
 
-	showPopup(event: RawEv3nt) {
+	showPopup(event: Ev3nt) {
 		this.popup.show(event)
 	}
 	
@@ -88,7 +98,7 @@ export default class Timeline extends Api {
 		this.views = props.bands
 			.map(band =>
 				band.type === BandType.EventsBand ?
-					new EventsBandView(band as EventsBand, this.onSelect) :
+					new EventsBandView(band as EventsBand) :
 					new BandView(band)
 			)
 		this.views.push(new Canvas())

@@ -4,6 +4,7 @@ import { Pixels, Milliseconds, Ratio, DATE_BAR_HEIGHT, EVENT_ROW_HEIGHT } from '
 import { visibleRatio } from '../../utils'
 import { BandConfig } from '../config';
 import animator from '../../animator';
+import { OrderedBand } from '../../utils/events.worker';
 
 export enum BandType {
 	EventsBand,
@@ -96,7 +97,7 @@ export default abstract class Band<T extends BandConfig> {
 		this.offsetX = (props.from - this.from) * this.pixelsPerMillisecond
 	}
 
-	init() {
+	init(_orderedBand?: OrderedBand): void {
 		this.zoomLevel = this.config.zoomLevel
 		this.setVerticalProps()
 		animator.registerModel(this)

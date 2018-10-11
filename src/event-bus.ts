@@ -1,3 +1,5 @@
+import { EventType } from './constants';
+
 type EventListener = [string, EventListenerOrEventListenerObject, Target]
 export type Target = Document | Window | HTMLElement
 
@@ -9,6 +11,14 @@ export type Target = Document | Window | HTMLElement
  */
 export class EventBus {
 	private eventsListeners: EventListener[] = []
+
+	dispatch(eventType: EventType, payload?: any) {
+		const event = (payload != null) ?
+			new CustomEvent(eventType, { detail: payload }) :
+			new CustomEvent(eventType)
+
+		document.dispatchEvent(event)
+	}
 
 	register(type: string, listener: EventListenerOrEventListenerObject, target: Target = document) {
 		target.addEventListener(type, listener)

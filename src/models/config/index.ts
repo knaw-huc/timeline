@@ -1,6 +1,6 @@
 import { Ratio } from "../../constants"
-import { OrderedEvents } from "../../utils/events.worker"
-import { RawEv3nt } from "../event"
+import { OrderedTimeline } from "../../utils/events.worker"
+import { RawEv3nt, Ev3nt } from "../event"
 import MinimapBand from "../band/minimap"
 import EventsBand from "../band/events"
 
@@ -39,17 +39,19 @@ export class MinimapBandConfig extends BandConfig {
 export class EventsBandConfig extends BandConfig {
 	events?: RawEv3nt[]
 	label?: string
-	orderedEvents?: OrderedEvents
+	orderedEvents?: OrderedTimeline
 }
 
 export default class Config {
-	center?: number
-
-	controlBand: EventsBand
-
 	bands: (EventsBand | MinimapBand)[]
 
+	center?: number
+
+	controlBand?: EventsBand
+
 	imagePath?: string
+
+	parent?: Ev3nt
 
 	// The HTML element where the Timeline will be attached to. The element should be a
 	// block element with a width and height.

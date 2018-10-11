@@ -1,80 +1,125 @@
-import { Milliseconds, EVENT_ROW_HEIGHT, LETTER_WIDTH } from "../constants"
-import { RawEv3nt } from "../models/event";
+import { Milliseconds, EVENT_ROW_HEIGHT, Pixels } from "../constants"
+import { Ev3nt, RawEv3nt } from "../models/event"
+import { calcPixelsPerMillisecond } from './index'
 
-export class OrderedEvents {
-	events: RawEv3nt[] = []
-	row_count: number = 0
+interface InputBand {
+	events: RawEv3nt[]
+	zoomLevel: number
+}
+export interface OrderedBand {
+	events: Ev3nt[]
+	pixelsPerMillisecond?: Pixels
+	rowCount: number
+	zoomLevel: number
+}
+interface Options {
+	parent?: RawEv3nt,
+	bands: InputBand[]
+	viewportWidth: Pixels,
 }
 
-export function orderEvents(events: RawEv3nt[], pixelsPerMillisecond: Milliseconds): OrderedEvents { 
-	if (!events.length) return new OrderedEvents()
+export class OrderedTimeline {
+	bands: OrderedBand[]
+	from: Milliseconds
+	parent: Ev3nt
+	time: Milliseconds
+	to: Milliseconds
+}
 
-	const rows: number[] = [-Infinity]
+export function orderEvents(options: Options): OrderedTimeline { 
+	if (options.bands == null || !options.bands.length) return new OrderedTimeline()
 
-	const imageSize: Milliseconds = Math.round(EVENT_ROW_HEIGHT * 2 / pixelsPerMillisecond)
+	let from = options.bands.reduce((prev, curr) => {
+		const firstEvent = curr.events[0]
+		return Math.min(prev, firstEvent.dmin || Infinity, firstEvent.d || Infinity)
+	}, Infinity)
 
-	function rowHasSpace(row: number, imageFrom: Milliseconds) {
-		return (rows[row + 1] == null || rows[row + 1] < imageFrom) && (rows[row + 2] == null || rows[row + 2] < imageFrom) 
+	let to = options.bands.reduce((prev, curr) => {
+		const highest = curr.events.reduce((prev2, curr2) => { 
+			return Math.max(prev2, curr2.d || - Infinity, curr2.ed || -Infinity, curr2.dmax || -Infinity)
+		}, -Infinity)
+		return Math.max(highest, prev)
+	}, -Infinity)
+
+	let parent
+	if (options.parent != null) {
+		parent = new Ev3nt(options.parent) as Ev3nt
+		from = Math.min(from, parent.dmin || Infinity, parent.d || Infinity)
+		to = Math.max(to, parent.ed || -Infinity, parent.dmax || -Infinity)
 	}
 
-	function addRow(event: RawEv3nt): RawEv3nt {
-		if (event.lbl == null) event.lbl = 'NO LABEL'
-		event.from = event.dmin || event.d
-		event.to = event.dmax || event.ed
-		if (event.to == null) event.to = event.from
-		event.time = event.to == null ? 0 : event.to - event.from
+	const time = to - from
 
-		const space = (event.lbl.length * LETTER_WIDTH) / pixelsPerMillisecond
-		event.space = space > event.time ? space - event.time : 0
-		const eventRight = Math.round(event.from + event.time + event.space)
+	function processBand(band: InputBand) {
+		const pixelsPerMillisecond = calcPixelsPerMillisecond(options.viewportWidth, band.zoomLevel, time)
 
-		let row: number
-		if (event.img) {
-			// A point in time with an image starts half an image earlier than the point (in time)
-			const imageFrom = event.time ? event.from : event.from - imageSize / 2
-			const imageTo = event.time ? event.from + imageSize : event.from + imageSize / 2
+		const rows: number[] = [-Infinity]
 
-			row = rows.findIndex(r => imageFrom > r)
+		const imageSize: Milliseconds = Math.round(EVENT_ROW_HEIGHT * 2 / pixelsPerMillisecond)
 
-			if (row > -1) {
-				let hasSpace = false
-				while (!hasSpace) {
-					hasSpace = rowHasSpace(row, imageFrom)
-					if (hasSpace) break
-					row = rows.findIndex((r, i) => i > row && imageFrom > r)
-					if (row === -1) hasSpace = true
+		function rowHasSpace(row: number, imageFrom: Milliseconds) {
+			return (rows[row + 1] == null || rows[row + 1] < imageFrom) && (rows[row + 2] == null || rows[row + 2] < imageFrom) 
+		}
+
+		function addRow(rawEvent: RawEv3nt): Ev3nt {
+			const event = new Ev3nt(rawEvent, pixelsPerMillisecond)
+
+			let row: number
+			if (event.img) {
+				// A point in time with an image starts half an image earlier than the point (in time)
+				const imageFrom = event.time ? event.from : event.from - imageSize / 2
+				const imageTo = event.time ? event.from + imageSize : event.from + imageSize / 2
+
+				row = rows.findIndex(r => imageFrom > r)
+
+				if (row > -1) {
+					let hasSpace = false
+					while (!hasSpace) {
+						hasSpace = rowHasSpace(row, imageFrom)
+						if (hasSpace) break
+						row = rows.findIndex((r, i) => i > row && imageFrom > r)
+						if (row === -1) hasSpace = true
+					}
+				}
+
+				if (row === -1) {
+					row = rows.push(event.screenTo) - 1
+					rows.push(imageTo)
+					rows.push(imageTo)
+				} else {
+					rows[row] = event.screenTo
+					rows[row + 1] = imageTo
+					rows[row + 2] = imageTo
+				}
+			} else {
+				row = rows.findIndex(r => event.from > r)
+
+				if (row === -1) {
+					row = rows.push(event.screenTo) - 1
+				} else {
+					rows[row] = event.screenTo
 				}
 			}
 
-			if (row === -1) {
-				row = rows.push(eventRight) - 1
-				rows.push(imageTo)
-				rows.push(imageTo)
-			} else {
-				rows[row] = eventRight
-				rows[row + 1] = imageTo
-				rows[row + 2] = imageTo
-			}
-		} else {
-			row = rows.findIndex(r => event.from > r)
+			event.row = row
 
-			if (row === -1) {
-				row = rows.push(eventRight) - 1
-			} else {
-				rows[row] = eventRight
-			}
+			return event
 		}
 
-		event.row = row
-
-		return event
+		return {
+			events: band.events.map(addRow),
+			zoomLevel: band.zoomLevel,
+			pixelsPerMillisecond,
+			rowCount: rows.length,
+		}
 	}
 
-	events = events.map(addRow)
-
 	return {
-		events,
-		row_count: rows.length
+		bands: options.bands.map(processBand),
+		from,
+		parent,
+		time,
+		to,
 	}
 }
 

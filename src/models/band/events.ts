@@ -3,10 +3,9 @@ import { EventsBandConfig } from '../config'
 import animator from '../../animator'
 import { Pixels, EVENT_ROW_HEIGHT, Milliseconds } from '../../constants'
 import props from '../props'
-import { RawEv3nt } from '../event'
-import { orderEvents } from '../../utils/events.worker';
-import { byDate } from '../../utils/dates';
-import { calcPixelsPerMillisecond } from '../../utils';
+import { Ev3nt } from '../event'
+import { OrderedBand } from '../../utils/events.worker'
+import { byDate } from '../../utils/dates'
 
 export default class EventsBand extends Band<EventsBandConfig> {
 	type = BandType.EventsBand
@@ -17,9 +16,9 @@ export default class EventsBand extends Band<EventsBandConfig> {
 	private lowestVisibleRow: number
 	private highestVisibleRow: number
 
-	events: RawEv3nt[] = []
+	events: Ev3nt[] = []
 	rowCount: number = 0
-	visibleEvents: RawEv3nt[] = []
+	visibleEvents: Ev3nt[] = []
 
 	private _offsetY: Pixels = 0
 	get offsetY() { return this._offsetY }
@@ -45,15 +44,11 @@ export default class EventsBand extends Band<EventsBandConfig> {
 		if (this.config.events != null) this.config.events.sort(byDate)
 	}
 
-	init() {
+	init(orderedBand: OrderedBand) {
 		super.init()
 
-		const pixelsPerMillisecond = calcPixelsPerMillisecond(props.viewportWidth, this.config.zoomLevel || 0, props.time)
-		const orderedEvents = this.config.orderedEvents == null ?
-			orderEvents(this.config.events, pixelsPerMillisecond) :
-			this.config.orderedEvents
-		this.events = orderedEvents.events
-		this.rowCount = orderedEvents.row_count
+		this.events = orderedBand.events
+		this.rowCount = orderedBand.rowCount
 
 		this.height = EVENT_ROW_HEIGHT * this.rowCount
 
@@ -154,7 +149,7 @@ export default class EventsBand extends Band<EventsBandConfig> {
 		this.updateEvents()
 	}
 
-	getEventByCoordinates(x: Pixels, y: Pixels): RawEv3nt {
+	getEventByCoordinates(x: Pixels, y: Pixels): Ev3nt {
 		const timestamp = this.timestampAtPosition(x)
 
 		const bottomOfDomain: Pixels = props.viewportOffset + this.top + this.availableHeight + this.offsetY
@@ -162,7 +157,7 @@ export default class EventsBand extends Band<EventsBandConfig> {
 
 		const event = this.events.find(e => {
 			if (
-				!(e.from < timestamp && e.from + e.time + e.space > timestamp) ||
+				!(e.from < timestamp && e.screenTo > timestamp) ||
 				(e.row < this.lowestVisibleRow || e.row > this.highestVisibleRow)
 			) return false
 

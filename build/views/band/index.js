@@ -68,7 +68,7 @@ class BandView {
             .map(Math.abs)
             .some(offset => offset > 5);
         if (this.lastDragInterval > 200 || significantDrag) {
-            document.dispatchEvent(new CustomEvent(constants_1.SCROLL_DONE));
+            event_bus_1.default.dispatch(constants_1.EventType.ScrollDone);
         }
     }
     resize() {

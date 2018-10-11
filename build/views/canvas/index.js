@@ -10,7 +10,7 @@ const event_bus_1 = require("../../event-bus");
 class Canvas {
     constructor() {
         this.indicatorsDrawn = false;
-        this.onLoad = (event) => {
+        this.onImgLoad = (event) => {
             const callback = (ev) => {
                 event.image.removeEventListener('load', callback);
                 event.image.removeEventListener('error', callback);
@@ -43,8 +43,8 @@ class Canvas {
             this.updateImages();
         };
         animator_1.default.registerView(this);
-        event_bus_1.default.register(constants_1.ZOOM_DONE, this.onAnimationDone);
-        event_bus_1.default.register(constants_1.SCROLL_DONE, this.onAnimationDone);
+        event_bus_1.default.register(constants_1.EventType.ZoomDone, this.onAnimationDone);
+        event_bus_1.default.register(constants_1.EventType.ScrollDone, this.onAnimationDone);
     }
     updateImages() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -55,9 +55,9 @@ class Canvas {
                     if (event.image == null) {
                         const path = `${props_1.default.imagePath}/${event.wid}__${constants_1.IMAGE_SIZE}.${event.img}`;
                         event.image = new Image();
-                        const onLoad = this.onLoad(event);
-                        event.image.addEventListener('load', onLoad);
-                        event.image.addEventListener('error', onLoad);
+                        const onImgLoad = this.onImgLoad(event);
+                        event.image.addEventListener('load', onImgLoad);
+                        event.image.addEventListener('error', onImgLoad);
                         event.image.src = path;
                     }
                     else {

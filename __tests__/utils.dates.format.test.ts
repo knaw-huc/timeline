@@ -17,7 +17,7 @@ describe('Format', () => {
 	})
 
 	test('DAY', () => {
-		expect(formatDate(Date.UTC(1900, 0), "DAY")).toBe('Mon, 1st Jan 1900')
+		expect(formatDate(Date.UTC(1900, 0), Granularity.DAY)).toBe('Mon, 1st Jan 1900')
 		expect(formatDate(Date.UTC(1900, 11, 2), Granularity.DAY)).toBe('Sun, 2nd Dec 1900')
 		expect(formatDate(Date.UTC(1900, 11, 3), Granularity.DAY)).toBe('Mon, 3rd Dec 1900')
 		expect(formatDate(Date.UTC(1900, 5, 30), Granularity.DAY)).toBe('Sat, 30th Jun 1900')

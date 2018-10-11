@@ -10,9 +10,15 @@ exports.DATE_BAR_HEIGHT = exports.EVENT_ROW_HEIGHT;
 exports.IMAGE_BOUNDING_BOX = (exports.EVENT_ROW_HEIGHT * 2) - exports.ROW_SPACING * 2;
 exports.IMAGE_BORDER_SIZE = Math.round(exports.ROW_SPACING / 2);
 exports.IMAGE_SIZE = exports.IMAGE_SIZES.reduce((prev, curr) => Math.abs(curr - exports.IMAGE_BOUNDING_BOX) < Math.abs(prev - exports.IMAGE_BOUNDING_BOX) ? curr : prev);
-exports.CENTER_CHANGE_DONE = 'CENTER_CHANGE_DONE';
-exports.ZOOM_DONE = 'ZOOM_DONE';
-exports.SCROLL_DONE = 'SCROLL_DONE';
+var EventType;
+(function (EventType) {
+    EventType["CenterChange"] = "CenterChange";
+    EventType["ZoomDone"] = "ZoomDone";
+    EventType["ScrollDone"] = "ScrollDone";
+    EventType["Pause"] = "Pause";
+    EventType["Play"] = "Play";
+    EventType["Select"] = "Select";
+})(EventType = exports.EventType || (exports.EventType = {}));
 exports.PIXELS_PER_LETTER = 8;
 exports.DEFAULT_IMAGE_PATH = '/images';
 class RawSegment {

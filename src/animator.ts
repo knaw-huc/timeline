@@ -1,11 +1,12 @@
 import props from "./models/props";
-import { Milliseconds, ZOOM_DONE, CENTER_CHANGE_DONE } from "./constants";
+import { Milliseconds, EventType } from "./constants";
 import Band from "./models/band";
 import Canvas from "./views/canvas";
 import Debug from "./views/debug";
 import { MinimapBandConfig, EventsBandConfig } from "./models/config";
 import EventsBand from "./models/band/events";
 import Popup from './views/popup';
+import eventBus from './event-bus';
 
 export type Multiplier = .25 | .5 | 1 | 2 | 4 | 8 | 16
 enum Direction {
@@ -102,7 +103,7 @@ export class Animator {
 						else band.zoomLevel = this.zoomMarker + (band.config.zoomLevel - this.activeBand.config.zoomLevel)
 					})
 					this.adjustMinimapBands()
-					document.dispatchEvent(new CustomEvent(ZOOM_DONE))
+					eventBus.dispatch(EventType.ZoomDone)
 					this.stop()
 				}
 				else {
@@ -137,7 +138,7 @@ export class Animator {
 
 	private resetElapsedTimeTotal() {
 		this.elapsedTimeTotal = 0
-		document.dispatchEvent(new CustomEvent(CENTER_CHANGE_DONE))
+		eventBus.dispatch(EventType.CenterChange)
 	}
 
 	accelerate(): number {
@@ -208,16 +209,19 @@ export class Animator {
 	}
 
 	playForward() {
+		eventBus.dispatch(EventType.Play)
 		this.direction = Direction.Forward
 		this.nextFrame()
 	}
 
 	playBackward() {
+		eventBus.dispatch(EventType.Play)
 		this.direction = Direction.Backward
 		this.nextFrame()
 	}
 
 	stop() {
+		eventBus.dispatch(EventType.Pause)
 		this.direction = Direction.Stop
 		this.activeBand = null
 		this.centerMarker = null

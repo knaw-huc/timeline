@@ -47,7 +47,7 @@ class Band {
         this.to = props_1.default.center + this.time / 2;
         this.offsetX = (props_1.default.from - this.from) * this.pixelsPerMillisecond;
     }
-    init() {
+    init(_orderedBand) {
         this.zoomLevel = this.config.zoomLevel;
         this.setVerticalProps();
         animator_1.default.registerModel(this);

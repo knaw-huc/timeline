@@ -1,13 +1,13 @@
 import createElement from '../../utils/create-element'
 import props from '../../models/props'
-import { EVENT_HEIGHT, ZOOM_DONE, SCROLL_DONE, FONT_SIZE, IMAGE_BOUNDING_BOX, IMAGE_SIZE, IMAGE_BORDER_SIZE } from '../../constants'
+import { EVENT_HEIGHT, FONT_SIZE, IMAGE_BOUNDING_BOX, IMAGE_SIZE, IMAGE_BORDER_SIZE, EventType } from '../../constants'
 import MinimapBand from '../../models/band/minimap'
 import animator from '../../animator'
 import EventsBand from '../../models/band/events'
 import View from '../index'
 import drawRulers from './rulers'
 import eventBus from '../../event-bus'
-import { RawEv3nt } from '../../index'
+import { Ev3nt } from '../../models/event'
 
 /**
  * The MiniMap is an abstract representation of the events on a band.
@@ -24,8 +24,8 @@ export default class Canvas implements View {
 	constructor() {
 		animator.registerView(this)
 
-		eventBus.register(ZOOM_DONE, this.onAnimationDone)
-		eventBus.register(SCROLL_DONE, this.onAnimationDone)
+		eventBus.register(EventType.ZoomDone, this.onAnimationDone)
+		eventBus.register(EventType.ScrollDone, this.onAnimationDone)
 	}
 
 	private async updateImages() {
@@ -35,9 +35,9 @@ export default class Canvas implements View {
 				if (event.image == null) {
 					const path = `${props.imagePath}/${event.wid}__${IMAGE_SIZE}.${event.img}`
 					event.image = new Image()
-					const onLoad = this.onLoad(event)
-					event.image.addEventListener('load', onLoad)
-					event.image.addEventListener('error', onLoad)
+					const onImgLoad = this.onImgLoad(event)
+					event.image.addEventListener('load', onImgLoad)
+					event.image.addEventListener('error', onImgLoad)
 					event.image.src = path
 				} else {
 					this.drawImage(event)
@@ -46,7 +46,7 @@ export default class Canvas implements View {
 		}
 	}
 
-	private onLoad = (event: RawEv3nt) => {
+	private onImgLoad = (event: Ev3nt) => {
 		const callback = (ev: Event) => {
 			event.image.removeEventListener('load', callback)
 			event.image.removeEventListener('error', callback)
@@ -73,7 +73,7 @@ export default class Canvas implements View {
 	}
 
 	// Border uses fillRect instead of strokeRect, because strokeRect gives a different color. Don't ask me why.
-	private drawImage(event: RawEv3nt) {
+	private drawImage(event: Ev3nt) {
 		if (event.image == null || !event.image.complete || !event.image.naturalWidth) return
 
 		const x = event.time ? event.left : event.left - (event.image.width / 2) - IMAGE_BORDER_SIZE

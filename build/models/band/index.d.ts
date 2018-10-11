@@ -1,6 +1,7 @@
 import { Granularity } from '../../utils/dates';
 import { Pixels, Milliseconds, Ratio } from '../../constants';
 import { BandConfig } from '../config';
+import { OrderedBand } from '../../utils/events.worker';
 export declare enum BandType {
     EventsBand = 0,
     MinimapBand = 1
@@ -30,7 +31,7 @@ export default abstract class Band<T extends BandConfig> {
     constructor(config: T);
     private setVerticalProps;
     private setHorizontalProps;
-    init(): void;
+    init(_orderedBand?: OrderedBand): void;
     resize(): void;
     update(): void;
     updateConfig(props: {

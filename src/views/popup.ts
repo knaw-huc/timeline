@@ -1,4 +1,4 @@
-import { RawEv3nt } from '../models/event';
+import { Ev3nt } from '../models/event';
 import createElement from '../utils/create-element';
 import props from '../models/props';
 import { EVENT_HEIGHT } from '../constants';
@@ -7,7 +7,7 @@ import animator from '../animator';
 
 const POPUP_OFFSET = 14
 
-function template(event: RawEv3nt) {
+function template(event: Ev3nt) {
 	return `
 		<img alt="noimage" src="" />
 		<div class="metadata">
@@ -28,7 +28,7 @@ function template(event: RawEv3nt) {
 
 export default class Popup {
 	el: HTMLDivElement
-	event: RawEv3nt
+	event: Ev3nt
 
 	constructor(private rootElement: HTMLDivElement) {
 		this.el = createElement('div')
@@ -96,7 +96,7 @@ export default class Popup {
 		this.setPosition()
 	}
 
-	show(event: RawEv3nt) {
+	show(event: Ev3nt) {
 		this.hide()
 		this.event = event
 		this.el.innerHTML = template(event)
