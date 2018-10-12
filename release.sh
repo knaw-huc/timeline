@@ -10,7 +10,7 @@ next_version=$(node -pe 'require("./package.json").version')
 read -p "Bump the version to v$next_version? " anwser
 echo -e "\n\n"
 
-if [ $anwser == "y" ]; then
+if [ "$anwser" == "y" ] || ["$anwser" == ""]; then
 	git add .
 	git commit -m "Bump to v$next_version"
 	git tag "v$next_version"
