@@ -15,8 +15,8 @@ class Point {
 }
 
 export class Ev3ntLocation {
-	coor: Point
-	coor4326?: [number, number]
+	coor?: Point
+	coor4326?: Point
 	dmin?: Milliseconds
 	dmin_g?: Granularity
 	d?: Milliseconds
