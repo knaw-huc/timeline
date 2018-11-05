@@ -22,16 +22,16 @@ export {
 	Config as TimelineConfig,
 	Ev3nt,
 	Ev3ntLocation,
-	EventsBand,
 	EventType,
+	EventsBand,
 	MinimapBand,
 	OrderedTimeline,
 	Props as TimelineProps,
 	RawEv3nt,
+	Voyage,
 	calcPixelsPerMillisecond,
 	formatDate,
 	orderEvents,
-	Voyage,
 }
 
 export type OnSelectFunction = (e: Ev3nt, band: EventsBand, props: Props) => void
@@ -69,7 +69,9 @@ export default class Timeline extends Api {
 		this.popup = new Popup(this.wrapper)
 
 		const debouncedResize = debounce(this.resize, 600)
+		// TODO use eventBus
 		window.addEventListener('resize', debouncedResize)
+		
 	}
 
 	hidePopup() {
@@ -122,6 +124,16 @@ export default class Timeline extends Api {
 		this.wrapper.appendChild(redLine)
 
 		return this.wrapper
+	}
+
+	center() {
+		return props.center
+	}
+
+	visibleEvents() {
+		return props.eventsBands
+			.map(band => band.visibleEvents)
+			.reduce((prev, curr) => prev.concat(curr))
 	}
 
 	private renderLabels() {

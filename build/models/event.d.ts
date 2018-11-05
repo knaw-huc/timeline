@@ -26,9 +26,14 @@ export declare class Ev3ntLocation {
 export declare class Voyage {
     d: Milliseconds;
     ed: Milliseconds;
-    route: string;
+    route?: string;
     sp?: Point;
     ep?: Point;
+}
+export declare class Area {
+    d: Milliseconds;
+    ed: Milliseconds;
+    area: string;
 }
 export declare class RawEv3nt {
     class: string[];
@@ -44,6 +49,7 @@ export declare class RawEv3nt {
     id: string;
     img: ImageFileType;
     lbl: string;
+    areas: Area[];
     locs: Ev3ntLocation[];
     voyages: Voyage[];
     wid: string;

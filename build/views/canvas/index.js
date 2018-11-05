@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
 const create_element_1 = require("../../utils/create-element");
 const props_1 = require("../../models/props");
 const constants_1 = require("../../constants");
@@ -47,25 +46,23 @@ class Canvas {
         event_bus_1.default.register(constants_1.EventType.ScrollDone, this.onAnimationDone);
     }
     updateImages() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            for (const band of props_1.default.eventsBands) {
-                for (const event of band.visibleEvents) {
-                    if (event.img == null)
-                        continue;
-                    if (event.image == null) {
-                        const path = `${props_1.default.imagePath}/${event.wid}__${constants_1.IMAGE_SIZE}.${event.img}`;
-                        event.image = new Image();
-                        const onImgLoad = this.onImgLoad(event);
-                        event.image.addEventListener('load', onImgLoad);
-                        event.image.addEventListener('error', onImgLoad);
-                        event.image.src = path;
-                    }
-                    else {
-                        this.drawImage(event);
-                    }
+        for (const band of props_1.default.eventsBands) {
+            for (const event of band.visibleEvents) {
+                if (event.img == null)
+                    continue;
+                if (event.image == null) {
+                    const path = `${props_1.default.imagePath}/${event.wid}__${constants_1.IMAGE_SIZE}.${event.img}`;
+                    event.image = new Image();
+                    const onImgLoad = this.onImgLoad(event);
+                    event.image.addEventListener('load', onImgLoad);
+                    event.image.addEventListener('error', onImgLoad);
+                    event.image.src = path;
+                }
+                else {
+                    this.drawImage(event);
                 }
             }
-        });
+        }
     }
     drawImage(event) {
         if (event.image == null || !event.image.complete || !event.image.naturalWidth)

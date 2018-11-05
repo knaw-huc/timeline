@@ -14,25 +14,72 @@ class Point {
 	coordinates: [number, number]
 }
 
+// TODO should the location also have dmin and dmax?
 export class Ev3ntLocation {
+	/** Coordinates using the EPSG:3857 coordinate reference system */
 	coor?: Point
+
+	/** Coordinates using the EPSG:4326 coordinate reference system */
 	coor4326?: Point
+
+	/** Earliest possible date. Only used when start date is uncertain */
 	dmin?: Milliseconds
+
+	/** Earliest possible date granularity */
 	dmin_g?: Granularity
+
+	/** Date */
 	d?: Milliseconds
+
+	/** Date granularity */
 	d_g?: Granularity
+
+	/** End date */
 	ed?: Milliseconds
+
+	/** End date granularity */
 	ed_g?: Granularity
+
+	/** Latest possible date. Only used when end date is uncertain */
 	dmax?: Milliseconds
+
+	/** Latest possible date granularity */
 	dmax_g?: Granularity
 }
 
+/** A voyage is a change in the location of an event over time.
+ * 
+ * The route of the voyage will be determined by:
+ * - route ID: map of routes should be resolved by props.loadRoutes
+ * - start point and end point: the route will be interpolated
+ */
 export class Voyage {
+	/** Start date of the voyage */
 	d: Milliseconds
+
+	/** End date of the voyage */
 	ed: Milliseconds
-	route: string
-	sp?: Point // Start point
-	ep?: Point // End point
+
+	/** ID of a route */
+	route?: string
+
+	/** Start point */
+	sp?: Point
+
+	/** End point */
+	ep?: Point
+}
+
+/** An area is the surface of an event between two given dates */
+export class Area {
+	/** Start date of the voyage */
+	d: Milliseconds
+
+	/** End date of the voyage */
+	ed: Milliseconds
+
+	/** ID of an area */
+	area: string
 }
 
 export class RawEv3nt {
@@ -49,6 +96,7 @@ export class RawEv3nt {
 	id: string
 	img: ImageFileType
 	lbl: string
+	areas: Area[]
 	locs: Ev3ntLocation[]
 	voyages: Voyage[]
 	wid: string
@@ -59,9 +107,12 @@ export class Ev3nt extends RawEv3nt {
 	to: Milliseconds
 	screenTo: Milliseconds
 
-	// The length of time an event took.
-	// A Point in Time has time = 0
-	// For an interval, if the event takes 1 year, time = 31536000000
+	/**
+	 * The length of time of an event
+	 * 
+	 * PointInTime has time = 0
+	 * Interval has time = 31536000000, if the event takes 1 year,
+	 */ 
 	time?: Milliseconds
 
 	row: number

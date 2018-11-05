@@ -41,6 +41,7 @@ export default class BandView implements View {
 	}
 
 	private onMouseDown = (ev: MouseEvent) => {
+		// TODO use eventBus
 		document.addEventListener('mouseup', this.onMouseUp)
 		this.dragStartTime = Date.now()
 		this.dragStartPosition = [ev.clientX, ev.clientY]

@@ -28,7 +28,7 @@ export default class Canvas implements View {
 		eventBus.register(EventType.ScrollDone, this.onAnimationDone)
 	}
 
-	private async updateImages() {
+	private updateImages() {
 		for (const band of props.eventsBands) {
 			for (const event of band.visibleEvents) {
 				if (event.img == null) continue
@@ -36,6 +36,7 @@ export default class Canvas implements View {
 					const path = `${props.imagePath}/${event.wid}__${IMAGE_SIZE}.${event.img}`
 					event.image = new Image()
 					const onImgLoad = this.onImgLoad(event)
+					// TODO use eventBus
 					event.image.addEventListener('load', onImgLoad)
 					event.image.addEventListener('error', onImgLoad)
 					event.image.src = path

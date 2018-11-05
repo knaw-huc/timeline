@@ -17,6 +17,9 @@ exports.Ev3ntLocation = Ev3ntLocation;
 class Voyage {
 }
 exports.Voyage = Voyage;
+class Area {
+}
+exports.Area = Area;
 class RawEv3nt {
 }
 exports.RawEv3nt = RawEv3nt;

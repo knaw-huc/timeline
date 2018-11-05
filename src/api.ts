@@ -2,6 +2,7 @@ import animator, { Animator } from './animator'
 import props, { Props } from './models/props'
 import View from './views';
 import { EventType } from './constants';
+import eventBus from './event-bus';
 
 export type OnChangeFunction = (props: Props, e?: Event) => void
 
@@ -37,7 +38,7 @@ export default class Api {
 			else if (eventType === EventType.Select) realFunc = (ev: any) => func(ev.detail)
 			else realFunc = func
 
-			document.addEventListener(eventType, realFunc)
+			eventBus.register(eventType, realFunc)
 		}
 	}
 

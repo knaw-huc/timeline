@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const animator_1 = require("./animator");
 const props_1 = require("./models/props");
 const constants_1 = require("./constants");
+const event_bus_1 = require("./event-bus");
 class Api {
     constructor() {
         this.animator = animator_1.default;
@@ -41,7 +42,7 @@ class Api {
                 realFunc = (ev) => func(ev.detail);
             else
                 realFunc = func;
-            document.addEventListener(eventType, realFunc);
+            event_bus_1.default.register(eventType, realFunc);
         }
     }
     reload() {

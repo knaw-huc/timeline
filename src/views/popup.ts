@@ -37,6 +37,7 @@ export default class Popup {
 		this.el.style.zIndex = '10'
 		this.hide()
 		this.rootElement.appendChild(this.el)
+		// TODO use eventBus
 		this.el.addEventListener('click', (ev: MouseEvent) => {
 			if ((ev.target as HTMLElement).matches('#popup-close')) {
 				this.hide()

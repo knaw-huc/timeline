@@ -79,6 +79,14 @@ class Timeline extends api_1.default {
         this.wrapper.appendChild(redLine);
         return this.wrapper;
     }
+    center() {
+        return props_1.default.center;
+    }
+    visibleEvents() {
+        return props_1.default.eventsBands
+            .map(band => band.visibleEvents)
+            .reduce((prev, curr) => prev.concat(curr));
+    }
     renderLabels() {
         props_1.default.bands
             .filter(band => band.type === band_2.BandType.EventsBand && band.config.label != null)
