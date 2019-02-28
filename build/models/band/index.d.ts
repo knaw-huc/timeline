@@ -9,7 +9,7 @@ export declare enum BandType {
 export default abstract class Band<T extends BandConfig> {
     config: T;
     abstract type: BandType;
-    protected readonly defaultZoomLevel: number;
+    protected readonly defaultZoomLevel = 0;
     from: Milliseconds;
     to: Milliseconds;
     time: Milliseconds;
