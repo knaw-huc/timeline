@@ -11,51 +11,35 @@
 </style>
 <body>
 <div id="timeline" style="width: 100%; height: 100%"></div>
-<script src="../build/bundle.js"></script>
+<script src="../dist/bundle.js"></script>
 <script>
-	async function go() {
-		const response = await fetch('./data/floods.json')
-		let events = await response.json()
-		events = events
-			.reduce((prev, curr) => {
-				if (prev.hasOwnProperty(curr.label)) prev[curr.label].push(curr)
-				else prev[curr.label] = [curr]
-				return prev
-			}, {})
-		const allEvents = Object
-			.keys(events)
-			.map(key => events[key])
-			.sort((a, b) => {
-				if (a.length > b.length) return -1
-				if (a.length < b.length) return 1
-				return 0
-			})
-			.slice(0, 20)
 
-		const domains = allEvents.map((events, index) => {
-			const heightRatio = 1 / allEvents.length
-			return {
-				events,
-				type: 'events',
-				heightRatio,
-				topOffsetRatio: heightRatio * index
-			}
-		})
-
-		console.log(domains)
-
-		const t = new Timeline.default({
-			events: {
-				domains: [],
-			},
-			minimaps: [
-				{
-					domains,
-				}
-			],
-			rootElement: document.getElementById('timeline'),
-		})
-	}
-	go()
+  async function go() {
+    const response = await fetch('./data/floods.json')
+    const events = await response.json()
+    const t = new Timeline.default(
+      {
+        center: Date.UTC(1950),
+        bands: [
+          new Timeline.EventsBand({
+            events,
+            heightRatio: .9,
+            visibleRatio: .1,
+            zoomLevel: 2,
+          }),
+          new Timeline.MinimapBand({
+            heightRatio: .1,
+            topOffsetRatio: .9,
+          }),
+        ],
+        imagePath: '/examples/images',
+        rootElement: document.getElementById('timeline'),
+      },
+    )
+    t.on('select', (event) => {
+      console.log(event)
+    })
+  }
+  go()
 </script>
 </body>
